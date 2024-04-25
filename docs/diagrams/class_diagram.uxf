@@ -1,0 +1,75 @@
+<diagram program="umletino" version="15.1"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>1960</x><y>170</y><w>210</w><h>150</h></coordinates><panel_attributes>&lt;&lt;Enumeración tipos de datos &gt;&gt;
+inputType
+--
+halign=center
+
+Text
+
+Audio
+
+Image</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1610</x><y>450</y><w>270</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Clase de la app&gt;&gt;
+RNMN app
+--
++data_andtypes : dict &lt;inputType : np.array&gt;
+--
++start_app()
+-get_text() 
+-get_audio()
+-get_image()
+-preprocess_data(data_andtypes)</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1740</x><y>220</y><w>240</w><h>250</h></coordinates><panel_attributes>lt=&lt;..</panel_attributes><additional_attributes>10;230;10;10;220;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>730</x><y>570</y><w>390</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo&gt;&gt;
+RNMNSmallAbstract
+--
++data: np.array
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>830</x><y>280</y><w>850</w><h>190</h></coordinates><panel_attributes>lt=&lt;-
+m1=1</panel_attributes><additional_attributes>10;10;830;10;830;170</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1950</x><y>560</y><w>310</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Clase de procesado&gt;&gt;
+ProcessedData
+--
++data_type : inputType 
++`data_processed : np.array
+--
++process(data_preprocessed : pandas.DataFrame)
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1870</x><y>450</y><w>210</w><h>130</h></coordinates><panel_attributes>lt=&lt;-
+m1=1..3
+</panel_attributes><additional_attributes>170;110;170;20;10;20</additional_attributes></element><element><id>Relation</id><coordinates><x>2090</x><y>740</y><w>30</w><h>170</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;150</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1950</x><y>890</y><w>290</w><h>90</h></coordinates><panel_attributes>&lt;&lt;Clase&gt;&gt;
+ProcessedAudio
+--
++process(data_preprocessed : pandas.DataFrame)
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1620</x><y>890</y><w>290</w><h>90</h></coordinates><panel_attributes>&lt;&lt;Clase&gt;&gt;
+ProcessedText
+--
++process(data_preprocessed : pandas.DataFrame)
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>2280</x><y>890</y><w>290</w><h>90</h></coordinates><panel_attributes>&lt;&lt;Clase&gt;&gt;
+ProcessedImage
+--
++process(data_preprocessed : pandas.DataFrame)
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1750</x><y>740</y><w>290</w><h>170</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>270;10;270;50;10;50;10;150</additional_attributes></element><element><id>Relation</id><coordinates><x>2170</x><y>740</y><w>280</w><h>170</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;50;260;50;260;150</additional_attributes></element><element><id>UMLClass</id><coordinates><x>460</x><y>920</y><w>260</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo de texto&gt;&gt;
+RNMNTextModel
+--
++create_neural_model()
++predict() : int
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>790</x><y>920</y><w>260</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo de texto&gt;&gt;
+RNMNImagenModel
+--
++create_neural_model()
++predict() : int</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>580</x><y>750</y><w>290</w><h>190</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>270;10;270;70;10;70;10;170</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1120</x><y>920</y><w>260</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo de texto&gt;&gt;
+RNMNAudioModel
+--
++create_neural_model()
++predict() : int</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>910</x><y>750</y><w>30</w><h>190</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;170</additional_attributes></element><element><id>Relation</id><coordinates><x>980</x><y>750</y><w>290</w><h>190</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;70;270;70;270;170</additional_attributes></element><element><id>UMLClass</id><coordinates><x>0</x><y>920</y><w>390</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo&gt;&gt;
+RNMNModel
+--
+-processed_data_andtypes : dict &lt;inputType : np.array&gt;
+--
++create_neural_model()
+-create_text_model(text_data : np.array) : keras.models
+-create_audio_model(audio_data : np.array) : keras.models
+-create_video_model(video_data : np.array) : keras.models
++predict() : int</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>180</x><y>700</y><w>570</w><h>240</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=3</panel_attributes><additional_attributes>550;10;10;10;10;220</additional_attributes></element><element><id>UMLClass</id><coordinates><x>450</x><y>160</y><w>390</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo&gt;&gt;
+RNMNBigAbstract
+--
++model : keras.models
+--
++create_neural_model()
++predict() : int</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>760</x><y>340</y><w>190</w><h>250</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;130;170;130;170;230</additional_attributes></element><element><id>Relation</id><coordinates><x>100</x><y>340</y><w>450</w><h>600</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>430;10;430;130;10;130;10;580</additional_attributes></element></diagram>
