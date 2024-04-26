@@ -1,0 +1,6 @@
+diagrama: 
+- cambiar processed por process
+- cambiar RNMNImagenModel por RNMNImageModel
+- cambiar RNMN app por RNMNApp
+- cambiar en ProcessData data_type por data_filename : string
+- eliminar en PricessData data_preprocessed de argumentos
