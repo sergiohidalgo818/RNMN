@@ -105,7 +105,7 @@ def hex_data(file_name):
         None
         """
 
-    nums = [''.join('{0:08b}'.format(ord(x), 'b') for x in num) for num in range(0,10,1)]
+    nums = [''.join('{0:08b}'.format(ord(str(num)), 'b')) for num in range(0,10,1)]
 
     classes = ['1000000000', '0100000000', '0010000000',
                '0001000000', '0000100000', '0000010000',
