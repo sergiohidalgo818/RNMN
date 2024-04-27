@@ -3,6 +3,7 @@
 
 import string
 from itertools import permutations
+import random
 import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -10,12 +11,15 @@ import pyarrow.parquet as pq
 
 MAX_CHARS = 8
 
-def lexic_data(file_name):
-    """Creates a data set with 4 columns (one for each ASCII binary lexic number)
+
+def lexic_data(file_name, ascii_perm_size):
+    """Creates a dataset with 4 columns (one for each ASCII binary lexic number)
       and 10 classes (one for each number) 
 
     Args:
     file_name (str): path to the file
+    ascii_perm_size (int): size of the random abecedary
+      of ASCII characters
 
     Returns:
         None
@@ -36,57 +40,69 @@ def lexic_data(file_name):
     abecedary = list(string.printable)
 
     # create dictionary
-    entries = ['x'+str(i) for i in range(0, MAX_CHARS*num_of_bits, 1)] 
+    entries = ['x'+str(i) for i in range(0, MAX_CHARS*num_of_bits, 1)]
     outputs = ['y'+str(i) for i in range(0, 10, 1)]
     data_dict = {key: list() for key in (entries + outputs)}
 
-    print("Creating lexic dataset")
+    print("\nCreating lexic dataset")
 
     for inum, iclass in nums_and_classes:
-        list_of_pattern = list
+
         size = len(inum)
 
         max_extra_chars = MAX_CHARS - size
-        permutations_abecedary = permutations(abecedary, r=max_extra_chars)
+
+        random.shuffle(abecedary)
+        permutations_abecedary = permutations(abecedary[:ascii_perm_size], r=max_extra_chars)
 
         number_bin = ""
 
         number_bin = ''.join('{0:08b}'.format(ord(x), 'b') for x in inum)
 
         for perm in permutations_abecedary:
-            bin_num_perm = ''.join('{0:08b}'.format(ord(x), 'b') for x in perm)
 
-            number = bin_num_perm
-            number += number_bin 
+            perm_contains_num = False
+            text_perm = ''.join('{}'.format(x) for x in perm)
 
-            # ASCII characters at the begining of the number
-            for inumber, key in zip(number, entries):
-                data_dict[key].append(inumber)
-            for inumber, key in zip(iclass, outputs):
-                data_dict[key].append(inumber)
+            # check if there is a string number in the permutation
+            for jnum in nums:
+                if text_perm in jnum:
+                    perm_contains_num = True
 
-            number = number_bin
-            number += bin_num_perm
+            # if there is, ignore iteration
+            if (perm_contains_num == False):
+                bin_num_perm = ''.join(
+                    '{0:08b}'.format(ord(x), 'b') for x in perm)
 
-            # ASCII characters at the end of the number
-            for inumber, key in zip(number, entries):
-                data_dict[key].append(inumber)
-            for inumber, key in zip(iclass, outputs):
-                data_dict[key].append(inumber)
-
-
-            for num_slash in range(1, max_extra_chars-1, 1):
-
-                mid_slash = int(len(bin_num_perm)/(max_extra_chars/num_slash))
-                number = bin_num_perm[:mid_slash]
+                number = bin_num_perm
                 number += number_bin
-                number += bin_num_perm[mid_slash:]
-                
+                # ASCII characters at the begining of the number
                 for inumber, key in zip(number, entries):
                     data_dict[key].append(inumber)
                 for inumber, key in zip(iclass, outputs):
                     data_dict[key].append(inumber)
 
+                number = number_bin
+                number += bin_num_perm
+
+                # ASCII characters at the end of the number
+                for inumber, key in zip(number, entries):
+                    data_dict[key].append(inumber)
+                for inumber, key in zip(iclass, outputs):
+                    data_dict[key].append(inumber)
+
+                for num_slash in range(1, max_extra_chars-1, 1):
+
+                    mid_slash = int(len(bin_num_perm) /
+                                    (max_extra_chars/num_slash))
+                    number = bin_num_perm[:mid_slash]
+                    number += number_bin
+                    number += bin_num_perm[mid_slash:]
+
+                    for inumber, key in zip(number, entries):
+                        data_dict[key].append(inumber)
+                    for inumber, key in zip(iclass, outputs):
+                        data_dict[key].append(inumber)
 
     print("Writing lexic dataset...")
     data_frame = pd.DataFrame(data_dict)
@@ -94,8 +110,9 @@ def lexic_data(file_name):
     pq.write_table(table, file_name)
     print("Lexic dataset done")
 
+
 def hex_data(file_name):
-    """Creates a data set with 4 columns (one for each ASCII binary number)
+    """Creates a dataset with 4 columns (one for each ASCII binary number)
       and 10 classes (one for each number) 
 
     Args:
@@ -105,7 +122,8 @@ def hex_data(file_name):
         None
         """
 
-    nums = [''.join('{0:08b}'.format(ord(str(num)), 'b')) for num in range(0,10,1)]
+    nums = [''.join('{0:08b}'.format(ord(str(num)), 'b'))
+            for num in range(0, 10, 1)]
 
     classes = ['1000000000', '0100000000', '0010000000',
                '0001000000', '0000100000', '0000010000',
@@ -114,20 +132,19 @@ def hex_data(file_name):
 
     nums_and_classes = zip(nums, classes)
 
-
     # create dictionary
-    entries = ['x'+str(i) for i in range(0,8, 1)] 
+    entries = ['x'+str(i) for i in range(0, 8, 1)]
     outputs = ['y'+str(i) for i in range(0, 10, 1)]
     data_dict = {key: list() for key in (entries + outputs)}
 
-    print("creating numeric hexadecimal dataset")
+    print("\nCreating numeric hexadecimal dataset")
 
     for inum, iclass in nums_and_classes:
 
         for inumber, key in zip(inum, entries):
-                data_dict[key].append(inumber)
+            data_dict[key].append(inumber)
         for inumber, key in zip(iclass, outputs):
-                data_dict[key].append(inumber)
+            data_dict[key].append(inumber)
 
     print("Writing hexadecimal dataset...")
     data_frame = pd.DataFrame(data_dict)
@@ -137,7 +154,7 @@ def hex_data(file_name):
 
 
 def binary_data(file_name):
-    """Creates a data set with 4 columns (one for each binary number)
+    """Creates a dataset with 4 columns (one for each binary number)
       and 10 classes (one for each number) 
 
     Args:
@@ -157,20 +174,19 @@ def binary_data(file_name):
 
     nums_and_classes = zip(nums, classes)
 
-
     # create dictionary
-    entries = ['x'+str(i) for i in range(0,4, 1)] 
+    entries = ['x'+str(i) for i in range(0, 4, 1)]
     outputs = ['y'+str(i) for i in range(0, 10, 1)]
     data_dict = {key: list() for key in (entries + outputs)}
 
-    print("creating numeric binary dataset")
+    print("\nCreating numeric binary dataset")
 
     for inum, iclass in nums_and_classes:
 
         for inumber, key in zip(inum, entries):
-                data_dict[key].append(inumber)
+            data_dict[key].append(inumber)
         for inumber, key in zip(iclass, outputs):
-                data_dict[key].append(inumber)
+            data_dict[key].append(inumber)
 
     print("Writing binary dataset...")
     data_frame = pd.DataFrame(data_dict)
@@ -182,9 +198,9 @@ def binary_data(file_name):
 if __name__ == '__main__':
 
     directory = 'data/text_data/'
-    
+
     hex_data(directory+"hex_data.parquet")
 
     binary_data(directory+"binary_data.parquet")
-    
-    lexic_data(directory+"text_data.parquet")
+
+    lexic_data(directory+"text_data.parquet", 12)
