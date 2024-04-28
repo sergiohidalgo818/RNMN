@@ -1,75 +1,88 @@
-<diagram program="umletino" version="15.1"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>1960</x><y>170</y><w>210</w><h>150</h></coordinates><panel_attributes>&lt;&lt;Enumeración tipos de datos &gt;&gt;
-inputType
+<diagram program="umletino" version="15.1"><zoom_level>8</zoom_level><element><id>UMLClass</id><coordinates><x>1568</x><y>80</y><w>168</w><h>120</h></coordinates><panel_attributes>&lt;&lt;Enumeración tipos de datos&gt;&gt;
+InputType
 --
 halign=center
 
-Text
+TEXT
 
-Audio
+AUDIO
 
-Image</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1610</x><y>450</y><w>270</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Clase de la app&gt;&gt;
-RNMN app
+IMAGE</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1288</x><y>288</y><w>216</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Clase de la app&gt;&gt;
+RNMNApp
 --
-+data_andtypes : dict &lt;inputType : np.array&gt;
++data_and_types : dict &lt;InputType : np.array&gt;
 --
 +start_app()
--get_text() 
--get_audio()
--get_image()
--preprocess_data(data_andtypes)</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1740</x><y>220</y><w>240</w><h>250</h></coordinates><panel_attributes>lt=&lt;..</panel_attributes><additional_attributes>10;230;10;10;220;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>730</x><y>570</y><w>390</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo&gt;&gt;
-RNMNSmallAbstract
+-app_gui()
+-get_text_data(directory:str) 
+-get_audio_data(directory:str)
+-get_image_data(directory:str)
+-preprocess_data(data_andtypes)</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1392</x><y>120</y><w>192</w><h>184</h></coordinates><panel_attributes>lt=&lt;..</panel_attributes><additional_attributes>10;210;10;10;220;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>584</x><y>400</y><w>312</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo&gt;&gt;
+RNMNSmall
 --
-+data: np.array
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>830</x><y>280</y><w>850</w><h>190</h></coordinates><panel_attributes>lt=&lt;-
-m1=1</panel_attributes><additional_attributes>10;10;830;10;830;170</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1950</x><y>560</y><w>310</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Clase de procesado&gt;&gt;
-ProcessedData
++data: np.ndarray
++predict(np.ndarray): float
++train()</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>664</x><y>168</y><w>680</w><h>136</h></coordinates><panel_attributes>lt=&lt;-
+m1=1</panel_attributes><additional_attributes>10;10;830;10;830;150</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1560</x><y>392</y><w>248</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Clase de procesado&gt;&gt;
+ProcessData
 --
-+data_type : inputType 
++data_directory: str 
 +`data_processed : np.array
 --
-+process(data_preprocessed : pandas.DataFrame)
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1870</x><y>450</y><w>210</w><h>130</h></coordinates><panel_attributes>lt=&lt;-
++process()
++process_file(file_name : str)</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1496</x><y>288</y><w>168</w><h>120</h></coordinates><panel_attributes>lt=&lt;-
 m1=1..3
-</panel_attributes><additional_attributes>170;110;170;20;10;20</additional_attributes></element><element><id>Relation</id><coordinates><x>2090</x><y>740</y><w>30</w><h>170</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;150</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1950</x><y>890</y><w>290</w><h>90</h></coordinates><panel_attributes>&lt;&lt;Clase&gt;&gt;
-ProcessedAudio
+</panel_attributes><additional_attributes>170;130;170;20;10;20</additional_attributes></element><element><id>Relation</id><coordinates><x>1672</x><y>536</y><w>24</w><h>136</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;150</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1560</x><y>656</y><w>232</w><h>72</h></coordinates><panel_attributes>&lt;&lt;Clase&gt;&gt;
+ProcessAudio
 --
-+process(data_preprocessed : pandas.DataFrame)
++process_file(file_name : str)
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1620</x><y>890</y><w>290</w><h>90</h></coordinates><panel_attributes>&lt;&lt;Clase&gt;&gt;
-ProcessedText
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1296</x><y>656</y><w>232</w><h>72</h></coordinates><panel_attributes>&lt;&lt;Clase&gt;&gt;
+ProcessText
+-
++process_file(file_name : str)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1824</x><y>656</y><w>232</w><h>72</h></coordinates><panel_attributes>&lt;&lt;Clase&gt;&gt;
+ProcessImage
 --
-+process(data_preprocessed : pandas.DataFrame)
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>2280</x><y>890</y><w>290</w><h>90</h></coordinates><panel_attributes>&lt;&lt;Clase&gt;&gt;
-ProcessedImage
---
-+process(data_preprocessed : pandas.DataFrame)
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1750</x><y>740</y><w>290</w><h>170</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>270;10;270;50;10;50;10;150</additional_attributes></element><element><id>Relation</id><coordinates><x>2170</x><y>740</y><w>280</w><h>170</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;50;260;50;260;150</additional_attributes></element><element><id>UMLClass</id><coordinates><x>460</x><y>920</y><w>260</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo de texto&gt;&gt;
++process_file(file_name : str)</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1400</x><y>536</y><w>232</w><h>136</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>270;10;270;50;10;50;10;150</additional_attributes></element><element><id>Relation</id><coordinates><x>1736</x><y>536</y><w>224</w><h>136</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;50;260;50;260;150</additional_attributes></element><element><id>UMLClass</id><coordinates><x>368</x><y>680</y><w>208</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo de texto&gt;&gt;
 RNMNTextModel
 --
 +create_neural_model()
-+predict() : int
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>790</x><y>920</y><w>260</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo de texto&gt;&gt;
-RNMNImagenModel
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>632</x><y>680</y><w>208</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo de imagen&gt;&gt;
+RNMNImageModel
 --
 +create_neural_model()
-+predict() : int</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>580</x><y>750</y><w>290</w><h>190</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>270;10;270;70;10;70;10;170</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1120</x><y>920</y><w>260</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo de texto&gt;&gt;
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>464</x><y>544</y><w>232</w><h>152</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>270;10;270;70;10;70;10;170</additional_attributes></element><element><id>UMLClass</id><coordinates><x>896</x><y>680</y><w>208</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo de audio&gt;&gt;
 RNMNAudioModel
 --
 +create_neural_model()
-+predict() : int</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>910</x><y>750</y><w>30</w><h>190</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;170</additional_attributes></element><element><id>Relation</id><coordinates><x>980</x><y>750</y><w>290</w><h>190</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;70;270;70;270;170</additional_attributes></element><element><id>UMLClass</id><coordinates><x>0</x><y>920</y><w>390</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo&gt;&gt;
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>728</x><y>544</y><w>24</w><h>152</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;170</additional_attributes></element><element><id>Relation</id><coordinates><x>784</x><y>544</y><w>232</w><h>152</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;70;270;70;270;170</additional_attributes></element><element><id>UMLClass</id><coordinates><x>0</x><y>680</y><w>312</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo&gt;&gt;
 RNMNModel
 --
--processed_data_andtypes : dict &lt;inputType : np.array&gt;
+-processed_data_and_types : dict &lt;InputType : np.array&gt;
 --
 +create_neural_model()
--create_text_model(text_data : np.array) : keras.models
--create_audio_model(audio_data : np.array) : keras.models
--create_video_model(video_data : np.array) : keras.models
-+predict() : int</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>180</x><y>700</y><w>570</w><h>240</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
-m1=3</panel_attributes><additional_attributes>550;10;10;10;10;220</additional_attributes></element><element><id>UMLClass</id><coordinates><x>450</x><y>160</y><w>390</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo&gt;&gt;
-RNMNBigAbstract
+-create_text_model(text_data : np.ndarray) 
+-create_audio_model(audio_data : np.ndarray) 
+-create_image_model(video_data : np.ndarray)
++load_neural_model(directory:str)
++predict(np.ndarray) : int
++train()</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>144</x><y>504</y><w>456</w><h>192</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=3</panel_attributes><additional_attributes>550;10;10;10;10;220</additional_attributes></element><element><id>UMLClass</id><coordinates><x>360</x><y>72</y><w>312</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo&gt;&gt;
+RNMNAbstract
 --
-+model : keras.models
++model : keras.models.Sequential
 --
 +create_neural_model()
-+predict() : int</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>760</x><y>340</y><w>190</w><h>250</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;130;170;130;170;230</additional_attributes></element><element><id>Relation</id><coordinates><x>100</x><y>340</y><w>450</w><h>600</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>430;10;430;130;10;130;10;580</additional_attributes></element></diagram>
++predict(np.ndarray) 
++train()</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>608</x><y>216</y><w>152</w><h>200</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;130;170;130;170;230</additional_attributes></element><element><id>Relation</id><coordinates><x>80</x><y>216</y><w>360</w><h>480</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>430;10;430;130;10;130;10;580</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1024</x><y>320</y><w>216</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Clase de la app&gt;&gt;
+RNMNAppGui
+--
+
+--
++start_app()
+-create_model()
+-load_model()</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1120</x><y>288</y><w>184</w><h>48</h></coordinates><panel_attributes>lt=&lt;-
+m1=1</panel_attributes><additional_attributes>210;10;10;10;10;40</additional_attributes></element><element><id>Relation</id><coordinates><x>1128</x><y>432</y><w>248</w><h>104</h></coordinates><panel_attributes>lt=&lt;-
+m1=1
+</panel_attributes><additional_attributes>10;50;10;110;290;110;290;10</additional_attributes></element></diagram>

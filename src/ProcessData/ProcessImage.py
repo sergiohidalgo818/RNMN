@@ -1,6 +1,5 @@
 '''This file defines the ProcessImage Class'''
 
-from typing import Tuple
 from ProcessData import ProcessData
 
 class ProcessImage(ProcessData):
@@ -10,10 +9,10 @@ class ProcessImage(ProcessData):
     """
 
     def process_file(self, file_name):
-        """Process the data from a file
+        """Process the data from a image
 
         Args:
-        None
+        file_name (str): path to the file
 
         Returns:
             None

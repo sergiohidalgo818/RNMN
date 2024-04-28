@@ -1,6 +1,5 @@
 '''This file defines the ProcessData Class'''
 
-from typing import Tuple
 import numpy as np
 import os
 
@@ -11,11 +10,12 @@ class ProcessData():
 
     Atrs:
         data_directory (str): The file location of the data files
-        data_processed (Tuple(np.array, np.array)): Processed data, 
-            a tuple with entries and outputs
+        data_processed (tuple(np.array, np.array)): Processed data, 
+            a tuple with entries and outputs, that are stored in the
+              following way -> tuple(entries[line][atribute], outputs[line][class])
     """
     data_directory: str
-    data_processed: Tuple
+    data_processed: tuple
 
     def __init__(self, data_directory) -> None:
         """Initializes the ProcessedData class
@@ -27,10 +27,10 @@ class ProcessData():
             None
         """
         self.data_directory = data_directory
-        self.data_processed = Tuple(np.array(), np.array())
+        self.data_processed = (np.array([]), np.array([]))
 
     def process(self):
-        """Process the data from a set of files
+        """Process the data from a set of files on a directory
 
         Args:
         None
@@ -46,10 +46,10 @@ class ProcessData():
                 self.process_file(file_name)
 
     def process_file(self, file_name):
-        """Process the data from a file or set of files
+        """Process the data from a file
 
         Args:
-        None
+        file_name (str): path to the file
 
         Returns:
             None
