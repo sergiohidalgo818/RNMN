@@ -1,24 +1,16 @@
 '''This file defines the ProcessImage Class'''
 
 from typing import Tuple
-import numpy as np
 from ProcessData import ProcessData
 
 class ProcessImage(ProcessData):
 
-    """This class enherits from ProcessData and will process the image
-      data before its sended to the neural network
-
-    Atrs:
-        data_filename (str): The file location of the data
-        data_processed (Tuple(np.array, np.array)): Processed data, 
-            a tuple with entries and outputs
+    """This class will process the image input data before its sended to the
+      neural network. It inherits from ProcessData
     """
-    data_filename : str
-    data_processed : Tuple
 
-    def process(self):
-        """Process the data from a file or set of files
+    def process_file(self, file_name):
+        """Process the data from a file
 
         Args:
         None
