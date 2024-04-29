@@ -13,11 +13,14 @@ class RNMNAppGui(customtkinter.CTk):
     logic_app: RNMNApp
     frames: dict
 
+
     def __init__(self, logic_app, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        
 
         self.frames = dict()
         self.logic_app = logic_app
+        self.resizable(width=False, height=False)
 
         customtkinter.set_appearance_mode("dark")
 
