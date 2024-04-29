@@ -3,6 +3,12 @@
 import numpy as np
 import os
 
+class ProcessError(Exception):
+    '''Raised when there is an error during a file processing'''
+    def __init__(self, message, *args):
+        self.message = message  
+        super(ProcessError, self).__init__(message, *args) 
+
 class ProcessData():
 
     """This class will process the input data before its sended to the
@@ -26,7 +32,11 @@ class ProcessData():
         Returns:
             None
         """
-        self.data_directory = data_directory
+        if os.path.exists(data_directory):
+            self.data_directory = data_directory
+        else:
+            raise ProcessError("Directory does not exist")
+        
         self.data_processed = (np.array([]), np.array([]))
 
     def process(self):

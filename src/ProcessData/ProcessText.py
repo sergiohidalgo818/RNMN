@@ -26,7 +26,6 @@ class ProcessText(ProcessData):
         
         array_x, array_y = self.data_processed
 
-        
         table = pq.read_table(file_name)
         data_frame:pd.DataFrame = table.to_pandas()
       

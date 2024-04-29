@@ -1,7 +1,6 @@
 '''This file defines the RNMNModel Class'''
 
 from RNMNAbstract import RNMNAbstract
-from RNMNSmall import RNMNTextModel
 import numpy as np
 
 class RNMNModel(RNMNAbstract):
