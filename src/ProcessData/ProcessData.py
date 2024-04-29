@@ -50,10 +50,15 @@ class ProcessData():
         """
         list_of_files = os.listdir(self.data_directory)
 
+        if len(list_of_files) == 0:
+            raise ProcessError("Directory empty")
+        
         for file in list_of_files:
             file_name = os.path.join(self.data_directory, file)
-            if os.path.isfile(file_name):
+            try:
                 self.process_file(file_name)
+            except ProcessError:
+                raise ProcessError("File not compatible")
 
     def process_file(self, file_name):
         """Process the data from a file

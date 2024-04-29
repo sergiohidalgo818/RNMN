@@ -2,9 +2,10 @@
 
 import pickle
 import os
-from .RNMNAppGui import RNMNAppGui
+from .RNMNGuiApp import RNMNAppGui
 from .InputType import InputType, ImportError
 from ProcessData import ProcessData, ProcessError
+from ProcessData import ProcessText
 from RNMNAbstract import RNMNModel
 
 
@@ -35,11 +36,14 @@ class RNMNApp():
     def get_text_data(self, directory:str):
      
         try:
-            text = ProcessData(directory)
+            text = ProcessText(directory)
         except ProcessError as ex:
             raise ImportError("Error while importing text data")
         
+        
         self.preprocessed_data_and_types[InputType.TEXT] = text
+
+
 
 
 
@@ -79,13 +83,31 @@ class RNMNApp():
                 self.model = pickle.load(input)
             except pickle.UnpicklingError as ex:
                 raise ImportError("Error while importing model")
+        
 
-    def preprocess_data(self):
+    def preprocess_typedata_data(self,list_types):
+        self.processed_data_and_types = dict()
+
+        for k in list_types:
+            try:
+                self.preprocessed_data_and_types[k].process()
+            except ProcessError:
+                raise ImportError("Error on process data")
+            else:
+                self.processed_data_and_types[k] = self.preprocessed_data_and_types[k].data_processed
+
+
+    def preprocess_all_data(self):
         self.processed_data_and_types = dict()
 
         for k in self.preprocessed_data_and_types.keys():
-            self.preprocessed_data_and_types[k].process()
-            self.processed_data_and_types[k] = self.preprocessed_data_and_types[k]
+
+            try:
+                self.preprocessed_data_and_types[k].process()
+            except ProcessError:
+                raise ImportError("Error on process data")
+            else:
+                self.processed_data_and_types[k] = self.preprocessed_data_and_types[k].data_processed
 
 
     def app_no_gui_star(self):

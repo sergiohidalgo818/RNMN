@@ -1,6 +1,7 @@
 '''This file defines the ProcessText Class'''
 
 from ProcessData import ProcessData
+from .ProcessData import ProcessError
 import pyarrow.parquet as pq
 import pandas as pd
 import numpy as np
@@ -20,6 +21,9 @@ class ProcessText(ProcessData):
         Returns:
             None
         """
+
+        if file_name[-8:] != '.parquet':
+           raise ProcessError("Error on file format")
 
         array_x : np.ndarray
         array_y : np.ndarray

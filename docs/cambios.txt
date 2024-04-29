@@ -1,2 +1,2 @@
 diagrama: 
-
+- Cambiar Gui en el diagrama
