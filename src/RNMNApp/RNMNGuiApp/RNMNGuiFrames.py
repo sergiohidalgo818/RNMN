@@ -5,7 +5,7 @@ import customtkinter
 from RNMNApp import RNMNApp
 from .RNMNGuiWindows import AcceptWindow, ErrorWindow
 from ..InputType import ImportError, InputType
-from .RNMNGuiTabs import SelectNetTabView
+from .RNMNGuiTabs import CreateNetTabView, ModifyHPNetTabView, ValidationTabError
 from RNMNParent import RNMNParams
 
 
@@ -264,10 +264,120 @@ class SelectDataPage(CustomFrame):
                 self.master, name="window_accept")
 
             if boolvar.get():
-                self.controller.show_frame("MenuSelectPage")
+                self.controller.show_frame("HiperparametersPage") # TO-DO cambiar a SelectPage
 
 
 class CreateModelPage(CustomFrame):
+
+    def __init__(self, logic_app, parent, controller):
+        super().__init__(logic_app, parent, controller)
+        self.logic_app = logic_app
+        self.controller = controller
+
+        title = customtkinter.CTkLabel(
+            master=self, text="Creación de la red", font=self._title_font)
+        title.place(relx=0.5, rely=0.1, anchor=customtkinter.CENTER)
+
+        self.tab_view = CreateNetTabView(master=self, width=1080, height=720)
+        self.tab_view.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
+
+        button_cancel = customtkinter.CTkButton(
+            self, text="Cancelar", command=self._cancel, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
+        button_cancel.place(relx=0.2, rely=0.9, anchor=customtkinter.E)
+
+        button_create = customtkinter.CTkButton(
+            self, text="Crear", command=self._create, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="lime green", hover_color="forest green")
+        button_create.place(relx=0.8, rely=0.9, anchor=customtkinter.W)
+
+       
+
+    def _get_params(self, model_name: InputType) -> dict:
+
+
+        try:
+            self.tab_view.validate()
+        except ValidationTabError:
+            raise ValidationTabError("Error on input parameters")
+        else:
+
+            params_dict = customtkinter.Variable(master=self, name="params_dict")
+            print(params_dict.get())
+            aux_dict = dict()
+            loss = customtkinter.StringVar(
+                master=self.master, name="loss_"+model_name)
+
+            aux_dict['loss'] = loss.get()
+
+            optimizer = customtkinter.StringVar(
+                master=self.master, name="optimizer_"+model_name)
+
+            aux_dict['optimizer'] = optimizer.get()
+
+            metrics_names = [(metric.value) for metric in RNMNParams.RNMNMetrics]
+
+            metrics = list()
+            
+
+            for metric in metrics_names:
+                metric_var =  customtkinter.BooleanVar(
+                    master=self.master,name=metric+"_"+model_name)
+                if metric_var.get():
+                    metrics.append(metric)
+
+            aux_dict['metrics'] = RNMNParams.RNMNMetricsTraduction.translate(metrics)
+
+            return aux_dict
+
+    def _create(self):
+
+        params_dict = {}
+
+        var_text = customtkinter.BooleanVar(
+            master=self.master, name="switch_texto")
+
+        var_audio = customtkinter.BooleanVar(
+            master=self.master, name="switch_audio")
+
+        var_image = customtkinter.BooleanVar(
+            master=self.master, name="switch_imagen")
+
+        number_of_models = 0
+        try:
+            if var_text.get():
+                number_of_models += 1
+                params_dict['text_config'] = self._get_params("texto")
+
+            if var_audio.get():
+                number_of_models += 1
+                params_dict['audio_config'] = self._get_params("audio")
+
+            if var_image.get():
+                number_of_models += 1
+                params_dict['image_config'] = self._get_params("imgaen")
+        except ValidationTabError:
+            ErrorWindow(master=self.master, controller=self.controller,
+                        message="Porfavor introduzca un valor numérico en el número de entradas")
+        else:
+            if number_of_models == 0:
+                ErrorWindow(master=self.master, controller=self.controller,
+                            message="Porfavor elija al menos un modelo")
+            else:
+                self.logic_app.create_model(params_dict)
+
+                self.controller.show_frame("SelectDataPage")
+
+    def _cancel(self):
+        AcceptWindow(master=self.master, controller=self.controller,
+                     message="¿Seguro que desea cancelar la creación del modelo?")
+        boolvar = customtkinter.BooleanVar(self.master, name="window_accept")
+        if boolvar.get():
+            self.controller.show_frame("MainPage")
+
+
+
+class HiperparametersPage(CustomFrame):
 
     def __init__(self, logic_app, parent, controller):
         super().__init__(logic_app, parent, controller)
@@ -289,10 +399,16 @@ class CreateModelPage(CustomFrame):
 
         aux_dict['loss'] = loss.get()
 
+        print(model_name)
+        print(loss.get())
+
         optimizer = customtkinter.StringVar(
             master=self.master, name="optimizer_"+model_name)
 
         aux_dict['optimizer'] = optimizer.get()
+
+        print(optimizer.get())
+        print("")
 
         metrics_names = [(metric.value) for metric in RNMNParams.RNMNMetrics]
 
@@ -309,7 +425,7 @@ class CreateModelPage(CustomFrame):
 
         return aux_dict
 
-    def _create(self):
+    def _confirm(self):
 
         params_dict = {}
 
@@ -337,13 +453,9 @@ class CreateModelPage(CustomFrame):
             params_dict['image_config'] = self._get_params("imgaen")
 
 
-        if number_of_models == 0:
-            ErrorWindow(master=self.master, controller=self.controller,
-                        message="Porfavor elija al menos un modelo")
-        else:
-            self.logic_app.create_model(params_dict)
+        self.logic_app.create_model(params_dict)
 
-            self.controller.show_frame("SelectDataPage")
+        self.controller.show_frame("MainPage")
 
     def _cancel(self):
         AcceptWindow(master=self.master, controller=self.controller,
@@ -353,7 +465,7 @@ class CreateModelPage(CustomFrame):
             self.controller.show_frame("MainPage")
 
     def clean(self):
-        self.tab_view = SelectNetTabView(master=self, width=1080, height=720)
+        self.tab_view = ModifyHPNetTabView(master=self, width=1080, height=720)
         self.tab_view.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
 
         button_cancel = customtkinter.CTkButton(
@@ -362,28 +474,10 @@ class CreateModelPage(CustomFrame):
         button_cancel.place(relx=0.2, rely=0.9, anchor=customtkinter.E)
 
         button_create = customtkinter.CTkButton(
-            self, text="Crear", command=self._create, font=self._button_font, width=150,
+            self, text="Confirmar", command=self._confirm, font=self._button_font, width=150,
             height=50, corner_radius=20, fg_color="lime green", hover_color="forest green")
         button_create.place(relx=0.8, rely=0.9, anchor=customtkinter.W)
 
-
-class HiperparametersPage(CustomFrame):
-
-    def __init__(self, logic_app, parent, controller):
-        super().__init__(logic_app, parent, controller)
-
-        self.logic_app = logic_app
-        self.controller = controller
-
-        title = customtkinter.CTkLabel(
-            self, text="Introducir hiperparámetros", font=self._title_font)
-        title.place(relx=0.5, rely=0.3, anchor=customtkinter.CENTER)
-
-    def _accept(self):
-        self.controller.show_frame("MenuSelectPage")
-
-    def _cancel(self):
-        self.controller.show_frame("MenuSelectPage")
 
 
 class MenuSelectPage(CustomFrame):

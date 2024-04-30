@@ -11,7 +11,6 @@ class RNMNSmall(RNMNParent):
     
     entry_layer : tuple
     layers_list: list # a list of tuples like (neurons, activation)
-    activation_layers : dict
 
 
     def __init__(self, **kwargs) -> None:
@@ -21,10 +20,6 @@ class RNMNSmall(RNMNParent):
             self.entry_layer = kwargs['entry_layer'] 
         if "layers_dict" in kwargs.keys():
             self.layers_dict = kwargs['layers_dict'] 
-        if "neurons_layers" in kwargs.keys():
-            self.neurons_layers = kwargs['neurons_layers'] 
-        if "activation_layers" in kwargs.keys():
-            self.activation_layers = kwargs['activation_layers'] 
 
         inlayer = Input(shape=self.entry_layer)
 

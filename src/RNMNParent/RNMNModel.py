@@ -40,37 +40,41 @@ class RNMNModel(RNMNParent):
             self.image_config = kwargs['image_config']
             self._create_image_model()
 
+    def compile_model(self, parameters):
+        
+        if "optimizer" in parameters.keys():
+            optimizer = parameters['optimizer']
+        if "loss" in parameters.keys():
+            loss = self.text_config['loss']
+        if "metrics" in parameters.keys():
+            metrics = parameters['metrics']
+
+
 
     def _create_text_model(self):
         config_creation = dict()
-        if "optimizer" in self.text_config.keys():
-            config_creation = self.text_config['optimizer']
-        if "loss" in self.text_config.keys():
-            config_creation = self.text_config['loss']
-        if "metrics" in self.text_config.keys():
-            config_creation = self.text_config['metrics']
+        if "entry_layer" in self.text_config.keys():
+            config_creation = self.text_config['entry_layer']
+        if "layers_list" in self.text_config.keys():
+            config_creation = self.text_config['layers_list']
 
         self.text_model = RNMNTextModel(config_creation)
 
     def _create_audio_model(self):
         config_creation = dict()
-        if "optimizer" in self.audio_config.keys():
-            config_creation = self.audio_config['optimizer']
-        if "loss" in self.audio_config.keys():
-            config_creation = self.audio_config['loss']
-        if "metrics" in self.audio_config.keys():
-            config_creation = self.audio_config['metrics']
+        if "entry_layer" in self.audio_config.keys():
+            config_creation = self.audio_config['entry_layer']
+        if "layers_list" in self.audio_config.keys():
+            config_creation = self.audio_config['layers_list']
 
         self.text_model = RNMNAudioModel(config_creation)
 
     def _create_image_model(self):
         config_creation = dict()
-        if "optimizer" in self.image_config.keys():
-            config_creation = self.image_config['optimizer']
-        if "loss" in self.image_config.keys():
-            config_creation = self.image_config['loss']
-        if "metrics" in self.image_config.keys():
-            config_creation = self.image_config['metrics']
+        if "entry_layer" in self.image_config.keys():
+            config_creation = self.image_config['entry_layer']
+        if "layers_list" in self.image_config.keys():
+            config_creation = self.image_config['layers_list']
 
         self.text_model = RNMNImageModel(config_creation)
 

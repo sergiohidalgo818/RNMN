@@ -14,6 +14,9 @@ class RNMNParent(ABC):
     def create_neural_model(self):
         pass
 
+    def compile_neural_model(self):
+        pass
+    
     def predict(self) -> int:
         pass
 
