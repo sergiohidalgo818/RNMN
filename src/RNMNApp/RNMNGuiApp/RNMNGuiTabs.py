@@ -21,6 +21,8 @@ class CreateNetTabView(customtkinter.CTkTabview):
     _alias = list()
 
     params_dict = dict()
+    widget_dict = dict()
+
     cont = 1
     contx = 0.23
     conty = 0.26
@@ -58,11 +60,9 @@ class CreateNetTabView(customtkinter.CTkTabview):
 
 
     def _add_neurons(self, alias, number):
-
-        num_neurons = customtkinter.IntVar(
-                master=self.master, value=1, name="layer_" + str(number) + "_"+alias)
-        if num_neurons.get() < 30:
-            num_neurons.set(num_neurons.get()+1)
+        if self.params_dict[alias]['layers']["num_neurons_layer_" + str(number)] .get() < 30:
+            self.params_dict[alias]['layers']["num_neurons_layer_" + str(number)].set(
+                self.params_dict[alias]['layers']["num_neurons_layer_" + str(number)].get()+1)
 
 
     def _del_neurons(self, alias, number):
@@ -73,59 +73,58 @@ class CreateNetTabView(customtkinter.CTkTabview):
 
     def _add_layer(self, alias):
 
-        num_layer = customtkinter.IntVar(
-            master=self.master, name="num_layers_" + alias)
-        if num_layer.get() < 5:
-            num_layer.set(num_layer.get()+1)
-            num_neurons = customtkinter.IntVar(
-                master=self.master, value=1, name="layer_" + str(num_layer.get()) + "_"+alias)
+        if self.params_dict[alias]['num_layers'].get() < 7:
+            self.params_dict[alias]['num_layers'].set(self.params_dict[alias]['num_layers'].get()+1)
+            self.params_dict[alias]['layers']["num_neurons_layer_" + str(self.params_dict[alias]['num_layers'].get())] = customtkinter.IntVar(master=self.master, value=1, name="num_neurons_layer_" + str(self.params_dict[alias]['num_layers'].get())+ "_"+alias) 
             self.update_tab(alias)
 
     def _del_layer(self, alias):
-        num_layer = customtkinter.IntVar(
-            master=self.master,  name="num_layers_" + alias)
-        if num_layer.get() > 1:
-            num_layer.set(num_layer.get()-1)
+        if self.params_dict[alias]['num_layers'].get() > 0:
+            self.params_dict[alias]['num_layers'].set(self.params_dict[alias]['num_layers'].get()-1)
             self.update_tab_forget(alias)
 
     def update_tab_forget(self, alias):
-
-        num_layer = customtkinter.IntVar(
-            master=self.master,  name="num_layers_" + alias)
+        self.widget_dict[alias]['layers']["label_layer_" + str(self.params_dict[alias]['num_layers'].get()+1)].place_forget()
+        del self.widget_dict[alias]['layers']["label_layer_" + str(self.params_dict[alias]['num_layers'].get()+1)]
         
-        layer_forget = num_layer.get() -1
+        self.widget_dict[alias]['layers']["add_layer_" + str(self.params_dict[alias]['num_layers'].get()+1)].place_forget()
+        del self.widget_dict[alias]['layers']["add_layer_" + str(self.params_dict[alias]['num_layers'].get()+1)]
+
+        self.widget_dict[alias]['layers']["del_layer_" + str(self.params_dict[alias]['num_layers'].get()+1)].place_forget()
+        del self.widget_dict[alias]['layers']["del_layer_" + str(self.params_dict[alias]['num_layers'].get()+1)]
+
+        self.widget_dict[alias]['layers']["label_neurons_" + str(self.params_dict[alias]['num_layers'].get()+1)].place_forget()
+        del self.widget_dict[alias]['layers']["label_neurons_" + str(self.params_dict[alias]['num_layers'].get()+1)]
 
 
     def _create_neuron_counter (self, tab_name, number, alias, relx,rely):
-        title = customtkinter.CTkLabel(master=self.tab(
+        self.widget_dict[alias]['layers']["label_layer_" + str(number)] = customtkinter.CTkLabel(master=self.tab(
             tab_name), text="Añadir neuronas a la capa " +str(number)+ " ", font=self._button_font)
-        title.place(relx=relx, rely=rely, anchor=customtkinter.CENTER)
+        self.widget_dict[alias]['layers']["label_layer_" + str(number)].place(relx=relx, rely=rely, anchor=customtkinter.CENTER)
 
-        add_layer = customtkinter.CTkButton(
-            master=self.tab(
-                tab_name), command=lambda: self._add_neurons(alias, number), text="-", font=self._button_font, width=30,
-            height=10, corner_radius=40, fg_color="brown3", hover_color="brown4")
-        add_layer.place(relx=relx+0.12, rely=rely, anchor=customtkinter.CENTER)
 
-        del_layer = customtkinter.CTkButton(
-            master=self.tab(
-                tab_name), text="+", font=self._button_font, width=30, command=lambda: self._del_neurons(alias),
-            height=10, corner_radius=40, fg_color="brown3", hover_color="brown4")
-        del_layer.place(relx=relx+0.15, rely=rely, anchor=customtkinter.CENTER)
-
-        num_neurons = customtkinter.IntVar(
-                master=self.master, value=1, name="layer_" + str(number) + "_"+alias)
         
-        title_num = customtkinter.CTkLabel(master=self.tab(
-            tab_name), text="Neuronas "+ str(num_neurons.get())+ " ", )
-        title_num.place(relx=relx+0.2, rely=rely, anchor=customtkinter.CENTER)
+        self.widget_dict[alias]['layers']["add_layer_" + str(number)] = customtkinter.CTkButton(
+            master=self.tab(
+                tab_name), command=lambda: self._del_neurons(alias, number), text="-", font=self._button_font, width=30,
+            height=10, corner_radius=40, fg_color="brown3", hover_color="brown4")
+        self.widget_dict[alias]['layers']["add_layer_" + str(number)].place(relx=relx+0.12, rely=rely, anchor=customtkinter.CENTER)
+
+        self.widget_dict[alias]['layers']["del_layer_" + str(number)] = customtkinter.CTkButton(
+            master=self.tab(
+                tab_name), text="+", font=self._button_font, width=30, command=lambda: self._add_neurons(alias, number),
+            height=10, corner_radius=40, fg_color="brown3", hover_color="brown4")
+        self.widget_dict[alias]['layers']["del_layer_" + str(number)].place(relx=relx+0.15, rely=rely, anchor=customtkinter.CENTER)
+    
+        
+        self.widget_dict[alias]['layers']["label_neurons_" + str(number)] = customtkinter.CTkLabel(master=self.tab(
+            tab_name), text="Neuronas "+ str(self.params_dict[alias]['layers']["num_neurons_layer_" + str(number)].get()))
+        self.widget_dict[alias]['layers']["label_neurons_" + str(number)].place(relx=relx+0.2, rely=rely, anchor=customtkinter.CENTER)
 
     def update_tab(self, alias):
 
-        num_layer = customtkinter.IntVar(
-                master=self.master,  name="num_layers_" + alias)
 
-        self._create_neuron_counter ("Modelo de "+alias , num_layer.get(), alias, self.contx,self.conty)
+        self._create_neuron_counter ("Modelo de "+alias , self.params_dict[alias]['num_layers'].get(), alias, self.contx,self.conty)
         if self.cont % 2 == 0:
             self.cont += 1
             self.conty += 0.1
@@ -139,7 +138,12 @@ class CreateNetTabView(customtkinter.CTkTabview):
 
         add_model: customtkinter.BooleanVar
 
+
         alias = tab_name.split(" ")[2]
+
+        self.params_dict[alias] = dict()
+        self.widget_dict[alias] = dict()
+        self.widget_dict[alias]['layers'] = dict()
 
         self._alias.append(alias)
 
@@ -149,16 +153,16 @@ class CreateNetTabView(customtkinter.CTkTabview):
             tab_name), text="Número de entradas ", font=self._button_font)
         title_in.place(relx=0.02, rely=0.1, anchor=customtkinter.W)
 
-        num_inputs = customtkinter.StringVar(
+        self.params_dict[alias]['num_inputs'] = customtkinter.StringVar(
             master=master,  name="num_inputs_" + alias)
         input = customtkinter.CTkEntry(master=self.tab(
-            tab_name), textvariable=num_inputs)
+            tab_name), textvariable=self.params_dict[alias]['num_inputs'])
         input.place(relx=0.18, rely=0.1, anchor=customtkinter.W)
+        
 
+        self.params_dict[alias]['num_layers'] = customtkinter.IntVar(
+            master=master, value=0, name="num_layers_" + alias)
 
-        num_layer = customtkinter.IntVar(
-            master=master, value=1, name="num_layers_" + alias)
-        num_layer.set(1)
         title = customtkinter.CTkLabel(master=self.tab(
             tab_name), text="Añadir capa ", font=self._button_font)
         title.place(relx=0.02, rely=0.2, anchor=customtkinter.W)
@@ -175,21 +179,20 @@ class CreateNetTabView(customtkinter.CTkTabview):
             height=10, corner_radius=40, fg_color="brown3", hover_color="brown4")
         del_layer.place(relx=0.16, rely=0.2, anchor=customtkinter.W)
 
-  
+        self.params_dict[alias]['layers'] = dict()
 
-        add_model = customtkinter.BooleanVar(
+        self.params_dict[alias]['add_model'] = customtkinter.BooleanVar(
             master=self.master, value=False, name="switch_" + alias)
 
         switch = customtkinter.CTkSwitch(master=self.tab(tab_name), text="Añadir modelo",
-                                         variable=add_model, onvalue=True, offvalue=False, font=self._title_font)
+                                         variable=self.params_dict[alias]['add_model'], onvalue=True, offvalue=False, font=self._title_font)
 
         switch.place(relx=0.5, rely=0.68, anchor=customtkinter.CENTER)
 
 
     def validate(self):
         for alias in self._alias:
-            num_inputs = customtkinter.StringVar(master=self.master,  name="num_inputs_" + alias)
-            if not num_inputs.get().isnumeric():
+            if not self.params_dict[alias]['num_inputs'].get().isnumeric():
                 raise ValidationTabError("Introduzca un valor numérico para el número de entradas, porfavor")
 
 class ModifyHPNetTabView(customtkinter.CTkTabview):
