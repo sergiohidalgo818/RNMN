@@ -6,7 +6,7 @@ from .RNMNGuiApp import RNMNAppGui
 from .InputType import InputType, ImportError
 from ProcessData import ProcessData, ProcessError
 from ProcessData import ProcessText
-from RNMNAbstract import RNMNModel
+from RNMNParent import RNMNModel
 
 
 class RNMNApp():
@@ -22,16 +22,16 @@ class RNMNApp():
 
     _has_model : bool
 
-    def __init__(self, gui) -> None:
+    def __init__(self,**kwargs) -> None:
         self.preprocessed_data_and_types = dict()
-        self._no_gui = gui
+        self._no_gui = kwargs['gui']
         self._has_model = False
 
     def start_app(self):
         if self._no_gui == False:
             self.app_gui_start()
         else:
-            self.app_no_gui_star()
+            self.app_no_gui_start()
 
     def get_text_data(self, directory: str):
 
@@ -72,9 +72,8 @@ class RNMNApp():
         del self.processed_data_and_types[InputType.IMAGE]
         del self.preprocessed_data_and_types[InputType.IMAGE]
 
-    def create_model(self):
-        # self.model = RNMNModel(self.processed_data_and_types)
-        # self.model.create_neural_model()
+    def create_model(self, params_dict):
+        self.model = RNMNModel(params_dict)
         self._has_model = True
 
 

@@ -5,6 +5,8 @@ import customtkinter
 from RNMNApp import RNMNApp
 from .RNMNGuiWindows import AcceptWindow, ErrorWindow
 from ..InputType import ImportError, InputType
+from .RNMNGuiTabs import SelectNetTabView
+from RNMNParent import RNMNParams
 
 
 class CustomFrame(customtkinter.CTkFrame):
@@ -19,6 +21,9 @@ class CustomFrame(customtkinter.CTkFrame):
         super().__init__(parent)
         self.logic_app = logic_app
         self.controller = controller
+
+    def clean(self):
+        pass
 
 
 class MainPage(CustomFrame):
@@ -271,25 +276,95 @@ class CreateModelPage(CustomFrame):
         self.controller = controller
 
         title = customtkinter.CTkLabel(
-            self, text="Introducir hiperparámetros", font=self._title_font)
-        title.pack(padx=10, pady=50)
+            self, text="Creación de la red", font=self._title_font)
+        title.place(relx=0.5, rely=0.1, anchor=customtkinter.CENTER)
+
+       
+
+    def _get_params(self, model_name: InputType) -> dict:
+        aux_dict = dict()
+
+        loss = customtkinter.StringVar(
+            master=self.master, name="loss_"+model_name)
+
+        aux_dict['loss'] = loss.get()
+
+        optimizer = customtkinter.StringVar(
+            master=self.master, name="optimizer_"+model_name)
+
+        aux_dict['optimizer'] = optimizer.get()
+
+        metrics_names = [(metric.value) for metric in RNMNParams.RNMNMetrics]
+
+        metrics = list()
+        
+
+        for metric in metrics_names:
+            metric_var =  customtkinter.BooleanVar(
+                master=self.master,name=metric+"_"+model_name)
+            if metric_var.get():
+                metrics.append(metric)
+
+        aux_dict['metrics'] = RNMNParams.RNMNMetricsTraduction.translate(metrics)
+
+        return aux_dict
+
+    def _create(self):
+
+        params_dict = {}
+
+        var_text = customtkinter.BooleanVar(
+            master=self.master, name="switch_texto")
+
+        var_audio = customtkinter.BooleanVar(
+            master=self.master, name="switch_audio")
+
+        var_image = customtkinter.BooleanVar(
+            master=self.master, name="switch_imagen")
+
+        number_of_models = 0
+
+        if var_text.get():
+            number_of_models += 1
+            params_dict['text_config'] = self._get_params("texto")
+
+        if var_audio.get():
+            number_of_models += 1
+            params_dict['audio_config'] = self._get_params("audio")
+
+        if var_image.get():
+            number_of_models += 1
+            params_dict['image_config'] = self._get_params("imgaen")
+
+
+        if number_of_models == 0:
+            ErrorWindow(master=self.master, controller=self.controller,
+                        message="Porfavor elija al menos un modelo")
+        else:
+            self.logic_app.create_model(params_dict)
+
+            self.controller.show_frame("SelectDataPage")
 
     def _cancel(self):
         AcceptWindow(master=self.master, controller=self.controller,
-                     message="¿Seguro que desea cancelar la careación del modelo?")
+                     message="¿Seguro que desea cancelar la creación del modelo?")
         boolvar = customtkinter.BooleanVar(self.master, name="window_accept")
         if boolvar.get():
             self.controller.show_frame("MainPage")
 
+    def clean(self):
+        self.tab_view = SelectNetTabView(master=self, width=1080, height=720)
+        self.tab_view.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
 
-    def _create(self):
-        try:
-            self.logic_app.create_model()  # here detects if there is data loaded
-        except ImportError:  # TO-DO: change to model error:
-            ErrorWindow(self.master, self.controller,
-                        message="Error al importar archivos, compruebe su extension y directorio")
-        else:
-            self.controller.show_frame("SelectDataPage")
+        button_cancel = customtkinter.CTkButton(
+            self, text="Cancelar", command=self._cancel, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
+        button_cancel.place(relx=0.2, rely=0.9, anchor=customtkinter.E)
+
+        button_create = customtkinter.CTkButton(
+            self, text="Crear", command=self._create, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="lime green", hover_color="forest green")
+        button_create.place(relx=0.8, rely=0.9, anchor=customtkinter.W)
 
 
 class HiperparametersPage(CustomFrame):
@@ -302,12 +377,10 @@ class HiperparametersPage(CustomFrame):
 
         title = customtkinter.CTkLabel(
             self, text="Introducir hiperparámetros", font=self._title_font)
-        title.pack(padx=10, pady=50)
-
+        title.place(relx=0.5, rely=0.3, anchor=customtkinter.CENTER)
 
     def _accept(self):
         self.controller.show_frame("MenuSelectPage")
-
 
     def _cancel(self):
         self.controller.show_frame("MenuSelectPage")
@@ -322,9 +395,8 @@ class MenuSelectPage(CustomFrame):
         self.controller = controller
 
         title = customtkinter.CTkLabel(
-            self, text="Introducir hiperparámetros", font=self._title_font)
-        title.pack(padx=10, pady=50)
-
+            self, text="Seleccione una opción", font=self._title_font)
+        title.place(relx=0.5, rely=0.3, anchor=customtkinter.CENTER)
 
     def _config(self):
         self.controller.show_frame("HiperparametersPage")
@@ -338,6 +410,7 @@ class MenuSelectPage(CustomFrame):
     def _train(self):
         self.controller.show_frame("ResultsPage")
 
+
 class ResultsPage(CustomFrame):
 
     def __init__(self, logic_app, parent, controller):
@@ -347,8 +420,8 @@ class ResultsPage(CustomFrame):
         self.controller = controller
 
         title = customtkinter.CTkLabel(
-            self, text="Introducir hiperparámetros", font=self._title_font)
-        title.pack(padx=10, pady=50)
+            self, text="Resultados", font=self._title_font)
+        title.place(relx=0.5, rely=0.3, anchor=customtkinter.CENTER)
 
     def _back(self):
         self.controller.show_frame("MenuSelectPage")

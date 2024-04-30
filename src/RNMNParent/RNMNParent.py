@@ -1,20 +1,21 @@
 '''This file defines the RNMNAbstract abstract Class'''
 
 from abc import ABC
-#from keras import models
+from keras import Model
 
-class RNMNAbstract(ABC):
+
+class RNMNParent(ABC):
     """This class is the parent class for all the model
       classes
     """
 
-    model=None#: models.Sequential
-
-    def create_neural_model():
+    model : Model
+    
+    def create_neural_model(self):
         pass
 
-    def predict()->int:
+    def predict(self) -> int:
         pass
 
-    def train():
+    def train(self):
         pass

@@ -27,7 +27,6 @@ class CustomWindow(customtkinter.CTkToplevel):
         return f"{width}x{height}+{x}+{y}"
 
 
-
     def _accept(self):
         self.destroy()
 

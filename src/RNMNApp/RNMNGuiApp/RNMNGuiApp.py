@@ -3,9 +3,8 @@
 import tkinter
 import customtkinter
 from RNMNApp import RNMNApp
-from ..InputType import ImportError, InputType
-from .RNMNGuiWindows import AcceptWindow, ErrorWindow, CustomWindow
-from .RNMNGuiFrames import CustomFrame, MainPage, HiperparametersPage, SelectDataPage
+from .RNMNGuiWindows import CustomWindow
+from .RNMNGuiFrames import MainPage, SelectDataPage, CreateModelPage, HiperparametersPage, MenuSelectPage, ResultsPage
 
 class RNMNAppGui(customtkinter.CTk):
     '''This class start creates the GUI for the app'''
@@ -36,7 +35,8 @@ class RNMNAppGui(customtkinter.CTk):
         self.grid_columnconfigure((0), weight=1)
         self.title("Red Neuronal Multimodal Numérica")
 
-        for F in (MainPage, SelectDataPage, HiperparametersPage):
+        for F in (MainPage, SelectDataPage, CreateModelPage,
+                   HiperparametersPage, MenuSelectPage, ResultsPage):
             page_name = F.__name__
             frame = F(logic_app=logic_app, parent=container, controller=self)
             self.frames[page_name] = frame
@@ -47,6 +47,8 @@ class RNMNAppGui(customtkinter.CTk):
         '''Show a frame for the given page name'''
         if self.last_frame != "":
             self.frames[self.last_frame].grid_forget()
+
+        self.frames[page_name].clean()
         aframe = self.frames[page_name]
         aframe.grid(row=0, column=0, sticky="nsew")
         self.last_frame = page_name

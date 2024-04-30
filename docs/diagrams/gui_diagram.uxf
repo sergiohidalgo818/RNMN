@@ -1,30 +1,31 @@
-<diagram program="umletino" version="15.1"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>650</x><y>40</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
+<diagram program="umletino" version="15.1"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>810</x><y>0</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
 Main Page
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>350</x><y>330</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>510</x><y>290</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
 CreateModelPage
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>960</x><y>340</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1120</x><y>300</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
 SelectDataPage
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>480</x><y>160</y><w>190</w><h>190</h></coordinates><panel_attributes>lt=&lt;-
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>640</x><y>120</y><w>190</w><h>190</h></coordinates><panel_attributes>lt=&lt;-
 
-m1=Crear modelo</panel_attributes><additional_attributes>10;170;10;20;170;20</additional_attributes></element><element><id>Relation</id><coordinates><x>850</x><y>170</y><w>300</w><h>190</h></coordinates><panel_attributes>lt=&lt;-
-m1=Cargar modelo</panel_attributes><additional_attributes>200;170;200;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>820</x><y>220</y><w>160</w><h>150</h></coordinates><panel_attributes>lt=&lt;-
-m1=Cancelar</panel_attributes><additional_attributes>10;10;10;130;140;130</additional_attributes></element><element><id>UMLClass</id><coordinates><x>730</x><y>660</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
+m1=Crear modelo</panel_attributes><additional_attributes>10;170;10;20;170;20</additional_attributes></element><element><id>Relation</id><coordinates><x>1010</x><y>130</y><w>300</w><h>190</h></coordinates><panel_attributes>lt=&lt;-
+m1=Cargar modelo</panel_attributes><additional_attributes>200;170;200;10;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>980</x><y>180</y><w>160</w><h>150</h></coordinates><panel_attributes>lt=&lt;-
+m1=Cancelar</panel_attributes><additional_attributes>10;10;10;130;140;130</additional_attributes></element><element><id>UMLClass</id><coordinates><x>890</x><y>620</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
 HiperparametersPage
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>580</x><y>520</y><w>520</w><h>190</h></coordinates><panel_attributes>lt=&lt;-
-m1=Aceptar</panel_attributes><additional_attributes>10;160;100;160;100;70;500;70;500;10</additional_attributes></element><element><id>Relation</id><coordinates><x>550</x><y>220</y><w>200</w><h>140</h></coordinates><panel_attributes>lt=&lt;-
-m1=Cancelar</panel_attributes><additional_attributes>130;10;130;120;10;120</additional_attributes></element><element><id>Relation</id><coordinates><x>550</x><y>410</y><w>430</w><h>40</h></coordinates><panel_attributes>lt=&lt;-
-m1=Crear</panel_attributes><additional_attributes>410;10;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>380</x><y>660</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>740</x><y>480</y><w>520</w><h>190</h></coordinates><panel_attributes>lt=&lt;-
+m1=Aceptar</panel_attributes><additional_attributes>10;160;100;160;100;70;500;70;500;10</additional_attributes></element><element><id>Relation</id><coordinates><x>710</x><y>180</y><w>200</w><h>140</h></coordinates><panel_attributes>lt=&lt;-
+m1=Cancelar</panel_attributes><additional_attributes>130;10;130;120;10;120</additional_attributes></element><element><id>Relation</id><coordinates><x>710</x><y>370</y><w>430</w><h>40</h></coordinates><panel_attributes>lt=&lt;-
+m1=Crear</panel_attributes><additional_attributes>410;10;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>540</x><y>620</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
 MenuSelectPage
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>580</x><y>700</y><w>170</w><h>40</h></coordinates><panel_attributes>lt=&lt;-
-m1=Aceptar</panel_attributes><additional_attributes>10;10;150;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>50</x><y>660</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
-ResultsPage</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>490</x><y>840</y><w>540</w><h>110</h></coordinates><panel_attributes>lt=&lt;-
-m1=Configurar Hiperparámetros</panel_attributes><additional_attributes>360;10;360;90;10;90;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>250</x><y>770</y><w>150</w><h>40</h></coordinates><panel_attributes>lt=&lt;-
-m1=Entrenar</panel_attributes><additional_attributes>10;10;130;10</additional_attributes></element><element><id>Relation</id><coordinates><x>250</x><y>700</y><w>150</w><h>40</h></coordinates><panel_attributes>lt=&lt;-
-m1=Predecir</panel_attributes><additional_attributes>10;10;130;10</additional_attributes></element><element><id>Relation</id><coordinates><x>180</x><y>840</y><w>290</w><h>100</h></coordinates><panel_attributes>lt=&lt;-
-m1=Atrás</panel_attributes><additional_attributes>240;10;240;80;10;80;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>530</x><y>470</y><w>450</w><h>210</h></coordinates><panel_attributes>lt=&lt;-
-m1=Seleccionar nuevos</panel_attributes><additional_attributes>430;10;110;10;110;140;10;140;10;190</additional_attributes></element></diagram>
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>740</x><y>660</y><w>170</w><h>40</h></coordinates><panel_attributes>lt=&lt;-
+m1=Aceptar</panel_attributes><additional_attributes>10;10;150;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>210</x><y>620</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
+ResultsPage</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>650</x><y>800</y><w>540</w><h>110</h></coordinates><panel_attributes>lt=&lt;-
+m1=Configurar Hiperparámetros</panel_attributes><additional_attributes>360;10;360;90;10;90;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>410</x><y>730</y><w>150</w><h>40</h></coordinates><panel_attributes>lt=&lt;-
+m1=Entrenar</panel_attributes><additional_attributes>10;10;130;10</additional_attributes></element><element><id>Relation</id><coordinates><x>410</x><y>660</y><w>150</w><h>40</h></coordinates><panel_attributes>lt=&lt;-
+m1=Predecir</panel_attributes><additional_attributes>10;10;130;10</additional_attributes></element><element><id>Relation</id><coordinates><x>340</x><y>800</y><w>290</w><h>100</h></coordinates><panel_attributes>lt=&lt;-
+m1=Atrás</panel_attributes><additional_attributes>240;10;240;80;10;80;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>690</x><y>430</y><w>450</w><h>210</h></coordinates><panel_attributes>lt=&lt;-
+m1=Seleccionar nuevos</panel_attributes><additional_attributes>430;10;110;10;110;140;10;140;10;190</additional_attributes></element><element><id>Relation</id><coordinates><x>740</x><y>720</y><w>170</w><h>40</h></coordinates><panel_attributes>lt=&lt;-
+m1=Cancelar</panel_attributes><additional_attributes>10;10;150;10</additional_attributes></element></diagram>
