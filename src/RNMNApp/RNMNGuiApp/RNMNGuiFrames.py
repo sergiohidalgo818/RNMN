@@ -314,7 +314,6 @@ class CreateModelPage(CustomFrame):
                 master=self.master, name="optimizer_"+model_name)
 
             aux_dict['optimizer'] = optimizer.get()
-
             metrics_names = [(metric.value) for metric in RNMNParams.RNMNMetrics]
 
             metrics = list()
@@ -358,7 +357,7 @@ class CreateModelPage(CustomFrame):
                 params_dict['image_config'] = self._get_params("imgaen")
         except ValidationTabError:
             ErrorWindow(master=self.master, controller=self.controller,
-                        message="Porfavor introduzca un valor numérico en el número de entradas")
+                        message="Porfavor introduzca un valor numérico en el número de entradas y salidas")
         else:
             if number_of_models == 0:
                 ErrorWindow(master=self.master, controller=self.controller,

@@ -84,3 +84,15 @@ class RNMNLosses(Enum):
     BINARY_CROSS = "binary_crossentropy"
 
     MSE = "mse"
+
+class RNMNActivations(Enum):
+    '''This enum is for the type of losses'''
+
+    RELU = "relu"
+
+    SIGMOID = "sigmoid"
+
+    SOFTMAX = "softmax"
+    
+    SOFTPLUS = "softplus"
+    
