@@ -9,26 +9,31 @@ class RNMNSmall(RNMNParent):
     data_x: np.ndarray
     data_y: np.ndarray
     
-    entry_layer : tuple
-    layers_list: list # a list of tuples like (neurons, activation)
-
+    num_inputs : tuple
+    layers_dict: dict 
 
     def __init__(self, **kwargs) -> None:
 
 
-        if "entry_layer" in kwargs.keys():
-            self.entry_layer = kwargs['entry_layer'] 
+        if "num_inputs" in kwargs.keys():
+            self.num_inputs = kwargs['num_inputs'] 
         if "layers_dict" in kwargs.keys():
             self.layers_dict = kwargs['layers_dict'] 
 
-        inlayer = Input(shape=self.entry_layer)
+        inlayer = Input(shape=self.num_inputs)
+        if "layer_1" in self.layers_dict.keys():
+            aux_layer = layers.Dense(self.layers_dict['layer_1']['num_neurons'], self.layers_dict['layer_1']["activation"])(inlayer)
+            
+            for key in self.layers_dict.keys():
+                if key != "layer_1":
+                    aux_layer = layers.Dense(self.layers_dict['layer_1']['num_neurons'], self.layers_dict['layer_1']["activation"])(aux_layer)
+        else:
+            aux_layer = layers.Dense(self.layers_dict[key]['num_neurons'], self.layers_dict[key]["activation"])("inlayer")
 
-        aux_layer = layers.Dense(self.layers_list[0][0], self.layers_list[0][1]) (inlayer)
-
-        for x in range(1, len(self.layers_list)):
-            aux_layer = layers.Dense(self.layers_list[x][0], self.layers_list[x][1]) (aux_layer)
-
+        
         self.model = Model(inputs=inlayer, outputs=aux_layer)
+
+
 
     def add_data_to_model(self, data_x:np.ndarray, data_y:np.ndarray):
         self.data_x = data_x

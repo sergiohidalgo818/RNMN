@@ -52,13 +52,7 @@ class RNMNModel(RNMNParent):
 
 
     def _create_text_model(self):
-        config_creation = dict()
-        if "entry_layer" in self.text_config.keys():
-            config_creation = self.text_config['entry_layer']
-        if "layers_list" in self.text_config.keys():
-            config_creation = self.text_config['layers_list']
-
-        self.text_model = RNMNTextModel(config_creation)
+        self.text_model = RNMNTextModel(self.text_config)
 
     def _create_audio_model(self):
         config_creation = dict()

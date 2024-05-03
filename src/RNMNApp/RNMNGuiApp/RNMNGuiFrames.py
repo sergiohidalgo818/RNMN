@@ -357,7 +357,7 @@ class CreateModelPage(CustomFrame):
                 params_dict['image_config'] = self._get_params("imgaen")
         except ValidationTabError:
             ErrorWindow(master=self.master, controller=self.controller,
-                        message="Porfavor introduzca un valor numérico en el número de entradas y salidas")
+                        message="Porfavor introduzca un valor numérico superior a 0 en el número de entradas y salidas")
         else:
             if number_of_models == 0:
                 ErrorWindow(master=self.master, controller=self.controller,
