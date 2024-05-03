@@ -12,6 +12,8 @@ class RNMNAppGui(customtkinter.CTk):
     logic_app: RNMNApp
     frames: dict
 
+    models: dict
+
 
     def __init__(self, logic_app, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -20,6 +22,8 @@ class RNMNAppGui(customtkinter.CTk):
         self.frames = dict()
         self.logic_app = logic_app
         self.resizable(width=False, height=False)
+
+        self.models = {"text":False, "audio": False, "image":False}
 
         customtkinter.set_appearance_mode("dark")
 
@@ -47,8 +51,9 @@ class RNMNAppGui(customtkinter.CTk):
         '''Show a frame for the given page name'''
         if self.last_frame != "":
             self.frames[self.last_frame].grid_forget()
+            self.frames[self.last_frame].clean()
 
-        self.frames[page_name].clean()
+        self.frames[page_name].update()
         aframe = self.frames[page_name]
         aframe.grid(row=0, column=0, sticky="nsew")
         self.last_frame = page_name

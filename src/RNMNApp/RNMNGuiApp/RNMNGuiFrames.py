@@ -5,7 +5,8 @@ import customtkinter
 from RNMNApp import RNMNApp
 from .RNMNGuiWindows import AcceptWindow, ErrorWindow
 from ..InputType import ImportError, InputType
-from .RNMNGuiTabs import CreateNetTabView, ModifyHPNetTabView, ValidationTabError
+from .RNMNGuiTabs import CreateNetTabView, ValidationTabError
+from .RNMNGuiLabels import CustomLabel
 from RNMNParent import RNMNParams
 
 
@@ -23,6 +24,9 @@ class CustomFrame(customtkinter.CTkFrame):
         self.controller = controller
 
     def clean(self):
+        pass
+
+    def update(self):
         pass
 
 
@@ -90,60 +94,69 @@ class SelectDataPage(CustomFrame):
 
         self._data_counter = 0
         self._data_to_clear = set()
+        self.rely = dict()
 
         title = customtkinter.CTkLabel(
             self, text="Seleccione datos a subir", font=self._title_font)
-        title.place(relx=0.5, rely=0.2, anchor=customtkinter.CENTER)
+        title.place(relx=0.5, rely=0.1, anchor=customtkinter.CENTER)
 
-        self._text_data = title = customtkinter.CTkLabel(
-            self, text="Datos de texto añadidos correctamente", font=self._button_font)
-        self._button_text_recover = customtkinter.CTkButton(self, text="Eliminar datos de texto",
-                                                            command=self._recover_text_button, font=self._button_font, width=150,
-                                                            height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
+        self.label = CustomLabel(master=self)
+        self.label.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
 
-        self._button_text = customtkinter.CTkButton(
-            self, text="Cargar datos de texto", command=self._load_text_data, font=self._button_font, width=150,
-            height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
-        self._button_text.place(relx=0.5, rely=0.35,
-                                anchor=customtkinter.CENTER)
-
-        self._audio_data = title = customtkinter.CTkLabel(
-            self, text="Datos de audio añadidos correctamente", font=self._button_font)
-        self._button_audio_recover = customtkinter.CTkButton(self, text="Eliminar datos de audio",
-                                                             command=self._recover_audio_button, font=self._button_font, width=150,
-                                                             height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
-
-        self._button_audio = customtkinter.CTkButton(
-            self, text="Cargar datos de audio", command=self._load_audio_data, font=self._button_font, width=150,
-            height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
-        self._button_audio.place(
-            relx=0.5, rely=0.48, anchor=customtkinter.CENTER)
-
-        self._image_data = title = customtkinter.CTkLabel(
-            self, text="Datos de imagen añadidos correctamente", font=self._button_font)
-        self._button_image_recover = customtkinter.CTkButton(self, text="Eliminar datos de imagen",
-                                                             command=self._recover_image_button, font=self._button_font, width=150,
-                                                             height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
-        self._button_image = customtkinter.CTkButton(
-            self, text="Cargar datos de imagen", command=self._load_image_data, font=self._button_font, width=150,
-            height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
-        self._button_image.place(
-            relx=0.5, rely=0.61, anchor=customtkinter.CENTER)
+        self.rely = {"text": 0, "audio": 0, "image": 0}
 
         button_cancel = customtkinter.CTkButton(
             self, text="Cancelar", command=self._cancel, font=self._button_font, width=150,
             height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
-        button_cancel.place(relx=0.45, rely=0.8, anchor=customtkinter.E)
+        button_cancel.place(relx=0.2, rely=0.9, anchor=customtkinter.E)
 
         button_accept = customtkinter.CTkButton(
             self, text="Aceptar", command=self._accept, font=self._button_font, width=150,
             height=50, corner_radius=20, fg_color="lime green", hover_color="forest green")
-        button_accept.place(relx=0.55, rely=0.8, anchor=customtkinter.W)
+        button_accept.place(relx=0.8, rely=0.9, anchor=customtkinter.W)
+
+    def add_text_button(self):
+        self._text_data = customtkinter.CTkLabel(
+            self.label, text="Datos de texto añadidos correctamente", font=self._button_font)
+        self._button_text_recover = customtkinter.CTkButton(self.label, text="Eliminar datos de texto",
+                                                            command=self._recover_text_button, font=self._button_font, width=150,
+                                                            height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
+
+        self._button_text = customtkinter.CTkButton(
+            self.label, text="Cargar datos de texto", command=self._load_text_data, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
+        self._button_text.place(relx=0.5, rely=self.rely['text'],
+                                anchor=customtkinter.CENTER)
+
+    def add_audio_button(self):
+        self._audio_data = customtkinter.CTkLabel(
+            self.label, text="Datos de audio añadidos correctamente", font=self._button_font)
+        self._button_audio_recover = customtkinter.CTkButton(self.label, text="Eliminar datos de audio",
+                                                             command=self._recover_audio_button, font=self._button_font, width=150,
+                                                             height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
+
+        self._button_audio = customtkinter.CTkButton(
+            self.label, text="Cargar datos de audio", command=self._load_audio_data, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
+        self._button_audio.place(
+            relx=0.5, rely=self.rely['audio'], anchor=customtkinter.CENTER)
+
+    def add_image_button(self):
+        self._image_data = customtkinter.CTkLabel(
+            self.label, text="Datos de imagen añadidos correctamente", font=self._button_font)
+        self._button_image_recover = customtkinter.CTkButton(self.label, text="Eliminar datos de imagen",
+                                                             command=self._recover_image_button, font=self._button_font, width=150,
+                                                             height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
+        self._button_image = customtkinter.CTkButton(
+            self.label, text="Cargar datos de imagen", command=self._load_image_data, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
+        self._button_image.place(
+            relx=0.5, rely=self.rely['image'], anchor=customtkinter.CENTER)
 
     def _recover_text_button(self):
         self._text_data.place_forget()
         self._button_text_recover.place_forget()
-        self._button_text.place(relx=0.5, rely=0.35,
+        self._button_text.place(relx=0.5, rely=self.rely['text'],
                                 anchor=customtkinter.CENTER)
         self.logic_app.del_text_data()
         self._data_counter -= 1
@@ -152,7 +165,7 @@ class SelectDataPage(CustomFrame):
     def _recover_audio_button(self):
         self._audio_data.place_forget()
         self._button_audio_recover.place_forget()
-        self._button_audio.place(relx=0.5, rely=0.48,
+        self._button_audio.place(relx=0.5, rely=self.rely['audio'],
                                  anchor=customtkinter.CENTER)
         self.logic_app.del_audio_data()
         self._data_counter -= 1
@@ -162,7 +175,7 @@ class SelectDataPage(CustomFrame):
         self._image_data.place_forget()
         self._button_image_recover.place_forget()
         self._button_image.place(
-            relx=0.5, rely=0.61, anchor=customtkinter.CENTER)
+            relx=0.5, rely=self.rely['image'], anchor=customtkinter.CENTER)
         self.logic_app.del_image_data()
         self._data_counter -= 1
         self._data_to_clear.remove(self._recover_image_button)
@@ -186,9 +199,9 @@ class SelectDataPage(CustomFrame):
                 else:
                     self._button_text.place_forget()
                     self._text_data.place(
-                        relx=0.5, rely=0.35, anchor=customtkinter.E)
+                        relx=0.5, rely=self.rely['text'], anchor=customtkinter.E)
                     self._button_text_recover.place(
-                        relx=0.55, rely=0.35, anchor=customtkinter.W)
+                        relx=0.55, rely=self.rely['text'], anchor=customtkinter.W)
                     self._data_counter += 1
                     self._data_to_clear.add(self._recover_text_button)
 
@@ -211,9 +224,9 @@ class SelectDataPage(CustomFrame):
                 else:
                     self._button_audio.place_forget()
                     self._audio_data.place(
-                        relx=0.5, rely=0.48, anchor=customtkinter.E)
+                        relx=0.5, rely=self.rely['audio'], anchor=customtkinter.E)
                     self._button_audio_recover.place(
-                        relx=0.55, rely=0.48, anchor=customtkinter.W)
+                        relx=0.55, rely=self.rely['audio'], anchor=customtkinter.W)
                     self._data_counter += 1
                     self._data_to_clear.add(self._recover_audio_button)
 
@@ -236,9 +249,9 @@ class SelectDataPage(CustomFrame):
                 else:
                     self._button_image.place_forget()
                     self._image_data.place(
-                        relx=0.5, rely=0.61, anchor=customtkinter.E)
+                        relx=0.5, rely=self.rely['image'], anchor=customtkinter.E)
                     self._button_image_recover.place(
-                        relx=0.55, rely=0.61, anchor=customtkinter.W)
+                        relx=0.55, rely=self.rely['image'], anchor=customtkinter.W)
                     self._data_counter += 1
                     self._data_to_clear.add(self._recover_image_button)
 
@@ -249,13 +262,21 @@ class SelectDataPage(CustomFrame):
         if boolvar.get():
             for fun in self._data_to_clear.copy():
                 fun()
-            self.controller.show_frame("MainPage")
+
+            if self.logic_app._has_model:
+                self.controller.show_frame("MenuSelectPage")
+            else:
+                self.controller.show_frame("MainPage")
 
     def _accept(self):
 
-        if self._data_counter < 1:
-            ErrorWindow(master=self.master, controller=self.controller,
-                        message="Añada al menos un tipo de datos, porfavor")
+        if self._data_counter != self.model_cont:
+            if self.model_cont == 1:
+                ErrorWindow(master=self.master, controller=self.controller,
+                            message="Añada los datos para el entrenamiento para el modelo, porfavor")
+            else:
+                ErrorWindow(master=self.master, controller=self.controller,
+                            message="Añada los datos para el entrenamiento para todos los modelos, porfavor")
 
         else:
             AcceptWindow(master=self.master, controller=self.controller,
@@ -264,7 +285,75 @@ class SelectDataPage(CustomFrame):
                 self.master, name="window_accept")
 
             if boolvar.get():
-                self.controller.show_frame("HiperparametersPage") # TO-DO cambiar a SelectPage
+                self.logic_app.add_data_to_model()
+                if self.logic_app._has_model:
+                    self.controller.show_frame("MenuSelectPage")
+                else:
+                    self.controller.show_frame("HiperparametersPage")
+
+    def update(self):
+
+        self.rely['text'] = 0
+        self.rely['audio'] = 0
+        self.rely['image'] = 0
+
+        rel = 0
+
+        self.model_cont = 0
+
+        for key in self.controller.models:
+            if self.controller.models[key]:
+                self.model_cont += 1
+
+        if self.model_cont == 1:
+            rel = 0.3
+
+        if self.model_cont == 2:
+            rel = 0.19
+
+        if self.model_cont == 3:
+            rel = 0.15
+
+        rel_sum = 0
+
+        if self.controller.models['text']:
+            rel_sum += rel
+            self.rely['text'] = rel_sum
+            self.add_text_button()
+
+        if self.controller.models['audio']:
+            rel_sum += rel
+            self.rely['audio'] = rel_sum
+            self.add_audio_button()
+
+        if self.controller.models['image']:
+            rel_sum += rel
+            self.rely['image'] = rel_sum
+            self.add_image_button()
+
+    def clean(self):
+
+        if self.controller.models['text']:
+            if InputType.TEXT in self.logic_app.preprocessed_data_and_types.keys():
+
+                self._recover_text_button()
+                self._button_text.place_forget()
+            else:
+                self._button_text.place_forget()
+
+        if self.controller.models['audio']:
+            if InputType.AUDIO in self.logic_app.preprocessed_data_and_types.keys():
+                self._recover_audio_button()
+                self._button_audio.place_forget()
+            else:
+                self._button_audio.place_forget()
+
+        if self.controller.models['image']:
+            if InputType.IMAGE in self.logic_app.preprocessed_data_and_types.keys():
+                self._recover_image_button()
+                self._button_image.place_forget()
+            else:
+                self._button_image.place_forget()
 
 
 class CreateModelPage(CustomFrame):
@@ -291,43 +380,23 @@ class CreateModelPage(CustomFrame):
             height=50, corner_radius=20, fg_color="lime green", hover_color="forest green")
         button_create.place(relx=0.8, rely=0.9, anchor=customtkinter.W)
 
-       
-
     def _get_params(self, model_name: InputType) -> dict:
-
-
         try:
             self.tab_view.validate()
         except ValidationTabError:
             raise ValidationTabError("Error on input parameters")
         else:
+            params_dict = dict()
+            params_dict['num_inputs'] = self.tab_view.params_dict[model_name]['num_inputs'].get()
+            params_dict['layers_dict'] = dict()
 
-            params_dict = customtkinter.Variable(master=self, name="params_dict")
-            print(params_dict.get())
-            aux_dict = dict()
-            loss = customtkinter.StringVar(
-                master=self.master, name="loss_"+model_name)
+            for layer in self.tab_view.params_dict[model_name]['layers_dict']:
+                params_dict['layers_dict'][layer] = dict()
+                for key in self.tab_view.params_dict[model_name]['layers_dict'][layer]:
+                    params_dict['layers_dict'][layer][key] = self.tab_view.params_dict[model_name]['layers_dict'][layer][key].get(
+                    )
 
-            aux_dict['loss'] = loss.get()
-
-            optimizer = customtkinter.StringVar(
-                master=self.master, name="optimizer_"+model_name)
-
-            aux_dict['optimizer'] = optimizer.get()
-            metrics_names = [(metric.value) for metric in RNMNParams.RNMNMetrics]
-
-            metrics = list()
-            
-
-            for metric in metrics_names:
-                metric_var =  customtkinter.BooleanVar(
-                    master=self.master,name=metric+"_"+model_name)
-                if metric_var.get():
-                    metrics.append(metric)
-
-            aux_dict['metrics'] = RNMNParams.RNMNMetricsTraduction.translate(metrics)
-
-            return aux_dict
+            return params_dict
 
     def _create(self):
 
@@ -343,6 +412,12 @@ class CreateModelPage(CustomFrame):
             master=self.master, name="switch_imagen")
 
         number_of_models = 0
+
+        self.controller.models['text'] = var_text.get()
+
+        self.controller.models['audio'] = var_audio.get()
+        self.controller.models['image'] = var_image.get()
+
         try:
             if var_text.get():
                 number_of_models += 1
@@ -354,7 +429,7 @@ class CreateModelPage(CustomFrame):
 
             if var_image.get():
                 number_of_models += 1
-                params_dict['image_config'] = self._get_params("imgaen")
+                params_dict['image_config'] = self._get_params("imagen")
         except ValidationTabError:
             ErrorWindow(master=self.master, controller=self.controller,
                         message="Porfavor introduzca un valor numérico superior a 0 en el número de entradas y salidas")
@@ -375,7 +450,6 @@ class CreateModelPage(CustomFrame):
             self.controller.show_frame("MainPage")
 
 
-
 class HiperparametersPage(CustomFrame):
 
     def __init__(self, logic_app, parent, controller):
@@ -385,87 +459,18 @@ class HiperparametersPage(CustomFrame):
         self.controller = controller
 
         title = customtkinter.CTkLabel(
-            self, text="Creación de la red", font=self._title_font)
+            self, text="Configruración de parámetros", font=self._title_font)
         title.place(relx=0.5, rely=0.1, anchor=customtkinter.CENTER)
 
-       
+        self.label = CustomLabel(master=self)
+        self.label.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
 
-    def _get_params(self, model_name: InputType) -> dict:
-        aux_dict = dict()
+        self.losses = [loss.value for loss in RNMNParams.RNMNLosses]
+        self.optimizers = [
+            optimizer.value for optimizer in RNMNParams.RNMNOptimizers]
+        self.metrics = [metric.value for metric in RNMNParams.RNMNMetrics]
 
-        loss = customtkinter.StringVar(
-            master=self.master, name="loss_"+model_name)
-
-        aux_dict['loss'] = loss.get()
-
-        print(model_name)
-        print(loss.get())
-
-        optimizer = customtkinter.StringVar(
-            master=self.master, name="optimizer_"+model_name)
-
-        aux_dict['optimizer'] = optimizer.get()
-
-        print(optimizer.get())
-        print("")
-
-        metrics_names = [(metric.value) for metric in RNMNParams.RNMNMetrics]
-
-        metrics = list()
-        
-
-        for metric in metrics_names:
-            metric_var =  customtkinter.BooleanVar(
-                master=self.master,name=metric+"_"+model_name)
-            if metric_var.get():
-                metrics.append(metric)
-
-        aux_dict['metrics'] = RNMNParams.RNMNMetricsTraduction.translate(metrics)
-
-        return aux_dict
-
-    def _confirm(self):
-
-        params_dict = {}
-
-        var_text = customtkinter.BooleanVar(
-            master=self.master, name="switch_texto")
-
-        var_audio = customtkinter.BooleanVar(
-            master=self.master, name="switch_audio")
-
-        var_image = customtkinter.BooleanVar(
-            master=self.master, name="switch_imagen")
-
-        number_of_models = 0
-
-        if var_text.get():
-            number_of_models += 1
-            params_dict['text_config'] = self._get_params("texto")
-
-        if var_audio.get():
-            number_of_models += 1
-            params_dict['audio_config'] = self._get_params("audio")
-
-        if var_image.get():
-            number_of_models += 1
-            params_dict['image_config'] = self._get_params("imgaen")
-
-
-        self.logic_app.create_model(params_dict)
-
-        self.controller.show_frame("MainPage")
-
-    def _cancel(self):
-        AcceptWindow(master=self.master, controller=self.controller,
-                     message="¿Seguro que desea cancelar la creación del modelo?")
-        boolvar = customtkinter.BooleanVar(self.master, name="window_accept")
-        if boolvar.get():
-            self.controller.show_frame("MainPage")
-
-    def clean(self):
-        self.tab_view = ModifyHPNetTabView(master=self, width=1080, height=720)
-        self.tab_view.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
+        self.model_frame_create()
 
         button_cancel = customtkinter.CTkButton(
             self, text="Cancelar", command=self._cancel, font=self._button_font, width=150,
@@ -479,6 +484,111 @@ class HiperparametersPage(CustomFrame):
 
 
 
+    def model_frame_create(self):
+
+        optimizer_var: customtkinter.StringVar
+        loss_var: customtkinter.StringVar
+        title: str
+
+        title = customtkinter.CTkLabel(
+            self.label, text="Ajustar losses", font=self._button_font)
+        title.place(relx=0.1, rely=0.1, anchor=customtkinter.CENTER)
+        loss_var = customtkinter.StringVar(
+            master=self.master, value=self.losses[0], name="loss")
+        combobox_loss = customtkinter.CTkComboBox(master=self.label, values=self.losses,
+                                                  state="readonly",
+                                                  variable=loss_var, width=153)
+        combobox_loss.place(relx=0.24, rely=0.1, anchor=customtkinter.CENTER)
+
+        title = customtkinter.CTkLabel(
+            master=self.label, text="Ajustar optimizer", font=self._button_font)
+        title.place(relx=0.425, rely=0.1, anchor=customtkinter.CENTER)
+        optimizer_var = customtkinter.StringVar(
+            master=self.master, value=self.optimizers[0], name="optimizer")
+        combobox_optimizer = customtkinter.CTkComboBox(master=self.label, values=self.optimizers,
+                                                       state="readonly",
+                                                       variable=optimizer_var, width=100)
+        combobox_optimizer.place(
+            relx=0.558, rely=0.1, anchor=customtkinter.CENTER)
+
+        title = customtkinter.CTkLabel(
+            master=self.label, text="Seleccionar las métricas deseadas", font=self._button_font)
+        title.place(relx=0.8, rely=0.1, anchor=customtkinter.CENTER)
+
+        cont = 1
+        contx = 0.82
+        conty = 0
+        for metric in self.metrics:
+
+            value = False
+            if cont == 1:
+                value = True
+
+            check_var = customtkinter.BooleanVar(
+                master=self.master, value=value, name=metric)
+
+            checbox = customtkinter.CTkCheckBox(master=self.label,
+                                                text=metric,
+                                                variable=check_var, onvalue=True, offvalue=False)
+
+            checbox.place(
+                relx=contx, rely=0.2+conty, anchor=customtkinter.W)
+
+            if cont % 2 == 0:
+                cont += 1
+                conty += 0.1
+                contx = 0.82
+            else:
+                cont += 1
+                contx = 0.68
+
+    def _get_params(self) -> dict:
+        aux_dict = dict()
+
+        loss = customtkinter.StringVar(
+            master=self.master, name="loss")
+
+        aux_dict['loss'] = loss.get()
+
+        optimizer = customtkinter.StringVar(
+            master=self.master, name="optimizer")
+
+        aux_dict['optimizer'] = optimizer.get()
+
+        metrics_names = [(metric.value) for metric in RNMNParams.RNMNMetrics]
+
+        metrics = list()
+
+        for metric in metrics_names:
+            metric_var = customtkinter.BooleanVar(
+                master=self.master, name=metric)
+            if metric_var.get():
+                metrics.append(metric)
+
+        aux_dict['metrics'] = RNMNParams.RNMNMetricsTraduction.translate(
+            metrics)
+
+        return aux_dict
+
+    def _confirm(self):
+
+        params_dict = self._get_params()
+
+        self.logic_app.compile_model(params_dict)
+
+        self.controller.show_frame("MenuSelectPage")
+
+    def _cancel(self):
+        AcceptWindow(master=self.master, controller=self.controller,
+                     message="¿Seguro que desea cancelar la configuración del modelo?")
+        boolvar = customtkinter.BooleanVar(self.master, name="window_accept")
+        if boolvar.get():
+            if self.logic_app._has_model:
+                self.controller.show_frame("MenuSelectPage")
+            else:
+                self.controller.show_frame("MainPage")
+
+
 class MenuSelectPage(CustomFrame):
 
     def __init__(self, logic_app, parent, controller):
@@ -489,7 +599,58 @@ class MenuSelectPage(CustomFrame):
 
         title = customtkinter.CTkLabel(
             self, text="Seleccione una opción", font=self._title_font)
-        title.place(relx=0.5, rely=0.3, anchor=customtkinter.CENTER)
+        title.place(relx=0.5, rely=0.1, anchor=customtkinter.CENTER)
+
+        self.label = CustomLabel(master=self)
+        self.label.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
+
+
+
+
+        button_load_data = customtkinter.CTkButton(
+            self.label, text="Entrenar red", command=self._train, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
+        button_load_data.place(relx=0.3, rely=0.15, anchor=customtkinter.CENTER)
+
+        button_load_data = customtkinter.CTkButton(
+            self.label, text="Predecir datos", command=self._predict, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
+        button_load_data.place(relx=0.7, rely=0.15, anchor=customtkinter.CENTER)
+
+
+        button_config = customtkinter.CTkButton(
+            self.label, text="Cambiar parámetros", command=self._config, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
+        button_config.place(relx=0.3, rely=0.3, anchor=customtkinter.CENTER)
+        
+        button_load_data = customtkinter.CTkButton(
+            self.label, text="Cargar otros datos", command=self._new_data, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
+        button_load_data.place(relx=0.7, rely=0.3, anchor=customtkinter.CENTER)
+
+        title = customtkinter.CTkLabel(
+            self.label, text="Ajustar épocas", font=self._button_font)
+        title.place(relx=0.5, rely=0.45, anchor=customtkinter.CENTER)
+
+        epochs = customtkinter.IntVar(
+            master=self.master, value=100, name="epochs")
+
+        slider_epochs = customtkinter.CTkSlider(
+            master=self.label, from_=1, to=5000, variable=epochs, width=700, command=self.epochs_label)
+        slider_epochs.place(relx=0.5, rely=0.5, anchor=customtkinter.CENTER)
+
+
+        self.epochs_tag = customtkinter.CTkLabel(
+            master=self.label, text=str(epochs.get()), font=self._button_font)
+        self.epochs_tag.place(relx=0.5, rely=0.55,
+                              anchor=customtkinter.CENTER)
+
+            
+
+
+    def epochs_label(self, value):
+        self.epochs_tag.configure(text=str(int(value)))
+
 
     def _config(self):
         self.controller.show_frame("HiperparametersPage")

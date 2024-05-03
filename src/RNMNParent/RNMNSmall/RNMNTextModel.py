@@ -6,6 +6,6 @@ from .RNMNSmall import RNMNSmall
 
 class RNMNTextModel(RNMNSmall):
 
-    def __init__(self, data_x: np.ndarray, data_y: np.ndarray, **kwargs) -> None:
-        super().__init__(data_x, data_y, **kwargs)
+    def __init__(self, config) -> None:
+        super().__init__(config=config)
         
