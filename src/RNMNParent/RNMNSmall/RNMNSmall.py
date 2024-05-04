@@ -31,6 +31,7 @@ class RNMNSmall(RNMNParent):
                 aux_layer = layers.Dense(int(self.layers_dict['layer_out']['num_neurons']), self.layers_dict['layer_out']["activation"])(inlayer)
 
             self.model = Model(inputs=inlayer, outputs=aux_layer)
+            
 
 
 

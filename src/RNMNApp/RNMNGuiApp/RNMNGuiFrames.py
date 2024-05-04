@@ -482,8 +482,6 @@ class HiperparametersPage(CustomFrame):
             height=50, corner_radius=20, fg_color="lime green", hover_color="forest green")
         button_create.place(relx=0.8, rely=0.9, anchor=customtkinter.W)
 
-
-
     def model_frame_create(self):
 
         optimizer_var: customtkinter.StringVar
@@ -492,31 +490,31 @@ class HiperparametersPage(CustomFrame):
 
         title = customtkinter.CTkLabel(
             self.label, text="Ajustar losses", font=self._button_font)
-        title.place(relx=0.1, rely=0.1, anchor=customtkinter.CENTER)
+        title.place(relx=0.2, rely=0.25, anchor=customtkinter.CENTER)
         loss_var = customtkinter.StringVar(
             master=self.master, value=self.losses[0], name="loss")
         combobox_loss = customtkinter.CTkComboBox(master=self.label, values=self.losses,
                                                   state="readonly",
                                                   variable=loss_var, width=153)
-        combobox_loss.place(relx=0.24, rely=0.1, anchor=customtkinter.CENTER)
+        combobox_loss.place(relx=0.35, rely=0.25, anchor=customtkinter.CENTER)
 
         title = customtkinter.CTkLabel(
             master=self.label, text="Ajustar optimizer", font=self._button_font)
-        title.place(relx=0.425, rely=0.1, anchor=customtkinter.CENTER)
+        title.place(relx=0.2, rely=0.35, anchor=customtkinter.CENTER)
         optimizer_var = customtkinter.StringVar(
             master=self.master, value=self.optimizers[0], name="optimizer")
         combobox_optimizer = customtkinter.CTkComboBox(master=self.label, values=self.optimizers,
                                                        state="readonly",
                                                        variable=optimizer_var, width=100)
         combobox_optimizer.place(
-            relx=0.558, rely=0.1, anchor=customtkinter.CENTER)
+            relx=0.35, rely=0.35, anchor=customtkinter.CENTER)
 
         title = customtkinter.CTkLabel(
             master=self.label, text="Seleccionar las métricas deseadas", font=self._button_font)
-        title.place(relx=0.8, rely=0.1, anchor=customtkinter.CENTER)
+        title.place(relx=0.63, rely=0.1, anchor=customtkinter.CENTER)
 
         cont = 1
-        contx = 0.82
+        contx = 0.64
         conty = 0
         for metric in self.metrics:
 
@@ -537,10 +535,10 @@ class HiperparametersPage(CustomFrame):
             if cont % 2 == 0:
                 cont += 1
                 conty += 0.1
-                contx = 0.82
+                contx = 0.64
             else:
                 cont += 1
-                contx = 0.68
+                contx = 0.5
 
     def _get_params(self) -> dict:
         aux_dict = dict()
@@ -604,52 +602,30 @@ class MenuSelectPage(CustomFrame):
         self.label = CustomLabel(master=self)
         self.label.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
 
-
-
-
         button_load_data = customtkinter.CTkButton(
             self.label, text="Entrenar red", command=self._train, font=self._button_font, width=150,
             height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
-        button_load_data.place(relx=0.3, rely=0.15, anchor=customtkinter.CENTER)
+        button_load_data.place(relx=0.5, rely=0.13, anchor=customtkinter.CENTER)
 
         button_load_data = customtkinter.CTkButton(
             self.label, text="Predecir datos", command=self._predict, font=self._button_font, width=150,
             height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
-        button_load_data.place(relx=0.7, rely=0.15, anchor=customtkinter.CENTER)
-
+        button_load_data.place(relx=0.5, rely=0.26, anchor=customtkinter.CENTER)
 
         button_config = customtkinter.CTkButton(
             self.label, text="Cambiar parámetros", command=self._config, font=self._button_font, width=150,
             height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
-        button_config.place(relx=0.3, rely=0.3, anchor=customtkinter.CENTER)
-        
+        button_config.place(relx=0.5, rely=0.39, anchor=customtkinter.CENTER)
+
         button_load_data = customtkinter.CTkButton(
             self.label, text="Cargar otros datos", command=self._new_data, font=self._button_font, width=150,
             height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
-        button_load_data.place(relx=0.7, rely=0.3, anchor=customtkinter.CENTER)
+        button_load_data.place(relx=0.5, rely=0.52, anchor=customtkinter.CENTER)
 
-        title = customtkinter.CTkLabel(
-            self.label, text="Ajustar épocas", font=self._button_font)
-        title.place(relx=0.5, rely=0.45, anchor=customtkinter.CENTER)
-
-        epochs = customtkinter.IntVar(
-            master=self.master, value=100, name="epochs")
-
-        slider_epochs = customtkinter.CTkSlider(
-            master=self.label, from_=1, to=5000, variable=epochs, width=700, command=self.epochs_label)
-        slider_epochs.place(relx=0.5, rely=0.5, anchor=customtkinter.CENTER)
-
-
-        self.epochs_tag = customtkinter.CTkLabel(
-            master=self.label, text=str(epochs.get()), font=self._button_font)
-        self.epochs_tag.place(relx=0.5, rely=0.55,
-                              anchor=customtkinter.CENTER)
-
-            
-
-
-    def epochs_label(self, value):
-        self.epochs_tag.configure(text=str(int(value)))
+        button_cancel = customtkinter.CTkButton(
+            self, text="Menú", command=self._cancel, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
+        button_cancel.place(relx=0.5, rely=0.9, anchor=customtkinter.CENTER)
 
 
     def _config(self):
@@ -659,10 +635,101 @@ class MenuSelectPage(CustomFrame):
         self.controller.show_frame("SelectDataPage")
 
     def _predict(self):
+
+        self.logic_app.predict_data()
         self.controller.show_frame("ResultsPage")
 
     def _train(self):
+        self.controller.show_frame("TrainingPage")
+
+        
+    def _cancel(self):
+        AcceptWindow(master=self.master, controller=self.controller,
+                     message="¿Seguro que desea volver al menú?\n(Si no se guarda el modelo se perderá)")
+        boolvar = customtkinter.BooleanVar(self.master, name="window_accept")
+        if boolvar.get():
+            self.controller.show_frame("MainPage")
+
+
+class TrainingPage(CustomFrame):
+
+    def __init__(self, logic_app, parent, controller):
+        super().__init__(logic_app, parent, controller)
+
+        self.logic_app = logic_app
+        self.controller = controller
+
+        title = customtkinter.CTkLabel(
+            self, text="Ajuste los parámetros de entrenamiento", font=self._title_font)
+        title.place(relx=0.5, rely=0.1, anchor=customtkinter.CENTER)
+
+        self.label = CustomLabel(master=self)
+        self.label.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
+
+        self.epochs = customtkinter.IntVar(
+            master=self.master, value=100, name="epochs")
+
+        button_cancel = customtkinter.CTkButton(
+            self, text="Cancelar", command=self._back, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
+        button_cancel.place(relx=0.2, rely=0.9, anchor=customtkinter.E)
+
+        button_create = customtkinter.CTkButton(
+            self, text="Entrenar", command=self._train, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="lime green", hover_color="forest green")
+        button_create.place(relx=0.8, rely=0.9, anchor=customtkinter.W)
+
+        self.training = customtkinter.CTkLabel(
+            self.label, text="Entrenando...", font=self._button_font)
+                
+        self.epochs_title = customtkinter.CTkLabel(
+            self.label, text="Ajustar épocas", font=self._button_font)
+
+        self.slider_epochs = customtkinter.CTkSlider(
+            master=self.label, from_=1, to=5000, variable=self.epochs, width=700, command=self._epochs_label)
+        
+        self.epochs_tag = customtkinter.CTkLabel(
+            master=self.label, text=str(self.epochs.get()), font=self._button_font)
+        
+    def _epochs_label(self, value):
+        self.epochs_tag.configure(text=str(int(value)))
+
+    def _back(self):
+        self.controller.show_frame("MenuSelectPage")
+
+    def _train(self):
+
+        AcceptWindow(master=self.master, controller=self.controller,
+                     message="¿Seguro que desea entrenar el modelo?")
+        boolvar = customtkinter.BooleanVar(self.master, name="window_accept")
+        if boolvar.get():
+            self.controller.show_frame("MainPage")
+        config_train = dict()
+        config_train['epochs'] = self.epochs.get()
+
+        self.epochs_title.place_forget()
+        self.slider_epochs.place_forget()
+        self.epochs_tag.place_forget()
+
+        self.training.place(relx=0.5, rely=0.3, anchor=customtkinter.CENTER)
+        self.training.update()
+
+        self.logic_app.model.train(config_train)
+
         self.controller.show_frame("ResultsPage")
+
+    
+    def update(self):
+        self.training.place_forget()
+
+        self.epochs_title.place(relx=0.5, rely=0.25, anchor=customtkinter.CENTER)
+
+        self.slider_epochs.place(relx=0.5, rely=0.3, anchor=customtkinter.CENTER)
+
+        self.epochs_tag.place(relx=0.5, rely=0.35,
+                              anchor=customtkinter.CENTER)
+        
+
 
 
 class ResultsPage(CustomFrame):
@@ -675,7 +742,17 @@ class ResultsPage(CustomFrame):
 
         title = customtkinter.CTkLabel(
             self, text="Resultados", font=self._title_font)
-        title.place(relx=0.5, rely=0.3, anchor=customtkinter.CENTER)
+        title.place(relx=0.5, rely=0.1, anchor=customtkinter.CENTER)
+
+        self.label = CustomLabel(master=self)
+        self.label.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
+
+        
+        button_cancel = customtkinter.CTkButton(
+            self, text="Volver al menu", command=self._back, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
+        button_cancel.place(relx=0.2, rely=0.9, anchor=customtkinter.E)
 
     def _back(self):
         self.controller.show_frame("MenuSelectPage")
+

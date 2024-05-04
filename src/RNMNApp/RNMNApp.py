@@ -128,6 +128,8 @@ class RNMNApp():
         self.model.compile_model(parameters)
         self._has_model = True
     
+    def predict_data(self):
+        self.model.predict()
 
     def app_no_gui_start(self):
         print("\nPorfavor seleccione una opción:\n\n\t1-Crear modelo\n\t2-Cargar modelo")
