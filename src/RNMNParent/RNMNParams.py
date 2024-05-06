@@ -5,6 +5,10 @@ from keras import metrics
 
 
 class RNMNMetricsTraduction(Enum):
+
+    
+    ACCURACY = (metrics.Accuracy(name='accuracy'), "Accuracy")
+
     TP = (metrics.TruePositives(name='TP'), "True Positives")
 
     FP = (metrics.FalsePositives(name='FP'), "False Positives")
@@ -21,6 +25,7 @@ class RNMNMetricsTraduction(Enum):
 
     AUC = (metrics.AUC(name='AUC'), "AUC")
 
+
     def translate(metrics_list:list)->list:
         final_list = list()
         for m in metrics_list:
@@ -34,30 +39,34 @@ class RNMNMetricsTraduction(Enum):
 class RNMNMetrics(Enum):
     '''This enum is for the type of metrics'''
 
-    TP_NAME = "True Positives"
+    ACCURACY_NAME = "accuracy"
 
-    FP_NAME = "False Positives"
+    TP_NAME = "true_positives"
+    
+    FP_NAME = "false_positives"
 
-    TN_NAME = "True Negatives"
+    TN_NAME = "true_negatives"
 
-    FN_NAME = "False Negatives"
+    FN_NAME = "false_negatives"
 
-    ACC_NAME = "Binary Accuracy"
+    ACC_NAME = "binary_accuracy"
 
-    P_NAME = "Precision"
+    P_NAME = "precision"
 
-    R_NAME = "Recall"
+    R_NAME = "recall"
 
-    AUC_NAME = "AUC"
+    AUC_NAME = "auc"
+
+
 
 
 
 class RNMNOptimizers(Enum):
     '''This enum is for the type of optimizers'''
 
-    SGD = "SGD"
-
     ADAM = "adam"
+
+    SGD = "SGD"
 
     RMSprop = "rmsprop"
 
@@ -76,10 +85,13 @@ class RNMNOptimizers(Enum):
     FTRL = "ftrl"
 
     LION = "lion"
+    
 
 
 class RNMNLosses(Enum):
     '''This enum is for the type of losses'''
+
+    CATT_CROSS = "categorical_crossentropy"
 
     BINARY_CROSS = "binary_crossentropy"
 

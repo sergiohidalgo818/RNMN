@@ -26,7 +26,7 @@ def _bin_array(x:str)-> np.ndarray:
     return np.array(list)
 
 def _np_assign(x)->np.ndarray:
-    """Assigns the 1 value to the output
+    """Assigns 1 to an index on a array of 0s
 
         Args:
         x (int): index of the value
@@ -41,9 +41,110 @@ def _np_assign(x)->np.ndarray:
 
 classes = [_np_assign(x) for x in range(0, 10, 1)]
 
+classes_nums = [i for i in range(10)]
+
+
+def noise_lexic_data_numeric(file_name, ascii_perm_size):
+    """Creates a dataset with 64 columns (one for each ASCII binary bit)
+      and 1 classes (0 - 9)
+
+    Args:
+    file_name (str): path to the file
+    ascii_perm_size (int): size of the random abecedary
+      of ASCII characters
+
+    Returns:
+        None
+        """
+
+    num_of_bits = 8  # each character is 8 bits long in ASCII
+
+    nums = ['cero', 'uno', 'dos', 'tres', 'cuatro',
+            'cinco', 'seis', 'siete', 'ocho', 'nueve']
+    
+
+    nums_and_classes = zip(nums, classes_nums)
+
+    abecedary = list(string.printable)
+
+    # create dictionary
+    entries = ['x'+str(i) for i in range(0, MAX_CHARS*num_of_bits, 1)]
+    outputs = ['y0']
+    data_dict = {key: list() for key in (entries + outputs)}
+
+    print("\nCreating lexic dataset")
+
+    for inum, iclass in nums_and_classes:
+
+        size = len(inum)
+
+        max_extra_chars = MAX_CHARS - size
+
+        random.shuffle(abecedary)
+        permutations_abecedary = permutations(
+            abecedary[:ascii_perm_size], r=max_extra_chars)
+
+        number_bin = ""
+
+        number_bin = ''.join('{0:08b}'.format(ord(x), 'b') for x in inum)
+
+        for perm in permutations_abecedary:
+
+            perm_contains_num = False
+            text_perm = ''.join('{}'.format(x) for x in perm)
+
+            # check if there is a string number in the permutation
+            for jnum in nums:
+                if text_perm in jnum:
+                    perm_contains_num = True
+
+            # if there is, ignore iteration
+            if (perm_contains_num == False):
+                bin_num_perm = ''.join(
+                    '{0:08b}'.format(ord(x), 'b') for x in perm)
+
+                number = bin_num_perm
+                number += number_bin
+
+                number = _bin_array(number)
+                # ASCII characters at the begining of the number
+                for inumber, key in zip(number, entries):
+                    data_dict[key].append(inumber)
+                data_dict['y0'].append(iclass)
+
+                number = number_bin
+                number += bin_num_perm
+                number = _bin_array(number)
+
+                # ASCII characters at the end of the number
+                for inumber, key in zip(number, entries):
+                    data_dict[key].append(inumber)
+                data_dict['y0'].append(iclass)
+
+                for num_slash in range(1, max_extra_chars-1, 1):
+
+                    mid_slash = int(len(bin_num_perm) /
+                                    (max_extra_chars/num_slash))
+                    
+                    number = bin_num_perm[:mid_slash]
+                    number += number_bin
+                    number += bin_num_perm[mid_slash:]
+                    number = _bin_array(number)
+
+                    for inumber, key in zip(number, entries):
+                        data_dict[key].append(inumber)
+                     
+                    data_dict['y0'].append(iclass)
+
+    print("Writing lexic dataset...")
+    data_frame = pd.DataFrame(data_dict)
+    table = pa.Table.from_pandas(data_frame)
+    pq.write_table(table, file_name)
+    print("Lexic dataset done")
+
 
 def noise_lexic_data(file_name, ascii_perm_size):
-    """Creates a dataset with 4 columns (one for each ASCII binary lexic number)
+    """Creates a dataset with 64 columns (one for each ASCII binary bit)
       and 10 classes (one for each number)
 
     Args:
@@ -142,12 +243,14 @@ def noise_lexic_data(file_name, ascii_perm_size):
     print("Lexic dataset done")
 
 
-def lexic_data(file_name):
+def lexic_data(file_name:str, before:bool, all:bool):
     """Creates a dataset with 4 columns (one for each ASCII binary lexic number)
       and 10 classes (one for each number)
 
     Args:
     file_name (str): path to the file
+    before (bool): indicates if you want zeros before or after the number
+    all (bool): indicates if you want zeros before and after the number (it overrides before)
 
     Returns:
         None
@@ -177,26 +280,48 @@ def lexic_data(file_name):
         aux_zeros = ''.join('{0:01b}'.format(0, 'b') for x in range(
             num_of_bits*MAX_CHARS - len(number_bin)))
 
-        # with zeros before and zeros after (spaces)
-        number_bin_zeros = number_bin + aux_zeros
-        zeros_number_bin = aux_zeros + number_bin
+        if all:
+            # with zeros before 
+            zeros_number_bin = aux_zeros + number_bin
+            # with zeros after
+            number_bin_zeros = number_bin + aux_zeros
+            # keep it as integers so its keeped as integers on parquet
+            number_bin_zeros = _bin_array(number_bin_zeros) 
+            zeros_number_bin = _bin_array(zeros_number_bin) 
 
-        # keep it as integers so its keeped as integers on parquet
-        number_bin_zeros = _bin_array(number_bin_zeros) 
-        zeros_number_bin = _bin_array(zeros_number_bin) 
+            for inumber_zeros,izeros_number, key in zip(number_bin_zeros,zeros_number_bin, entries):
+                data_dict[key].append(inumber_zeros)
+                data_dict[key].append(izeros_number)
+            for inumber, key in zip(iclass, outputs):
+                data_dict[key].append(inumber)
+                data_dict[key].append(inumber)
 
-        for inumber_zeros,izeros_number, key in zip(number_bin_zeros,zeros_number_bin, entries):
-            data_dict[key].append(inumber_zeros)
-            data_dict[key].append(izeros_number)
-        for inumber, key in zip(iclass, outputs):
-            data_dict[key].append(inumber)
-            data_dict[key].append(inumber)
+        else:
+            if before:
+                zeros_number_bin = aux_zeros + number_bin
+                zeros_number_bin = _bin_array(zeros_number_bin) 
+
+                for izeros_number, key in zip(zeros_number_bin, entries):
+                    data_dict[key].append(izeros_number)
+                for inumber, key in zip(iclass, outputs):
+                    data_dict[key].append(inumber)
+
+            else:
+                number_bin_zeros = number_bin + aux_zeros
+                number_bin_zeros = _bin_array(number_bin_zeros) 
+                for inumber_zeros, key in zip(number_bin_zeros, entries):
+                    data_dict[key].append(inumber_zeros)
+                for inumber, key in zip(iclass, outputs):
+                    data_dict[key].append(inumber)
+
 
     print("Writing lexic dataset...")
     data_frame = pd.DataFrame(data_dict)
     table = pa.Table.from_pandas(data_frame)
     pq.write_table(table, file_name)
     print("Lexic dataset done")
+
+
 
 
 def hex_data(file_name):
@@ -283,6 +408,8 @@ def binary_data(file_name):
 if __name__ == '__main__':
 
     train_directory = 'data/text_data/train/'
+    aux_train_directory = 'data/text_data/aux_train/'
+
     if not os.path.exists(train_directory):
         print("Creating data text train directory")
         os.makedirs(train_directory)
@@ -293,7 +420,9 @@ if __name__ == '__main__':
         os.makedirs(test_directory)
 
 
-    lexic_data(train_directory+"lexic_data.parquet")
-    noise_lexic_data(train_directory+"noise_lexic_data.parquet", 6)
-
-    noise_lexic_data(test_directory+"noise_lexic_data.parquet", 4)
+    #lexic_data(aux_train_directory+"lexic_data.parquet", False, False)
+    #lexic_data(train_directory+"lexic_data.parquet", False, True)
+    #noise_lexic_data(train_directory+"noise_lexic_data.parquet", 8)
+    #noise_lexic_data(test_directory+"noise_lexic_data.parquet", 4)
+    noise_lexic_data_numeric(train_directory+"noise_lexic_data.parquet", 8)
+    noise_lexic_data_numeric(test_directory+"noise_lexic_data.parquet", 4)

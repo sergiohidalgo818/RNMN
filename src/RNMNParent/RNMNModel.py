@@ -5,6 +5,7 @@ from keras import optimizers, losses, Model, layers
 from .RNMNSmall import RNMNAudioModel, RNMNImageModel, RNMNTextModel
 from RNMNApp import InputType
 from sklearn.model_selection import train_test_split
+import numpy as np
 
 
 class RNMNModel(RNMNParent):
@@ -19,12 +20,15 @@ class RNMNModel(RNMNParent):
     text_model: RNMNTextModel
     audio_model: RNMNAudioModel
     image_model: RNMNImageModel
+    
+    x_train : list
+    y_train : list
+    x_test : list
+    y_test : list
 
-    _models: set
 
     def __init__(self, **kwargs) -> None:
 
-        self._models = set()
 
         self.text_config = dict()
         self.audio_config = dict()
@@ -32,25 +36,48 @@ class RNMNModel(RNMNParent):
 
         models_in = list()
         models_out  = list()
+        
+        self.x_train = list()
+        self.y_train = list()
+        self.x_test  = list()
+        self.y_test  = list()
+
+        
 
         if "params_dict" in kwargs.keys():
             if "text_config" in kwargs["params_dict"].keys():
                 self.text_config = kwargs["params_dict"]['text_config']
-                self._create_text_model()
+                
+                self._create_text_model(kwargs["data_and_types"][InputType.TEXT])
                 models_in.append(self.text_model.model.input)
                 models_out.append(self.text_model.model.output)
 
+                self.x_train.append(self.text_model.x_train)
+                self.y_train.append(self.text_model.y_train)
+                self.x_test.append(self.text_model.x_test)
+                self.y_test.append(self.text_model.y_test)
+
             if "audio_config" in kwargs["params_dict"].keys():
                 self.audio_config = kwargs["params_dict"]['audio_config']
-                self._create_audio_model()
+                self._create_audio_model(kwargs["data_and_types"][InputType.AUDIO])
                 models_in.append(self.audio_model.model.input)
                 models_out.append(self.audio_model.model.output)
 
+                self.x_train.append(self.audio_model.x_train)
+                self.y_train.append(self.audio_model.y_train)
+                self.x_test.append(self.audio_model.x_test)
+                self.y_test.append(self.audio_model.y_test)
+
             if "image_config" in kwargs["params_dict"].keys():
                 self.image_config = kwargs["params_dict"]['image_config']
-                self._create_image_model()
+                self._create_image_model(kwargs["data_and_types"][InputType.IMAGE])
                 models_in.append(self.image_model.model.input)
                 models_out.append(self.image_model.model.output)
+
+                self.x_train.append(self.image_model.x_train)
+                self.y_train.append(self.image_model.y_train)
+                self.x_test.append(self.image_model.x_test)
+                self.y_test.append(self.image_model.y_test)
 
             outputs = layers.concatenate(models_out)
 
@@ -66,37 +93,29 @@ class RNMNModel(RNMNParent):
         self.model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
 
 
-    def _create_text_model(self):
-        self.text_model = RNMNTextModel(self.text_config)
-        self._models.add("text")
+    def _create_text_model(self, data):
+        self.text_model = RNMNTextModel(data, self.text_config)
 
-    def _create_audio_model(self):
-        self.audio_model = RNMNAudioModel(self.audio_config)
-        self._models.add("audio")
+    def _create_audio_model(self, data):
+        self.audio_model = RNMNAudioModel(data, self.audio_config)
 
-    def _create_image_model(self):
-        self.image_model = RNMNImageModel(self.image_config)
-        self._models.add("image")
-
+    def _create_image_model(self, data):
+        self.image_model = RNMNImageModel(data, self.image_config)
 
     def add_data_text_model(self, text_data: tuple):
-        self.text_model.add_data_to_model(text_data[0], text_data[1])
+        self.text_model.add_data_to_model(text_data)
 
     def add_data_audio_model(self, audio_data: tuple):
-        self.audio_model.add_data_to_model(audio_data[0], audio_data[1])
+        self.audio_model.add_data_to_model(audio_data)
 
     def add_data_image_model(self, image_data: tuple):
-        self.image_model.add_data_to_model(image_data[0], image_data[1])
+        self.image_model.add_data_to_model(image_data)
 
     def predict(self):
-        return self.model.predict(self.text_model.data_x)
+        return self.model.predict_classes(self.text_model.data_x)
 
     def train(self, config_train: dict):
-        x_train, x_rest, y_train, y_rest = train_test_split(
-            self.text_model.data_x, self.text_model.data_y, test_size=0.4)
-        x_val, x_test, y_val, y_test = train_test_split(
-            self.text_model.data_x, self.text_model.data_y, test_size=0.5)
-        history = self.model.fit(
-            x_train, y_train, epochs=config_train['epochs'], verbose=1, validation_data=(x_val, y_val))
+        history = self.model.fit(self.x_train, self.image_model.y_train, batch_size=16, epochs=config_train['epochs'], validation_data=(self.image_model.x_test, self.image_model.y_test), shuffle=True)
 
-        print(history)
+        self.model.summary()
+

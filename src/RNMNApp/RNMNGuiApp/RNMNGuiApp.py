@@ -53,7 +53,7 @@ class RNMNAppGui(customtkinter.CTk):
             self.frames[self.last_frame].grid_forget()
             self.frames[self.last_frame].clean()
 
-        self.frames[page_name].update()
+        self.frames[page_name].update_custom()
         aframe = self.frames[page_name]
         aframe.grid(row=0, column=0, sticky="nsew")
         self.last_frame = page_name

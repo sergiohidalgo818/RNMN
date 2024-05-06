@@ -6,13 +6,15 @@ import numpy as np
 
 class RNMNSmall(RNMNParent):
 
-    data_x: np.ndarray
-    data_y: np.ndarray
+    x_train: np.ndarray
+    y_train: np.ndarray
+    x_test: np.ndarray
+    y_test: np.ndarray
     
     num_inputs : tuple
     layers_dict: dict 
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, data, **kwargs) -> None:
 
         if "config" in kwargs.keys():
             if "num_inputs" in kwargs["config"].keys():
@@ -21,10 +23,14 @@ class RNMNSmall(RNMNParent):
                 self.layers_dict = kwargs["config"]['layers_dict'] 
 
             inlayer = Input(shape=self.num_inputs)
-            if "layer_1" in self.layers_dict.keys():
+
+            dict_keys = [str(key) for key in self.layers_dict.keys()]
+
+            dict_keys.sort()
+
+            if "layer_1" in dict_keys:
                 aux_layer = layers.Dense(int(self.layers_dict['layer_1']['num_neurons']), self.layers_dict['layer_1']["activation"])(inlayer)
-                
-                for key in self.layers_dict.keys():
+                for key in dict_keys:
                     if key != "layer_1":
                         aux_layer = layers.Dense(int(self.layers_dict[key]['num_neurons']), self.layers_dict[key]["activation"])(aux_layer)
             else:
@@ -35,6 +41,6 @@ class RNMNSmall(RNMNParent):
 
 
 
-    def add_data_to_model(self, data_x:np.ndarray, data_y:np.ndarray):
-        self.data_x = data_x
-        self.data_y = data_y
+    def add_data_to_model(self, data:tuple):
+        ((self.x_train, self.y_train ),(self.x_test, self.y_test)) = data
+    

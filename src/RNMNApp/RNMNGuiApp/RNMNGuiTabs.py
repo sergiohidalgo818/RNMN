@@ -172,17 +172,6 @@ class CreateNetTabView(customtkinter.CTkTabview):
         else:
             self.positions_dict[alias]['cont'] += 1
             self.positions_dict[alias]['contx'] += 360
-    
-    def _auto_inputs(self, alias):
-        if self.params_dict[alias]['auto_in'].get():
-            self.widget_dict[alias]['title_in'].configure(text_color="gray")
-            self.widget_dict[alias]['entry_in'].configure(state='disabled', text_color="gray")
-
-        else:
-            self.widget_dict[alias]['title_in'].configure(text_color="#DCE4EE")
-            self.widget_dict[alias]['entry_in'].configure(state='normal', text_color="#DCE4EE")
-
-
 
     def model_tab_create(self, tab_name, master):
 
@@ -209,7 +198,6 @@ class CreateNetTabView(customtkinter.CTkTabview):
             tab_name), text="Número de entradas ", font=self._button_font)
         self.widget_dict[alias]['title_in'].place(relx=0.02, rely=0.1, anchor=customtkinter.W)
 
-
         self.params_dict[alias]['num_inputs'] = customtkinter.StringVar(
             master=master, value="64",  name="num_inputs_" + alias)
         self.widget_dict[alias]['entry_in'] = customtkinter.CTkEntry(master=self.tab(
@@ -217,36 +205,25 @@ class CreateNetTabView(customtkinter.CTkTabview):
             width=100)
         self.widget_dict[alias]['entry_in'].place(relx=0.18, rely=0.1, anchor=customtkinter.W)
 
-
-        self.params_dict[alias]['auto_in'] = customtkinter.BooleanVar(master=master,
-                                                                       value=True,
-                                                                           name="auto_in_" + alias)
-        
-        checkbox = customtkinter.CTkCheckBox(master=self.tab(tab_name), text="auto",
-                                              variable=self.params_dict[alias]['auto_in'],
-                                                onvalue=True, offvalue=False, command=lambda: self._auto_inputs(alias))
-        checkbox.place(relx=0.278, rely=0.1, anchor=customtkinter.W)
-        
-        self.widget_dict[alias]['title_in'].configure(text_color="gray")
-        self.widget_dict[alias]['entry_in'].configure(state='disabled', text_color="gray")
-
+        self.widget_dict[alias]['entry_in'].configure(state="disabled",fg_color="grey")
+        self.widget_dict[alias]['title_in'].configure(fg_color="grey")
 
         self.params_dict[alias]['num_layers'] = customtkinter.IntVar(
             master=master, value=0, name="num_layers_" + alias)
         
         title = customtkinter.CTkLabel(master=self.tab(
             tab_name), text="Añadir capa oculta", font=self._button_font)
-        title.place(relx=0.386, rely=0.1, anchor=customtkinter.W)
+        title.place(relx=0.37, rely=0.1, anchor=customtkinter.W)
         add_layer = customtkinter.CTkButton(
             master=self.tab(
                 tab_name), command=lambda: self._del_layer(alias), text="-", font=self._button_font, width=30,
             height=10, corner_radius=40, fg_color="brown3", hover_color="brown4")
-        add_layer.place(relx=0.535, rely=0.1, anchor=customtkinter.W)
+        add_layer.place(relx=0.52, rely=0.1, anchor=customtkinter.W)
         del_layer = customtkinter.CTkButton(
             master=self.tab(
                 tab_name), text="+", font=self._button_font, width=30, command=lambda: self._add_layer(alias),
-            height=10, corner_radius=40, fg_color="brown3", hover_color="brown4")
-        del_layer.place(relx=0.564, rely=0.1, anchor=customtkinter.W)
+            height=10, corner_radius=40, fg_color="lime green", hover_color="forest green")
+        del_layer.place(relx=0.55, rely=0.1, anchor=customtkinter.W)
 
 
         title_out= customtkinter.CTkLabel(master=self.tab(
@@ -289,3 +266,4 @@ class CreateNetTabView(customtkinter.CTkTabview):
             elif int(self.params_dict[alias]['num_inputs'].get()) <= 0 or int(self.params_dict[alias]['layers_dict']['layer_out']['num_neurons'].get()) <= 0:
                 raise ValidationTabError(
                     "Error on parameters")
+            

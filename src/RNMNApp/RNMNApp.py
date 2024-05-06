@@ -4,8 +4,8 @@ import pickle
 import os
 from .RNMNGuiApp import RNMNAppGui
 from .InputType import InputType, ImportError
-from ProcessData import ProcessData, ProcessError
-from ProcessData import ProcessText
+from ProcessData import ProcessAudio, ProcessError
+from ProcessData import ProcessText, ProcessImage
 from RNMNParent import RNMNModel, RNMNParams
 
 
@@ -19,6 +19,7 @@ class RNMNApp():
     model: RNMNModel
     app_gui: RNMNAppGui
     _no_gui: bool
+    model_params:dict
 
     _has_model: bool
 
@@ -45,7 +46,8 @@ class RNMNApp():
     def get_audio_data(self, directory: str):
 
         try:
-            audio = ProcessData(directory)
+            audio = ProcessAudio(
+                directory)
         except ProcessError as ex:
             raise ImportError("Error while importing audio data")
 
@@ -53,7 +55,8 @@ class RNMNApp():
 
     def get_image_data(self, directory: str):
         try:
-            image = ProcessData(directory)
+            image = ProcessImage(
+                directory)
         except ProcessError as ex:
             raise ImportError("Error while importing image data")
 
@@ -71,8 +74,18 @@ class RNMNApp():
         del self.processed_data_and_types[InputType.IMAGE]
         del self.preprocessed_data_and_types[InputType.IMAGE]
 
-    def create_model(self, params_dict):
-        self.model = RNMNModel(params_dict=params_dict)
+    def create_model(self):
+        for k in self.processed_data_and_types.keys():
+            self.preprocessed_data_and_types[k].reshape_data(int(self.model_params[k.value+"_config"]['layers_dict']['layer_out']['num_neurons']))
+            self.processed_data_and_types[k] = self.preprocessed_data_and_types[k].data_processed
+                        
+
+        self.model = RNMNModel(params_dict=self.model_params, data_and_types=self.processed_data_and_types)
+
+
+    def compile_model(self, parameters):
+        self.model = RNMNModel(params_dict=self.model_params, data_and_types=self.processed_data_and_types)
+
 
     def save_model(self, directory: str):
         with open(directory, 'wb') as output:
@@ -98,38 +111,34 @@ class RNMNApp():
             else:
                 self.processed_data_and_types[k] = self.preprocessed_data_and_types[k].data_processed
 
-    def preprocess_all_data(self):
-        self.processed_data_and_types = dict()
-
-        for k in self.preprocessed_data_and_types.keys():
-
-            try:
-                self.preprocessed_data_and_types[k].process()
-            except ProcessError:
-                raise ImportError("Error on process data")
-            else:
-                self.processed_data_and_types[k] = self.preprocessed_data_and_types[k].data_processed
-
     def add_data_to_model(self):
-        
+
         for k in self.processed_data_and_types.keys():
             if k == InputType.TEXT:
-                self.model.add_data_text_model(self.processed_data_and_types[k])
+                self.model.add_data_text_model(
+                    self.processed_data_and_types[k])
 
             if k == InputType.AUDIO:
-                self.model.add_data_audio_model(self.processed_data_and_types[k])
-        
-            if k == InputType.IMAGE:
-                self.model.add_data_image_model(self.processed_data_and_types[k])
+                self.model.add_data_audio_model(
+                    self.processed_data_and_types[k])
 
-            
-                
+            if k == InputType.IMAGE:
+                self.model.add_data_image_model(
+                    self.processed_data_and_types[k])
+
     def compile_model(self, parameters):
         self.model.compile_model(parameters)
         self._has_model = True
-    
+
+    def train(self, config_train):
+        self.model.train(config_train=config_train)
+
     def predict_data(self):
-        self.model.predict()
+        array = self.model.predict()
+
+
+
+        print(array[0])
 
     def app_no_gui_start(self):
         print("\nPorfavor seleccione una opción:\n\n\t1-Crear modelo\n\t2-Cargar modelo")
@@ -182,8 +191,9 @@ class RNMNApp():
                     cont += 1
                 params_dict['layer_'+layer_name]['activation'] = input(
                     "Opción no válida, introduzca un número de las opciones mostradas: ")
-                
-            params_dict['layer_'+layer_name]['activation'] = activations[int(params_dict['layer_'+layer_name]['activation']) - 1]
+
+            params_dict['layer_'+layer_name]['activation'] = activations[int(
+                params_dict['layer_'+layer_name]['activation']) - 1]
 
         models = [('texto', "text"), ("audio", "audio"), ("imagen", "image")]
 
@@ -219,13 +229,15 @@ class RNMNApp():
                     while (params_dict[model_ing+"_config"]['num_layers'].isnumeric() and int(params_dict[model_ing+"_config"]['num_layers']) < 0) or not params_dict[model_ing+"_config"]['num_layers'].isnumeric():
                         params_dict[model_ing+"_config"]['num_layers'] = input(
                             "Opción no válida, introduzca un número positivo: ")
-                    
+
                     params_dict[model_ing+"_config"]['layers_dict'] = dict()
 
                     for i in range(1, int(params_dict[model_ing+"_config"]['num_layers']) + 1):
-                        _layer_ask(params_dict[model_ing+"_config"]['layers_dict'], str(i))
+                        _layer_ask(
+                            params_dict[model_ing+"_config"]['layers_dict'], str(i))
 
-                    _layer_ask(params_dict[model_ing+"_config"]['layers_dict'], "out")
+                    _layer_ask(
+                        params_dict[model_ing+"_config"]['layers_dict'], "out")
 
         self.create_model(params_dict)
 

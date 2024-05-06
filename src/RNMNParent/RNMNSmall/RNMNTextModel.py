@@ -1,11 +1,10 @@
 '''This file defines the RNMNTextModel Class'''
 
-import numpy as np
-from keras import Sequential
 from .RNMNSmall import RNMNSmall
+from RNMNApp import InputType
 
 class RNMNTextModel(RNMNSmall):
 
-    def __init__(self, config) -> None:
+    def __init__(self,  data, classes, config) -> None:
         super().__init__(config=config)
         
