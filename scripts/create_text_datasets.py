@@ -243,6 +243,7 @@ def noise_lexic_data(file_name, ascii_perm_size):
     print("Lexic dataset done")
 
 
+
 def lexic_data(file_name:str, before:bool, all:bool):
     """Creates a dataset with 4 columns (one for each ASCII binary lexic number)
       and 10 classes (one for each number)
@@ -405,11 +406,110 @@ def binary_data(file_name):
     print("Done")
 
 
+
+def noise_lexic_data_numeric_files(directory, ascii_perm_size):
+    """Creates a dataset with 64 columns (one for each ASCII binary bit)
+      and 1 classes (0 - 9)
+
+    Args:
+    directory (str): directory of the data
+    ascii_perm_size (int): size of the random abecedary
+      of ASCII characters
+
+    Returns:
+        None
+        """
+
+
+    nums = ['cero', 'uno', 'dos', 'tres', 'cuatro',
+            'cinco', 'seis', 'siete', 'ocho', 'nueve']
+    
+    
+
+    nums_and_classes = zip(nums, classes_nums)
+
+    abecedary = list(string.printable)
+
+    abecedary.remove('\n')
+
+    # create dictionary
+
+    print("\nCreating lexic dataset")
+
+    for inum, iclass in nums_and_classes:
+        cont = 0
+
+        class_string = ""
+
+        size = len(inum)
+
+        max_extra_chars = MAX_CHARS - size
+
+        random.shuffle(abecedary)
+        permutations_abecedary = permutations(
+            abecedary[:ascii_perm_size], r=max_extra_chars)
+        
+        if not os.path.exists(os.path.join(directory+str(iclass))):
+                os.makedirs(os.path.join(directory+str(iclass)))
+
+        for perm in permutations_abecedary:
+
+            perm_contains_num = False
+            text_perm = ''.join('{}'.format(x) for x in perm)
+            
+
+            # check if there is a string number in the permutation
+            for jnum in nums:
+                if text_perm in jnum:
+                    perm_contains_num = True
+
+            # if there is, ignore iteration
+            if (perm_contains_num == False):
+
+                number = text_perm
+                number += inum
+                # ASCII characters at the begining of the number
+
+
+                f = open(os.path.join(os.path.join(directory+str(iclass)),str(iclass)+ str(cont)+".txt"), "w")
+                f.write(number)
+                cont+=1
+
+                number = inum
+                number += text_perm
+
+                f = open(os.path.join(os.path.join(directory+str(iclass)),str(iclass)+ str(cont)+".txt"), "w")
+                f.write(number)
+                cont+=1
+                # ASCII characters at the end of the number
+  
+
+                for num_slash in range(1, max_extra_chars-1, 1):
+
+                    mid_slash = int(len(perm) /
+                                    (max_extra_chars/num_slash))
+                    
+                    number = text_perm[:mid_slash]
+                    number += inum
+                    number += text_perm[mid_slash:]
+
+                    f = open(os.path.join(os.path.join(directory+str(iclass)),str(iclass)+ str(cont)+".txt"), "w")
+                    f.write(number)
+                    cont+=1
+            
+            
+
+            
+
+
+    print("Writing lexic dataset...")
+
+    print("Lexic dataset done")
+
+
 if __name__ == '__main__':
 
     train_directory = 'data/text_data/train/'
-    aux_train_directory = 'data/text_data/aux_train/'
-
     if not os.path.exists(train_directory):
         print("Creating data text train directory")
         os.makedirs(train_directory)
@@ -424,5 +524,8 @@ if __name__ == '__main__':
     #lexic_data(train_directory+"lexic_data.parquet", False, True)
     #noise_lexic_data(train_directory+"noise_lexic_data.parquet", 8)
     #noise_lexic_data(test_directory+"noise_lexic_data.parquet", 4)
-    noise_lexic_data_numeric(train_directory+"noise_lexic_data.parquet", 8)
-    noise_lexic_data_numeric(test_directory+"noise_lexic_data.parquet", 4)
+    #noise_lexic_data_numeric(train_directory+"noise_lexic_data.parquet", 8)
+    #noise_lexic_data_numeric(test_directory+"noise_lexic_data.parquet", 4)
+    noise_lexic_data_numeric_files(train_directory, 6)
+    noise_lexic_data_numeric_files(test_directory, 4)
+

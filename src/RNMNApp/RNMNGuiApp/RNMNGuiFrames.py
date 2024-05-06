@@ -10,13 +10,13 @@ from .RNMNGuiLabels import CustomLabel
 from RNMNParent import RNMNParams
 import threading
 import time
+import os
 
 
 class CustomFrame(customtkinter.CTkFrame):
     logic_app: RNMNApp
     parent: customtkinter.CTkFrame
     controller: customtkinter.CTk
-
 
     _title_font = ("Times", 35, 'bold')
     _button_font = ("Times", 25, )
@@ -57,7 +57,7 @@ class MainPage(CustomFrame):
 
     def _load_model(self):
         directory = customtkinter.filedialog.askopenfilename(initialdir="./",
-                                                             title="Select a File",
+                                                             title="Selecciona un modelo ya guardado",
                                                              filetypes=(("Pickle files",
                                                                          "*.pkl*"),
                                                                         ("all files",
@@ -182,7 +182,7 @@ class SelectDataPage(CustomFrame):
 
     def _load_text_data(self):
 
-        directory = customtkinter.filedialog.askdirectory(initialdir="./",
+        directory = customtkinter.filedialog.askdirectory(initialdir=os.path.join(self.logic_app.workdir, "data"),
                                                           title="Seleccione un directorio de datos de texto")
         if len(directory) > 0:
             try:
@@ -205,8 +205,9 @@ class SelectDataPage(CustomFrame):
                     self._data_counter += 1
                     self._data_to_clear.add(self._recover_text_button)
 
+
     def _load_audio_data(self):
-        directory = customtkinter.filedialog.askdirectory(initialdir="./",
+        directory = customtkinter.filedialog.askdirectory(initialdir=os.path.join(self.logic_app.workdir, "data"),
                                                           title="Seleccione un directorio de datos de audio")
 
         if len(directory) > 0:
@@ -231,7 +232,7 @@ class SelectDataPage(CustomFrame):
                     self._data_to_clear.add(self._recover_audio_button)
 
     def _load_image_data(self):
-        directory = customtkinter.filedialog.askdirectory(initialdir="./",
+        directory = customtkinter.filedialog.askdirectory(initialdir=os.path.join(self.logic_app.workdir, "data"),
                                                           title="Seleccione un directorio de datos de imagen")
 
         if len(directory) > 0:
@@ -367,7 +368,12 @@ class CreateModelPage(CustomFrame):
         title = customtkinter.CTkLabel(
             master=self, text="Creación de la red", font=self._title_font)
         title.place(relx=0.5, rely=0.1, anchor=customtkinter.CENTER)
-        
+
+        self.button_load = customtkinter.CTkButton(
+            self, text="Cargar configuración", command=self._load, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
+        self.button_load.place(relx=0.7, rely=0.1, anchor=customtkinter.W)
+
         self.tab_view = CreateNetTabView(master=self, width=1080, height=720)
         self.tab_view.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
 
@@ -380,9 +386,6 @@ class CreateModelPage(CustomFrame):
             self, text="Crear", command=self._create, font=self._button_font, width=150,
             height=50, corner_radius=20, fg_color="lime green", hover_color="forest green")
         self.button_create.place(relx=0.8, rely=0.9, anchor=customtkinter.W)
-
-
-
 
     def _get_params(self, model_name: InputType) -> dict:
         try:
@@ -417,10 +420,12 @@ class CreateModelPage(CustomFrame):
 
         number_of_models = 0
 
-        self.controller.models['text'] = var_text.get()
-
-        self.controller.models['audio'] = var_audio.get()
-        self.controller.models['image'] = var_image.get()
+        self.controller.models['text'] = self.tab_view.params_dict['texto']['add_model'].get(
+        )
+        self.controller.models['audio'] = self.tab_view.params_dict['audio']['add_model'].get(
+        )
+        self.controller.models['image'] = self.tab_view.params_dict['imagen']['add_model'].get(
+        )
 
         try:
             if var_text.get():
@@ -434,6 +439,7 @@ class CreateModelPage(CustomFrame):
             if var_image.get():
                 number_of_models += 1
                 params_dict['image_config'] = self._get_params("imagen")
+        
         except ValidationTabError:
             ErrorWindow(master=self.master, controller=self.controller,
                         message="Porfavor introduzca un valor numérico superior\na 0 en el número de entradas y salidas")
@@ -453,6 +459,30 @@ class CreateModelPage(CustomFrame):
         if boolvar.get():
             self.controller.show_frame("MainPage")
 
+    def _load(self):
+        file_config = customtkinter.filedialog.askopenfile(initialdir=self.logic_app.config_path,
+                                                         title="Seleciona un archivo de configuración",
+                                                         filetypes=(("JSON files",
+                                                                     "*.json*"),
+                                                                    ("all files",
+                                                                     "*.*")))
+        if file_config != None:
+            try:
+                params_dict = self.logic_app.json_transform(file_config.read())
+            except ImportError as ex:
+                ErrorWindow(self.master, self.controller,
+                            message="Porfavor, introduzca un fichero json")
+            else:
+                if "text_config" in params_dict.keys():
+                    self.controller.models['text'] = True
+                if "audio_config" in params_dict.keys():
+                    self.controller.models['audio'] = True
+                if "image_config" in params_dict.keys():
+                    self.controller.models['image'] = True
+
+                self.logic_app.model_params = params_dict
+                self.controller.show_frame("SelectDataPage")
+
     def clean(self):
         self.tab_view.destroy()
         self.tab_view = CreateNetTabView(master=self, width=1080, height=720)
@@ -467,7 +497,6 @@ class CreateModelPage(CustomFrame):
             self, text="Crear", command=self._create, font=self._button_font, width=150,
             height=50, corner_radius=20, fg_color="lime green", hover_color="forest green")
         self.button_create.place(relx=0.8, rely=0.9, anchor=customtkinter.W)
-
 
 
 class HiperparametersPage(CustomFrame):
@@ -651,7 +680,7 @@ class MenuSelectPage(CustomFrame):
         button_save = customtkinter.CTkButton(
             self, text="Guardar modelo", command=self._save_model, font=self._button_font, width=150,
             height=50, corner_radius=20, fg_color="lime green", hover_color="forest green")
-        
+
         button_save.place(relx=0.8, rely=0.9, anchor=customtkinter.W)
         button_back_start.place(relx=0.2, rely=0.9, anchor=customtkinter.E)
 
@@ -671,10 +700,9 @@ class MenuSelectPage(CustomFrame):
 
     def _save_model(self):
         directory = customtkinter.filedialog.asksaveasfilename(initialdir="./",
-                                                          title="Seleccione donde guardar el fichero")
+                                                               title="Seleccione donde guardar el fichero")
         if len(directory) > 0:
-            self.logic_app.save_model(directory)            
-
+            self.logic_app.save_model(directory)
 
     def _cancel(self):
         AcceptWindow(master=self.master, controller=self.controller,
@@ -743,7 +771,6 @@ class TrainingPage(CustomFrame):
 
         self.logic_app.train(config_train=config_train)
 
-
     def _wait_train(self, train_th):
 
         while train_th.is_alive():
@@ -754,9 +781,8 @@ class TrainingPage(CustomFrame):
                 self.training_var.set(self.training_var.get()+".")
 
             self.training.configure(text=self.training_var.get())
-        
-        self.controller.show_frame("ResultsPage")
 
+        self.controller.show_frame("ResultsPage")
 
     def _train(self):
 
@@ -768,18 +794,16 @@ class TrainingPage(CustomFrame):
         self.button_create.place_forget()
         self.button_cancel.place_forget()
         self.training.place(relx=0.5, rely=0.3,
-        anchor=customtkinter.CENTER)
+                            anchor=customtkinter.CENTER)
 
         self.train_th = threading.Thread(
-        target=self._do_train, args=(config_train, ), daemon=True)
+            target=self._do_train, args=(config_train, ), daemon=True)
 
         self.wait_th = threading.Thread(
-        target=self._wait_train, args=(self.train_th, ), daemon=True)
-
+            target=self._wait_train, args=(self.train_th, ), daemon=True)
 
         self.train_th.start()
         self.wait_th.start()
-
 
     def update_custom(self):
         self.training.place_forget()
@@ -792,11 +816,9 @@ class TrainingPage(CustomFrame):
 
         self.epochs_tag.place(relx=0.5, rely=0.35,
                               anchor=customtkinter.CENTER)
-        
+
         self.button_create.place(relx=0.8, rely=0.9, anchor=customtkinter.W)
         self.button_cancel.place(relx=0.2, rely=0.9, anchor=customtkinter.E)
-
-        
 
 
 class ResultsPage(CustomFrame):

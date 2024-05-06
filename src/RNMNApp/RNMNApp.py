@@ -7,6 +7,7 @@ from .InputType import InputType, ImportError
 from ProcessData import ProcessAudio, ProcessError
 from ProcessData import ProcessText, ProcessImage
 from RNMNParent import RNMNModel, RNMNParams
+import json
 
 
 class RNMNApp():
@@ -20,6 +21,7 @@ class RNMNApp():
     app_gui: RNMNAppGui
     _no_gui: bool
     model_params:dict
+    default_params:dict
 
     _has_model: bool
 
@@ -27,6 +29,15 @@ class RNMNApp():
         self.preprocessed_data_and_types = dict()
         self._no_gui = kwargs['gui']
         self._has_model = False
+        
+        self.workdir = os.path.abspath(os.getcwd())
+        if "RNMN" in os.listdir(self.workdir):
+            self.workdir = os.path.join(self.workdir, "RNMN")
+
+        self.config_path = os.path.join(self.workdir, "config")
+        cofn_file = os.path.join(self.config_path, "default_config.json")
+
+        self.default_params = self.load_config(cofn_file)
 
     def start_app(self):
         if self._no_gui == False:
@@ -100,6 +111,21 @@ class RNMNApp():
             else:
                 self._has_model = True
 
+    def load_config(self, directory: str):
+        with open(directory, 'r') as input:
+            try:
+                confg = input.read()
+            except FileExistsError as ex:
+                raise ImportError("Error on file ")
+            else:
+                return self.json_transform(confg)
+
+    def json_transform(self, file):
+        try:
+            return json.loads(file)
+        except FileExistsError as ex:
+            raise ImportError("Error on file json")
+                
     def preprocess_typedata_data(self, list_types):
         self.processed_data_and_types = dict()
 

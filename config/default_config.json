@@ -1,0 +1,21 @@
+{
+    "image_config": {
+        "num_inputs": 64,
+        "auto_in": "True",
+        "layers_dict": {
+            "layer_1": {
+                "num_neurons": 124,
+                "activation": "relu"
+            },
+            "layer_2": {
+                "num_neurons": 84,
+                "activation": "relu"
+            },
+            "layer_out": {
+                "num_neurons": 10,
+                "activation": "softmax"
+            }
+        }
+    }
+
+}

@@ -36,7 +36,6 @@ class RNMNImageModel(RNMNSmall):
         
         aux_layer = Flatten()(aux_layer)
 
-        # TO-DO implement file with default layers (120 and 84 in this case)
         dict_keys = [str(key) for key in self.layers_dict.keys()]
 
         dict_keys.sort()

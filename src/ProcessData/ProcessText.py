@@ -5,6 +5,8 @@ from .ProcessData import ProcessError
 import pyarrow.parquet as pq
 import pandas as pd
 import numpy as np
+import os
+from keras.api.utils import text_dataset_from_directory
 
 
 class ProcessText(ProcessData):
@@ -13,7 +15,73 @@ class ProcessText(ProcessData):
       neural network. It inherits from ProcessData
     """
 
-    def transform_txt(self, file_name):
+    def process_dir(self, dir_name):
+        """Process the directory depending if its for test or train
+
+        Args:
+        dir_name (str)
+
+        Returns:
+            None
+        """
+        if "train" in dir_name[-6:]:
+            self.process_train_file(dir_name)
+        if "test" in dir_name[-6:]:
+            self.process_test_file(dir_name)
+
+    def process_test_file(self, file_name):
+        """Process the data from a test file
+
+        Args:
+        file_name (str): path to the file
+
+        Returns:
+            None
+        """
+        array_x: np.ndarray
+        array_y: np.ndarray
+        batch_size = 32
+
+        array_x, array_y = (self.x_test, self.y_test)
+
+        self.raw_test_ds = text_dataset_from_directory(
+                        directory=file_name,
+                        batch_size=batch_size,  labels='inferred')
+
+
+
+
+        (self.x_test, self.y_test) = (array_x, array_y)
+
+    def process_train_file(self, file_name):
+        """Process the data from a train file
+
+        Args:
+        file_name (str): path to the file
+
+        Returns:
+            None
+        """
+        array_x: np.ndarray
+        array_y: np.ndarray
+        batch_size = 32
+
+        array_x, array_y = self.x_train, self.y_train
+        self.raw_train_ds = text_dataset_from_directory(
+                        directory=file_name,
+                        batch_size=batch_size,
+                        validation_split=0.2,
+                        subset="training", seed=1337, labels='inferred')
+        self.raw_val_ds = text_dataset_from_directory(
+                        directory=file_name,
+                        batch_size=batch_size,
+                        validation_split=0.2,
+                        subset="validation", seed=1337,  labels='inferred')
+
+    
+
+
+    def transform_txt_deprecated(self, file_name):
         """Transforms a txt file to data
 
         Returns:
@@ -30,14 +98,11 @@ class ProcessText(ProcessData):
         flag_add = False
 
         while len(data) % int(self.input_size/8) != 0:
-            data = " " +data
-            flag_add= True
+            data = " " + data
+            flag_add = True
 
         if flag_add:
-          data = " " + data
-            
-        
-
+            data = " " + data
 
         last = 0
         for block in range(int(self.input_size/8), len(data), int(self.input_size/8)):
@@ -56,7 +121,7 @@ class ProcessText(ProcessData):
 
         self.data_processed = (array_x, None)
 
-    def process_file(self, file_name):
+    def process_file_deprecated(self, file_name):
         """Process the data from a file
 
         Args:
@@ -95,6 +160,13 @@ class ProcessText(ProcessData):
 
             data_tuple = (array_x, array_y)
 
-
         else:
             raise ProcessError("Error on file format")
+
+
+    def reshape_data(self, num_outputs):
+        for text_batch, label_batch in self.raw_train_ds.take(1):
+            for i in range(5):
+                print(text_batch.numpy()[i])
+                print(label_batch.numpy()[i])
+

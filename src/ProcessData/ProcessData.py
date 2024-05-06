@@ -4,11 +4,14 @@ import numpy as np
 from keras.api.utils import to_categorical
 import os
 
+
 class ProcessError(Exception):
     '''Raised when there is an error during a file processing'''
+
     def __init__(self, message, *args):
-        self.message = message  
-        super(ProcessError, self).__init__(message, *args) 
+        self.message = message
+        super(ProcessError, self).__init__(message, *args)
+
 
 class ProcessData():
 
@@ -39,10 +42,11 @@ class ProcessData():
             self.data_directory = data_directory
         else:
             raise ProcessError("Directory does not exist")
-        
+
         (self.x_train, self.y_train) = (np.array([]), np.array([]))
         (self.x_test, self.y_test) = (np.array([]), np.array([]))
-        self.data_processed = ((self.x_train, self.y_train), (self.x_test, self.y_test))
+        self.data_processed = (
+            (self.x_train, self.y_train), (self.x_test, self.y_test))
 
     def process(self):
         """Process the data from a set of files on a directory
@@ -53,17 +57,15 @@ class ProcessData():
         Returns:
             None
         """
-        
+
         list_of_files = os.listdir(self.data_directory)
 
         if "train" not in list_of_files or "test" not in list_of_files:
-                raise ProcessError("Folder doesnt contains 'test' or 'train' data" )
-
-
+            raise ProcessError("Folder doesnt contains 'test' or 'train' data")
 
         if len(list_of_files) == 0:
             raise ProcessError("Directory empty")
-        
+
         for file in list_of_files:
             dir_name = os.path.join(self.data_directory, file)
             try:
@@ -82,23 +84,22 @@ class ProcessData():
         """
         list_of_files = os.listdir(dir_name)
 
-
         if len(list_of_files) == 0:
             raise ProcessError("Directory empty")
-        
+
         for file in list_of_files:
             file_name = os.path.join(dir_name, file)
             try:
-                if "test" in dir_name[-6:]:
-                    self.process_test_file(file_name)
 
                 if "train" in dir_name[-6:]:
                     self.process_train_file(file_name)
+                if "test" in dir_name[-6:]:
+                    self.process_test_file(file_name)
             except ProcessError:
                 raise ProcessError("File not compatible")
             else:
-                self.data_processed = ((self.x_train, self.y_train), (self.x_test, self.y_test))
-
+                self.data_processed = (
+                    (self.x_train, self.y_train), (self.x_test, self.y_test))
 
     def process_train_file(self, file_name):
         """Process the data from a file for train
@@ -122,7 +123,7 @@ class ProcessData():
         """
         pass
 
-    def bin_array(self, x:str, len_of_arr:int)-> np.ndarray:
+    def bin_array(self, x: str, len_of_arr: int) -> np.ndarray:
         """Transforms a string of binary string to a numpy array
 
         Args:
@@ -135,14 +136,14 @@ class ProcessData():
         num_list = [int(char) for char in x]
 
         tam = len(num_list)
-        
+
         while tam <= len_of_arr:
             num_list = [0] + num_list
-            tam+=1
+            tam += 1
 
         return np.array(num_list)
 
-    def np_assign(self, x)->np.ndarray:
+    def np_assign(self, x) -> np.ndarray:
         """Assigns 1 to an index on a array of 0s
 
             Args:
@@ -151,23 +152,9 @@ class ProcessData():
             Returns:
                 The numpy array
                 """
-        np_array=np.zeros((10,),dtype=int)
-        np_array[x]=1
+        np_array = np.zeros((10,), dtype=int)
+        np_array[x] = 1
         return np_array
-    
 
     def reshape_data(self, num_outputs):
-        self.x_train = np.reshape(self.x_train, np.append(self.x_train.shape, (1)))
-        self.x_test = np.reshape(self.x_test, np.append(self.x_test.shape, (1)))
-
-        
-        self.x_train = self.x_train.astype('float32')
-        self.x_test = self.x_test.astype('float32')
-        self.x_train = self.x_train / 255
-        self.x_test = self.x_test / 255
-   
-        self.y_train = to_categorical(self.y_train, num_outputs)
-        self.y_test = to_categorical(self.y_test, num_outputs)
-
-
-        self.data_processed = ((self.x_train, self.y_train), (self.x_test, self.y_test))
+        pass

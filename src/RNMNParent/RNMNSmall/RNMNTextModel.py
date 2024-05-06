@@ -5,6 +5,6 @@ from RNMNApp import InputType
 
 class RNMNTextModel(RNMNSmall):
 
-    def __init__(self,  data, classes, config) -> None:
-        super().__init__(config=config)
+    def __init__(self,  data,  config) -> None:
+        super().__init__(data, config=config)
         
