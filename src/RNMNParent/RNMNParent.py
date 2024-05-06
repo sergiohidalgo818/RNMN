@@ -10,7 +10,7 @@ class RNMNParent(ABC):
     """
 
     model : Model
-    
+
     def create_neural_model(self):
         pass
 

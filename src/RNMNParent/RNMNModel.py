@@ -111,8 +111,8 @@ class RNMNModel(RNMNParent):
     def add_data_image_model(self, image_data: tuple):
         self.image_model.add_data_to_model(image_data)
 
-    def predict(self):
-        return self.model.predict_classes(self.text_model.data_x)
+    def predict(self, data):
+        return self.model.predict(data)
 
     def train(self, config_train: dict):
         history = self.model.fit(self.x_train, self.image_model.y_train, batch_size=16, epochs=config_train['epochs'], validation_data=(self.image_model.x_test, self.image_model.y_test), shuffle=True)

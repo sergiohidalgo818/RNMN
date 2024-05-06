@@ -159,8 +159,8 @@ class RNMNApp():
     def train(self, config_train):
         self.model.train(config_train=config_train)
 
-    def predict_data(self):
-        array = self.model.predict()
+    def predict_data(self, data):
+        array = self.model.predict(data)
 
 
 

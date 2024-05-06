@@ -23,6 +23,7 @@ class RNMNImageModel(RNMNSmall):
 
         (self.x_train, self.y_train), (self.x_test, self.y_test) = data
 
+
         inlayer = Input(shape=self.x_train.shape[
                 1:])
         aux_layer = Conv2D(filters=6, kernel_size=(

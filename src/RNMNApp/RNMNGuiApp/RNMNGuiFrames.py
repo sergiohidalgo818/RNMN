@@ -11,6 +11,8 @@ from RNMNParent import RNMNParams
 import threading
 import time
 import os
+import numpy as np
+from PIL import Image, ImageDraw
 
 
 class CustomFrame(customtkinter.CTkFrame):
@@ -70,7 +72,7 @@ class MainPage(CustomFrame):
                 ErrorWindow(master=self.master, controller=self.controller,
                             message="Porfavor introduzca un modelo serializado en .pkl")
             else:
-                self.controller.show_frame("SelectDataPage")
+                self.controller.show_frame("MenuSelectPage")
 
 
 class SelectDataPage(CustomFrame):
@@ -205,7 +207,6 @@ class SelectDataPage(CustomFrame):
                     self._data_counter += 1
                     self._data_to_clear.add(self._recover_text_button)
 
-
     def _load_audio_data(self):
         directory = customtkinter.filedialog.askdirectory(initialdir=os.path.join(self.logic_app.workdir, "data"),
                                                           title="Seleccione un directorio de datos de audio")
@@ -265,9 +266,6 @@ class SelectDataPage(CustomFrame):
                 for fun in self._data_to_clear.copy():
                     fun()
 
-            if self.logic_app._has_model:
-                self.controller.show_frame("MenuSelectPage")
-            else:
                 self.controller.show_frame("MainPage")
 
     def _accept(self):
@@ -287,12 +285,8 @@ class SelectDataPage(CustomFrame):
                 self.master, name="window_accept")
 
             if boolvar.get():
-                if self.logic_app._has_model:
-                    self.logic_app.add_data_to_model()
-                    self.controller.show_frame("MenuSelectPage")
-                else:
-                    self.logic_app.create_model()
-                    self.controller.show_frame("HiperparametersPage")
+                self.logic_app.create_model()
+                self.controller.show_frame("HiperparametersPage")
 
     def update_custom(self):
 
@@ -439,7 +433,7 @@ class CreateModelPage(CustomFrame):
             if var_image.get():
                 number_of_models += 1
                 params_dict['image_config'] = self._get_params("imagen")
-        
+
         except ValidationTabError:
             ErrorWindow(master=self.master, controller=self.controller,
                         message="Porfavor introduzca un valor numérico superior\na 0 en el número de entradas y salidas")
@@ -461,11 +455,11 @@ class CreateModelPage(CustomFrame):
 
     def _load(self):
         file_config = customtkinter.filedialog.askopenfile(initialdir=self.logic_app.config_path,
-                                                         title="Seleciona un archivo de configuración",
-                                                         filetypes=(("JSON files",
-                                                                     "*.json*"),
-                                                                    ("all files",
-                                                                     "*.*")))
+                                                           title="Seleciona un archivo de configuración",
+                                                           filetypes=(("JSON files",
+                                                                       "*.json*"),
+                                                                      ("all files",
+                                                                       "*.*")))
         if file_config != None:
             try:
                 params_dict = self.logic_app.json_transform(file_config.read())
@@ -667,12 +661,6 @@ class MenuSelectPage(CustomFrame):
             height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
         button_config.place(relx=0.5, rely=0.39, anchor=customtkinter.CENTER)
 
-        button_load_data = customtkinter.CTkButton(
-            self.label, text="Cargar otros datos", command=self._new_data, font=self._button_font, width=150,
-            height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
-        button_load_data.place(relx=0.5, rely=0.52,
-                               anchor=customtkinter.CENTER)
-
         button_back_start = customtkinter.CTkButton(
             self, text="Inicio", command=self._cancel, font=self._button_font, width=150,
             height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
@@ -687,20 +675,19 @@ class MenuSelectPage(CustomFrame):
     def _config(self):
         self.controller.show_frame("HiperparametersPage")
 
-    def _new_data(self):
-        self.controller.show_frame("SelectDataPage")
-
     def _predict(self):
-
-        self.logic_app.predict_data()
-        self.controller.show_frame("ResultsPage")
+        self.controller.show_frame("PredictPage")
 
     def _train(self):
         self.controller.show_frame("TrainingPage")
 
     def _save_model(self):
         directory = customtkinter.filedialog.asksaveasfilename(initialdir="./",
-                                                               title="Seleccione donde guardar el fichero")
+                                                               title="Seleccione donde guardar el fichero",
+                                                               filetypes=(("Pickle files",
+                                                                           "*.pkl*"),
+                                                                          ("all files",
+                                                                           "*.*")))
         if len(directory) > 0:
             self.logic_app.save_model(directory)
 
@@ -819,6 +806,123 @@ class TrainingPage(CustomFrame):
 
         self.button_create.place(relx=0.8, rely=0.9, anchor=customtkinter.W)
         self.button_cancel.place(relx=0.2, rely=0.9, anchor=customtkinter.E)
+
+
+class PredictPage(CustomFrame):
+
+    prevPoint = [0, 0]
+    currentPoint = [0, 0]
+
+    penColor = "black"
+    stroke = 1
+
+    canvas_data = []
+
+    shapeFill = "black"
+    width = 0
+    height = 0
+    white = (255, 255, 255)
+    black = (0, 0, 0)
+
+    def __init__(self, logic_app, parent, controller):
+        super().__init__(logic_app, parent, controller)
+
+        self.logic_app = logic_app
+        self.controller = controller
+
+        title = customtkinter.CTkLabel(
+            self, text="Ajuste los parámetros de entrenamiento", font=self._title_font)
+        title.place(relx=0.5, rely=0.1, anchor=customtkinter.CENTER)
+
+        self.label = CustomLabel(master=self)
+        self.label.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
+
+        self.image1 = Image.new("RGB", (28, 28), self.white)
+        self.draw = ImageDraw.Draw(self.image1)
+
+        # Making a Canvas
+        self.canvas = customtkinter.CTkCanvas(
+            self.label, height=280, width=280, bg="white")
+        self.canvas.grid(row=0, column=0)
+        self.canvas.place(relx=0.5, rely=0.4, anchor=customtkinter.CENTER)
+        self.canvas.config(cursor="pencil")
+
+        button_delete = customtkinter.CTkButton(
+            self.label, text="Borrar", command=self.clearScreen, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
+        button_delete.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
+
+        button_create = customtkinter.CTkButton(
+            self, text="Introducir", command=self._confirm, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="lime green", hover_color="forest green")
+        button_create.place(relx=0.8, rely=0.9, anchor=customtkinter.W)
+
+        # Event Binding
+        self.canvas.bind("<B1-Motion>", self.paint)
+        self.canvas.bind("<ButtonRelease-1>", self.paint)
+        self.canvas.bind("<Button-1>", self.paint)
+
+    def _confirm(self):
+        params = list()
+
+        numpydata = np.array(self.image1)
+        np.set_printoptions(threshold = np.inf)
+        print(numpydata)
+        self.image1=self.image1.convert("1")
+
+        filename = "my_drawing.jpg"
+        numpydata = np.array(self.image1)
+        numpydata = np.where(numpydata>128, 255, 0)
+
+
+        numpydata = np.reshape(
+            numpydata, np.append(numpydata.shape, (1)))
+
+        numpydata = np.reshape(
+            numpydata, np.append((1), numpydata.shape))
+
+        numpydata = numpydata.astype('float32')
+        numpydata = numpydata / 255
+        params.append(numpydata)
+
+        print(self.logic_app.model.model.predict(params ))
+        #self.logic_app.predict_data(list())
+
+        self.image1.save(filename)
+
+        # Clear Screen
+    def clearScreen(self):
+        self.canvas.delete("all")
+        del self.image1
+        del self.draw
+        self.image1 = Image.new("RGB", (28, 28), self.white)
+        self.draw = ImageDraw.Draw(self.image1)
+
+    def paint(self, event):
+
+        x = event.x
+        y = event.y
+
+        self.currentPoint = [x, y]
+
+        if self.prevPoint != [0, 0]:
+            self.canvas.create_polygon(
+                self.prevPoint[0],
+                self.prevPoint[1],
+                self.currentPoint[0],
+                self.currentPoint[1],
+                fill="black",
+                width=10,
+            )
+            self.draw.line([int(self.prevPoint[0]/10),
+                            int(self.prevPoint[1]/10),
+                            int(self.currentPoint[0]/10),
+                            int(self.currentPoint[1]/10)], self.black)
+
+        self.prevPoint = self.currentPoint
+
+        if event.type == "5":
+            self.prevPoint = [0, 0]
 
 
 class ResultsPage(CustomFrame):

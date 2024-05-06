@@ -83,6 +83,7 @@ class ProcessImage(ProcessData):
 
 
     def reshape_data(self, num_outputs):
+
         self.x_train = np.reshape(
             self.x_train, np.append(self.x_train.shape, (1)))
         self.x_test = np.reshape(
