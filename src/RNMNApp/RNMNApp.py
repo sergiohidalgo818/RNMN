@@ -115,6 +115,7 @@ class RNMNApp():
             except pickle.UnpicklingError as ex:
                 raise ImportError("Error while importing model")
             else:
+                self.model
                 self._has_model = True
 
     def load_config(self, directory: str):

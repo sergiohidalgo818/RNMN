@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: class ProcessAudio</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><strong>ProcessData.ProcessAudio</strong> = <a name="ProcessData.ProcessAudio">class ProcessAudio</a>(<a href="ProcessData.ProcessData.html#ProcessData">ProcessData.ProcessData.ProcessData</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>ProcessData.ProcessAudio(data_directory)&nbsp;-&amp;gt;&nbsp;None<br>
+&nbsp;<br>
+This&nbsp;class&nbsp;will&nbsp;process&nbsp;the&nbsp;audio&nbsp;input&nbsp;data&nbsp;before&nbsp;its&nbsp;sended&nbsp;to&nbsp;the<br>
+neural&nbsp;network.&nbsp;It&nbsp;inherits&nbsp;from&nbsp;ProcessData<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="ProcessData.ProcessAudio.html#ProcessAudio">ProcessAudio</a></dd>
+<dd><a href="ProcessData.ProcessData.html#ProcessData">ProcessData.ProcessData.ProcessData</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="ProcessAudio-process_file"><strong>process_file</strong></a>(self, file_name)</dt><dd><tt>Process&nbsp;the&nbsp;data&nbsp;from&nbsp;a&nbsp;audio<br>
+&nbsp;<br>
+Args:<br>
+file_name&nbsp;(str):&nbsp;path&nbsp;to&nbsp;the&nbsp;file<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__annotations__</strong> = {}</dl>
+
+<hr>
+Methods inherited from <a href="ProcessData.ProcessData.html#ProcessData">ProcessData.ProcessData.ProcessData</a>:<br>
+<dl><dt><a name="ProcessAudio-__init__"><strong>__init__</strong></a>(self, data_directory) -&gt; None</dt><dd><tt>Initializes&nbsp;the&nbsp;ProcessedData&nbsp;class<br>
+&nbsp;<br>
+Args:<br>
+data_directory&nbsp;(str):&nbsp;The&nbsp;directory&nbsp;location&nbsp;of&nbsp;the&nbsp;data<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="ProcessAudio-bin_array"><strong>bin_array</strong></a>(self, x: str, len_of_arr: int) -&gt; numpy.ndarray</dt><dd><tt>Transforms&nbsp;a&nbsp;string&nbsp;of&nbsp;binary&nbsp;string&nbsp;to&nbsp;a&nbsp;numpy&nbsp;array<br>
+&nbsp;<br>
+Args:<br>
+x&nbsp;(str):&nbsp;binary&nbsp;string<br>
+len_of_arr&nbsp;(int):&nbsp;length&nbsp;of&nbsp;the&nbsp;final&nbsp;array<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;numpy&nbsp;array</tt></dd></dl>
+
+<dl><dt><a name="ProcessAudio-np_assign"><strong>np_assign</strong></a>(self, x) -&gt; numpy.ndarray</dt><dd><tt>Assigns&nbsp;1&nbsp;to&nbsp;an&nbsp;index&nbsp;on&nbsp;a&nbsp;array&nbsp;of&nbsp;0s<br>
+&nbsp;<br>
+Args:<br>
+x&nbsp;(int):&nbsp;index&nbsp;of&nbsp;the&nbsp;value<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;numpy&nbsp;array</tt></dd></dl>
+
+<dl><dt><a name="ProcessAudio-process"><strong>process</strong></a>(self)</dt><dd><tt>Process&nbsp;the&nbsp;data&nbsp;from&nbsp;a&nbsp;set&nbsp;of&nbsp;files&nbsp;on&nbsp;a&nbsp;directory<br>
+&nbsp;<br>
+Args:<br>
+None<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="ProcessAudio-process_dir"><strong>process_dir</strong></a>(self, dir_name)</dt><dd><tt>Process&nbsp;the&nbsp;directory&nbsp;depending&nbsp;if&nbsp;its&nbsp;for&nbsp;test&nbsp;or&nbsp;train<br>
+&nbsp;<br>
+Args:<br>
+dir_name&nbsp;(str)<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="ProcessAudio-process_test_file"><strong>process_test_file</strong></a>(self, file_name)</dt><dd><tt>Process&nbsp;the&nbsp;data&nbsp;from&nbsp;a&nbsp;file&nbsp;for&nbsp;train<br>
+&nbsp;<br>
+Args:<br>
+file_name&nbsp;(str):&nbsp;path&nbsp;to&nbsp;the&nbsp;file<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="ProcessAudio-process_train_file"><strong>process_train_file</strong></a>(self, file_name)</dt><dd><tt>Process&nbsp;the&nbsp;data&nbsp;from&nbsp;a&nbsp;file&nbsp;for&nbsp;train<br>
+&nbsp;<br>
+Args:<br>
+file_name&nbsp;(str):&nbsp;path&nbsp;to&nbsp;the&nbsp;file<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="ProcessAudio-reshape_data"><strong>reshape_data</strong></a>(self, num_outputs)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="ProcessData.ProcessData.html#ProcessData">ProcessData.ProcessData.ProcessData</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table>
+</body></html>

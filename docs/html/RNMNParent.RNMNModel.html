@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: class RNMNModel</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><strong>RNMNParent.RNMNModel</strong> = <a name="RNMNParent.RNMNModel">class RNMNModel</a>(<a href="RNMNParent.RNMNParent.html#RNMNParent">RNMNParent.RNMNParent.RNMNParent</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>RNMNParent.RNMNModel(**kwargs)&nbsp;-&amp;gt;&nbsp;None<br>
+&nbsp;<br>
+The&nbsp;RNMNModel&nbsp;class&nbsp;will&nbsp;create&nbsp;the&nbsp;big&nbsp;Model&nbsp;for&nbsp;a&nbsp;given<br>
+datasets&nbsp;or&nbsp;load&nbsp;a&nbsp;previous&nbsp;one<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="RNMNParent.RNMNModel.html#RNMNModel">RNMNModel</a></dd>
+<dd><a href="RNMNParent.RNMNParent.html#RNMNParent">RNMNParent.RNMNParent.RNMNParent</a></dd>
+<dd><a href="abc.html#ABC">abc.ABC</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="RNMNModel-__init__"><strong>__init__</strong></a>(self, **kwargs) -&gt; None</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="RNMNModel-add_data_audio_model"><strong>add_data_audio_model</strong></a>(self, audio_data: tuple)</dt></dl>
+
+<dl><dt><a name="RNMNModel-add_data_image_model"><strong>add_data_image_model</strong></a>(self, image_data: tuple)</dt></dl>
+
+<dl><dt><a name="RNMNModel-add_data_text_model"><strong>add_data_text_model</strong></a>(self, text_data: tuple)</dt></dl>
+
+<dl><dt><a name="RNMNModel-compile_model"><strong>compile_model</strong></a>(self, parameters)</dt><dd><tt>Compiles&nbsp;the&nbsp;model&nbsp;(if&nbsp;its&nbsp;not&nbsp;text)<br>
+&nbsp;<br>
+Args:<br>
+parameters&nbsp;(dict):&nbsp;dictionary&nbsp;with&nbsp;values<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None</tt></dd></dl>
+
+<dl><dt><a name="RNMNModel-predict"><strong>predict</strong></a>(self, data)</dt></dl>
+
+<dl><dt><a name="RNMNModel-train"><strong>train</strong></a>(self, config_train: dict)</dt><dd><tt>Trains&nbsp;the&nbsp;model<br>
+&nbsp;<br>
+Args:<br>
+config_train&nbsp;(dict):&nbsp;dictionary&nbsp;with&nbsp;the&nbsp;epochs<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__abstractmethods__</strong> = frozenset()</dl>
+
+<dl><dt><strong>__annotations__</strong> = {'audio_config': &lt;class 'dict'&gt;, 'audio_model': &lt;class 'RNMNParent.RNMNSmall.RNMNAudioModel.RNMNAudioModel'&gt;, 'image_config': &lt;class 'dict'&gt;, 'image_model': &lt;class 'RNMNParent.RNMNSmall.RNMNImageModel.RNMNImageModel'&gt;, 'models': &lt;class 'set'&gt;, 'text_config': &lt;class 'dict'&gt;, 'text_model': &lt;class 'RNMNParent.RNMNSmall.RNMNTextModel.RNMNTextModel'&gt;, 'x_test': &lt;class 'list'&gt;, 'x_train': &lt;class 'list'&gt;, 'y_test': &lt;class 'list'&gt;, ...}</dl>
+
+<hr>
+Methods inherited from <a href="RNMNParent.RNMNParent.html#RNMNParent">RNMNParent.RNMNParent.RNMNParent</a>:<br>
+<dl><dt><a name="RNMNModel-compile_neural_model"><strong>compile_neural_model</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="RNMNModel-create_neural_model"><strong>create_neural_model</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="RNMNParent.RNMNParent.html#RNMNParent">RNMNParent.RNMNParent.RNMNParent</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table>
+</body></html>

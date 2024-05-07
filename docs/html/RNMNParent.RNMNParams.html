@@ -1,0 +1,283 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module RNMNParent.RNMNParams</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="RNMNParent.html"><font color="#ffffff">RNMNParent</font></a>.RNMNParams</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/sergio/Escritorio/uni/4o/2o_cuatri/proyecto_neuro/RNMN/src/RNMNParent/RNMNParams.py">/home/sergio/Escritorio/uni/4o/2o_cuatri/proyecto_neuro/RNMN/src/RNMNParent/RNMNParams.py</a></font></td></tr></table>
+    <p><tt>This&nbsp;file&nbsp;defines&nbsp;the&nbsp;InputType&nbsp;<a href="enum.html#Enum">Enum</a></tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="keras.api.metrics.html">keras.api.metrics</a><br>
+</td><td width="25%" valign=top></td><td width="25%" valign=top></td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="enum.html#Enum">enum.Enum</a>(<a href="builtins.html#object">builtins.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="RNMNParent.RNMNParams.html#RNMNActivations">RNMNActivations</a>
+</font></dt><dt><font face="helvetica, arial"><a href="RNMNParent.RNMNParams.html#RNMNLosses">RNMNLosses</a>
+</font></dt><dt><font face="helvetica, arial"><a href="RNMNParent.RNMNParams.html#RNMNMetrics">RNMNMetrics</a>
+</font></dt><dt><font face="helvetica, arial"><a href="RNMNParent.RNMNParams.html#RNMNMetricsTraduction">RNMNMetricsTraduction</a>
+</font></dt><dt><font face="helvetica, arial"><a href="RNMNParent.RNMNParams.html#RNMNOptimizers">RNMNOptimizers</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="RNMNActivations">class <strong>RNMNActivations</strong></a>(<a href="enum.html#Enum">enum.Enum</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#RNMNActivations">RNMNActivations</a>(value,&nbsp;names=None,&nbsp;*,&nbsp;module=None,&nbsp;qualname=None,&nbsp;type=None,&nbsp;start=1)<br>
+&nbsp;<br>
+This&nbsp;enum&nbsp;is&nbsp;for&nbsp;the&nbsp;type&nbsp;of&nbsp;activations<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="RNMNParent.RNMNParams.html#RNMNActivations">RNMNActivations</a></dd>
+<dd><a href="enum.html#Enum">enum.Enum</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>RELU</strong> = &lt;RNMNActivations.RELU: 'relu'&gt;</dl>
+
+<dl><dt><strong>SIGMOID</strong> = &lt;RNMNActivations.SIGMOID: 'sigmoid'&gt;</dl>
+
+<dl><dt><strong>SOFTMAX</strong> = &lt;RNMNActivations.SOFTMAX: 'softmax'&gt;</dl>
+
+<dl><dt><strong>SOFTPLUS</strong> = &lt;RNMNActivations.SOFTPLUS: 'softplus'&gt;</dl>
+
+<hr>
+Data descriptors inherited from <a href="enum.html#Enum">enum.Enum</a>:<br>
+<dl><dt><strong>name</strong></dt>
+<dd><tt>The&nbsp;name&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<dl><dt><strong>value</strong></dt>
+<dd><tt>The&nbsp;value&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<hr>
+Readonly properties inherited from <a href="enum.html#EnumMeta">enum.EnumMeta</a>:<br>
+<dl><dt><strong>__members__</strong></dt>
+<dd><tt>Returns&nbsp;a&nbsp;mapping&nbsp;of&nbsp;member&nbsp;name-&gt;value.<br>
+&nbsp;<br>
+This&nbsp;mapping&nbsp;lists&nbsp;all&nbsp;enum&nbsp;members,&nbsp;including&nbsp;aliases.&nbsp;Note&nbsp;that&nbsp;this<br>
+is&nbsp;a&nbsp;read-only&nbsp;view&nbsp;of&nbsp;the&nbsp;internal&nbsp;mapping.</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="RNMNLosses">class <strong>RNMNLosses</strong></a>(<a href="enum.html#Enum">enum.Enum</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#RNMNLosses">RNMNLosses</a>(value,&nbsp;names=None,&nbsp;*,&nbsp;module=None,&nbsp;qualname=None,&nbsp;type=None,&nbsp;start=1)<br>
+&nbsp;<br>
+This&nbsp;enum&nbsp;is&nbsp;for&nbsp;the&nbsp;type&nbsp;of&nbsp;losses<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="RNMNParent.RNMNParams.html#RNMNLosses">RNMNLosses</a></dd>
+<dd><a href="enum.html#Enum">enum.Enum</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>BINARY_CROSS</strong> = &lt;RNMNLosses.BINARY_CROSS: 'binary_crossentropy'&gt;</dl>
+
+<dl><dt><strong>CATT_CROSS</strong> = &lt;RNMNLosses.CATT_CROSS: 'categorical_crossentropy'&gt;</dl>
+
+<dl><dt><strong>MSE</strong> = &lt;RNMNLosses.MSE: 'mse'&gt;</dl>
+
+<hr>
+Data descriptors inherited from <a href="enum.html#Enum">enum.Enum</a>:<br>
+<dl><dt><strong>name</strong></dt>
+<dd><tt>The&nbsp;name&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<dl><dt><strong>value</strong></dt>
+<dd><tt>The&nbsp;value&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<hr>
+Readonly properties inherited from <a href="enum.html#EnumMeta">enum.EnumMeta</a>:<br>
+<dl><dt><strong>__members__</strong></dt>
+<dd><tt>Returns&nbsp;a&nbsp;mapping&nbsp;of&nbsp;member&nbsp;name-&gt;value.<br>
+&nbsp;<br>
+This&nbsp;mapping&nbsp;lists&nbsp;all&nbsp;enum&nbsp;members,&nbsp;including&nbsp;aliases.&nbsp;Note&nbsp;that&nbsp;this<br>
+is&nbsp;a&nbsp;read-only&nbsp;view&nbsp;of&nbsp;the&nbsp;internal&nbsp;mapping.</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="RNMNMetrics">class <strong>RNMNMetrics</strong></a>(<a href="enum.html#Enum">enum.Enum</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#RNMNMetrics">RNMNMetrics</a>(value,&nbsp;names=None,&nbsp;*,&nbsp;module=None,&nbsp;qualname=None,&nbsp;type=None,&nbsp;start=1)<br>
+&nbsp;<br>
+This&nbsp;enum&nbsp;is&nbsp;for&nbsp;the&nbsp;type&nbsp;of&nbsp;metrics<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="RNMNParent.RNMNParams.html#RNMNMetrics">RNMNMetrics</a></dd>
+<dd><a href="enum.html#Enum">enum.Enum</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>ACCURACY_NAME</strong> = &lt;RNMNMetrics.ACCURACY_NAME: 'accuracy'&gt;</dl>
+
+<dl><dt><strong>ACC_NAME</strong> = &lt;RNMNMetrics.ACC_NAME: 'binary_accuracy'&gt;</dl>
+
+<dl><dt><strong>AUC_NAME</strong> = &lt;RNMNMetrics.AUC_NAME: 'auc'&gt;</dl>
+
+<dl><dt><strong>FN_NAME</strong> = &lt;RNMNMetrics.FN_NAME: 'false_negatives'&gt;</dl>
+
+<dl><dt><strong>FP_NAME</strong> = &lt;RNMNMetrics.FP_NAME: 'false_positives'&gt;</dl>
+
+<dl><dt><strong>P_NAME</strong> = &lt;RNMNMetrics.P_NAME: 'precision'&gt;</dl>
+
+<dl><dt><strong>R_NAME</strong> = &lt;RNMNMetrics.R_NAME: 'recall'&gt;</dl>
+
+<dl><dt><strong>TN_NAME</strong> = &lt;RNMNMetrics.TN_NAME: 'true_negatives'&gt;</dl>
+
+<dl><dt><strong>TP_NAME</strong> = &lt;RNMNMetrics.TP_NAME: 'true_positives'&gt;</dl>
+
+<hr>
+Data descriptors inherited from <a href="enum.html#Enum">enum.Enum</a>:<br>
+<dl><dt><strong>name</strong></dt>
+<dd><tt>The&nbsp;name&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<dl><dt><strong>value</strong></dt>
+<dd><tt>The&nbsp;value&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<hr>
+Readonly properties inherited from <a href="enum.html#EnumMeta">enum.EnumMeta</a>:<br>
+<dl><dt><strong>__members__</strong></dt>
+<dd><tt>Returns&nbsp;a&nbsp;mapping&nbsp;of&nbsp;member&nbsp;name-&gt;value.<br>
+&nbsp;<br>
+This&nbsp;mapping&nbsp;lists&nbsp;all&nbsp;enum&nbsp;members,&nbsp;including&nbsp;aliases.&nbsp;Note&nbsp;that&nbsp;this<br>
+is&nbsp;a&nbsp;read-only&nbsp;view&nbsp;of&nbsp;the&nbsp;internal&nbsp;mapping.</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="RNMNMetricsTraduction">class <strong>RNMNMetricsTraduction</strong></a>(<a href="enum.html#Enum">enum.Enum</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#RNMNMetricsTraduction">RNMNMetricsTraduction</a>(value,&nbsp;names=None,&nbsp;*,&nbsp;module=None,&nbsp;qualname=None,&nbsp;type=None,&nbsp;start=1)<br>
+&nbsp;<br>
+An&nbsp;enumeration.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="RNMNParent.RNMNParams.html#RNMNMetricsTraduction">RNMNMetricsTraduction</a></dd>
+<dd><a href="enum.html#Enum">enum.Enum</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>ACC</strong> = &lt;RNMNMetricsTraduction.ACC: (&lt;BinaryAccuracy name=ACC&gt;, 'Binary Accuracy')&gt;</dl>
+
+<dl><dt><strong>ACCURACY</strong> = &lt;RNMNMetricsTraduction.ACCURACY: (&lt;Accuracy name=accuracy&gt;, 'Accuracy')&gt;</dl>
+
+<dl><dt><strong>AUC</strong> = &lt;RNMNMetricsTraduction.AUC: (&lt;AUC name=AUC&gt;, 'AUC')&gt;</dl>
+
+<dl><dt><strong>FN</strong> = &lt;RNMNMetricsTraduction.FN: (&lt;FalseNegatives name=FN&gt;, 'False Negatives')&gt;</dl>
+
+<dl><dt><strong>FP</strong> = &lt;RNMNMetricsTraduction.FP: (&lt;FalsePositives name=FP&gt;, 'False Positives')&gt;</dl>
+
+<dl><dt><strong>P</strong> = &lt;RNMNMetricsTraduction.P: (&lt;Precision name=P&gt;, 'Precision')&gt;</dl>
+
+<dl><dt><strong>R</strong> = &lt;RNMNMetricsTraduction.R: (&lt;Recall name=R&gt;, 'Recall')&gt;</dl>
+
+<dl><dt><strong>TN</strong> = &lt;RNMNMetricsTraduction.TN: (&lt;TrueNegatives name=TN&gt;, 'True Negatives')&gt;</dl>
+
+<dl><dt><strong>TP</strong> = &lt;RNMNMetricsTraduction.TP: (&lt;TruePositives name=TP&gt;, 'True Positives')&gt;</dl>
+
+<hr>
+Data descriptors inherited from <a href="enum.html#Enum">enum.Enum</a>:<br>
+<dl><dt><strong>name</strong></dt>
+<dd><tt>The&nbsp;name&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<dl><dt><strong>value</strong></dt>
+<dd><tt>The&nbsp;value&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<hr>
+Readonly properties inherited from <a href="enum.html#EnumMeta">enum.EnumMeta</a>:<br>
+<dl><dt><strong>__members__</strong></dt>
+<dd><tt>Returns&nbsp;a&nbsp;mapping&nbsp;of&nbsp;member&nbsp;name-&gt;value.<br>
+&nbsp;<br>
+This&nbsp;mapping&nbsp;lists&nbsp;all&nbsp;enum&nbsp;members,&nbsp;including&nbsp;aliases.&nbsp;Note&nbsp;that&nbsp;this<br>
+is&nbsp;a&nbsp;read-only&nbsp;view&nbsp;of&nbsp;the&nbsp;internal&nbsp;mapping.</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="RNMNOptimizers">class <strong>RNMNOptimizers</strong></a>(<a href="enum.html#Enum">enum.Enum</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#RNMNOptimizers">RNMNOptimizers</a>(value,&nbsp;names=None,&nbsp;*,&nbsp;module=None,&nbsp;qualname=None,&nbsp;type=None,&nbsp;start=1)<br>
+&nbsp;<br>
+This&nbsp;enum&nbsp;is&nbsp;for&nbsp;the&nbsp;type&nbsp;of&nbsp;optimizers<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="RNMNParent.RNMNParams.html#RNMNOptimizers">RNMNOptimizers</a></dd>
+<dd><a href="enum.html#Enum">enum.Enum</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>ADADELTA</strong> = &lt;RNMNOptimizers.ADADELTA: 'adadelta'&gt;</dl>
+
+<dl><dt><strong>ADAFACTOR</strong> = &lt;RNMNOptimizers.ADAFACTOR: 'adafactor'&gt;</dl>
+
+<dl><dt><strong>ADAGRAD</strong> = &lt;RNMNOptimizers.ADAGRAD: 'adagrad'&gt;</dl>
+
+<dl><dt><strong>ADAM</strong> = &lt;RNMNOptimizers.ADAM: 'adam'&gt;</dl>
+
+<dl><dt><strong>ADAMAX</strong> = &lt;RNMNOptimizers.ADAMAX: 'adamax'&gt;</dl>
+
+<dl><dt><strong>ADAMW</strong> = &lt;RNMNOptimizers.ADAMW: 'adamw'&gt;</dl>
+
+<dl><dt><strong>FTRL</strong> = &lt;RNMNOptimizers.FTRL: 'ftrl'&gt;</dl>
+
+<dl><dt><strong>LION</strong> = &lt;RNMNOptimizers.LION: 'lion'&gt;</dl>
+
+<dl><dt><strong>NADAM</strong> = &lt;RNMNOptimizers.NADAM: 'nadam'&gt;</dl>
+
+<dl><dt><strong>RMSprop</strong> = &lt;RNMNOptimizers.RMSprop: 'rmsprop'&gt;</dl>
+
+<dl><dt><strong>SGD</strong> = &lt;RNMNOptimizers.SGD: 'SGD'&gt;</dl>
+
+<hr>
+Data descriptors inherited from <a href="enum.html#Enum">enum.Enum</a>:<br>
+<dl><dt><strong>name</strong></dt>
+<dd><tt>The&nbsp;name&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<dl><dt><strong>value</strong></dt>
+<dd><tt>The&nbsp;value&nbsp;of&nbsp;the&nbsp;Enum&nbsp;member.</tt></dd>
+</dl>
+<hr>
+Readonly properties inherited from <a href="enum.html#EnumMeta">enum.EnumMeta</a>:<br>
+<dl><dt><strong>__members__</strong></dt>
+<dd><tt>Returns&nbsp;a&nbsp;mapping&nbsp;of&nbsp;member&nbsp;name-&gt;value.<br>
+&nbsp;<br>
+This&nbsp;mapping&nbsp;lists&nbsp;all&nbsp;enum&nbsp;members,&nbsp;including&nbsp;aliases.&nbsp;Note&nbsp;that&nbsp;this<br>
+is&nbsp;a&nbsp;read-only&nbsp;view&nbsp;of&nbsp;the&nbsp;internal&nbsp;mapping.</tt></dd>
+</dl>
+</td></tr></table></td></tr></table>
+</body></html>

@@ -887,7 +887,7 @@ class PredictPage(CustomFrame):
     def _confirm(self):
         params = list()
 
-        if self.controller.models['image']:
+        if InputType.IMAGE in self.logic_app.model.models:
 
             self.image1 = self.image1.resize((28, 28))
 
@@ -902,7 +902,7 @@ class PredictPage(CustomFrame):
             numpydata = numpydata / 255
             params.append(numpydata)
 
-        if self.controller.models['text']:
+        if InputType.TEXT in self.logic_app.model.models:
             params.append("cero")
 
         predicted = self.logic_app.predict_data(params)
