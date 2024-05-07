@@ -11,13 +11,10 @@ class RNMNParent(ABC):
 
     model : Model
 
-    def create_neural_model(self):
-        pass
-
-    def compile_neural_model(self):
+    def compile_neural_model(self, params):
         pass
     
-    def predict(self) -> int:
+    def predict(self, data) -> int:
         pass
 
     def train(self):

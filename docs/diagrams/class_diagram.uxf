@@ -1,4 +1,4 @@
-<diagram program="umletino" version="15.1"><zoom_level>9</zoom_level><element><id>UMLClass</id><coordinates><x>2440</x><y>1026</y><w>189</w><h>135</h></coordinates><panel_attributes>&lt;&lt;Enumeración tipos de datos&gt;&gt;
+<diagram program="umletino" version="15.1"><zoom_level>8</zoom_level><element><id>UMLClass</id><coordinates><x>2088</x><y>952</y><w>168</w><h>120</h></coordinates><panel_attributes>&lt;&lt;Enumeración tipos de datos&gt;&gt;
 InputType
 --
 halign=center
@@ -7,12 +7,17 @@ TEXT
 
 AUDIO
 
-IMAGE</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1999</x><y>1197</y><w>414</w><h>225</h></coordinates><panel_attributes>&lt;&lt;Clase de la app&gt;&gt;
+IMAGE</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1696</x><y>1064</y><w>368</w><h>256</h></coordinates><panel_attributes>&lt;&lt;Clase de la app&gt;&gt;
 RNMNApp
 --
-+preprocessed_data_and_types : dict &lt;InputType : ProcessData)&gt;
-+processed_data_and_types : dict &lt;InputType : tuple(np.ndarray,np.ndarray)&gt;
-+model RNMNModel
++preprocessed_data_and_types: dict
++processed_data_and_types: dict
++model: RNMNModel
++app_gui: RNMNAppGui
+-no_gui: bool
++model_params:dict
++default_params:dict
+-has_model: bool
 --
 +start_app()
 +get_text_data(directory:str) 
@@ -23,93 +28,110 @@ RNMNApp
 +load_model(directory:str)
 +preprocess_data()
 +app_gui_start()
-+app_no_gui_star()</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>2116</x><y>1071</y><w>342</w><h>144</h></coordinates><panel_attributes>lt=&lt;..</panel_attributes><additional_attributes>10;140;10;10;360;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1207</x><y>1386</y><w>351</w><h>171</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo&gt;&gt;
++app_no_gui_star()</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1800</x><y>992</y><w>304</w><h>88</h></coordinates><panel_attributes>lt=&lt;..</panel_attributes><additional_attributes>10;90;10;10;360;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>992</x><y>1272</y><w>312</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo&gt;&gt;
 RNMNSmall
 --
-+data_x: np.ndarray
-+data_y: np.ndarray
-+predict(np.ndarray): float
-+train()</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1297</x><y>1125</y><w>765</w><h>90</h></coordinates><panel_attributes>lt=&lt;-
-m1=1</panel_attributes><additional_attributes>10;10;830;10;830;80</additional_attributes></element><element><id>UMLClass</id><coordinates><x>2134</x><y>1449</y><w>279</w><h>171</h></coordinates><panel_attributes>&lt;&lt;Clase de procesado&gt;&gt;
++x_train: np.ndarray
++y_train: np.ndarray
++x_test: np.ndarray
++y_test: np.ndarray
++num_inputs : tuple
+l+ayers_dict: dict 
+--
++add_data_to_model(self, data:tuple)</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1072</x><y>1040</y><w>680</w><h>40</h></coordinates><panel_attributes>lt=&lt;-
+m1=1</panel_attributes><additional_attributes>10;10;830;10;830;30</additional_attributes></element><element><id>UMLClass</id><coordinates><x>560</x><y>424</y><w>248</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Clase de procesado&gt;&gt;
 ProcessData
 --
-+data_directory: str 
-+`data_processed : np.array
++data_directory: str
++data_train_processed: tuple
++data_test_processed: tuple
++input_size: int
 --
 +process()
-+process_file(file_name : str)</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>2260</x><y>1611</y><w>27</w><h>234</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;240</additional_attributes></element><element><id>UMLClass</id><coordinates><x>2134</x><y>1827</y><w>261</w><h>81</h></coordinates><panel_attributes>&lt;&lt;Clase&gt;&gt;
++process_dir(dir_name : str)
++process_train_file(file_name: str)
++process_test_file(file_name: str)
++reshape_data(num_outputs:int)</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>672</x><y>568</y><w>24</w><h>208</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;240</additional_attributes></element><element><id>UMLClass</id><coordinates><x>560</x><y>760</y><w>232</w><h>72</h></coordinates><panel_attributes>&lt;&lt;Clase&gt;&gt;
 ProcessAudio
 --
-+process_file(file_name : str)
-
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1864</x><y>1827</y><w>261</w><h>81</h></coordinates><panel_attributes>&lt;&lt;Clase&gt;&gt;
++process_train_file(file_name: str)
++process_test_file(file_name: str)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>320</x><y>760</y><w>232</w><h>72</h></coordinates><panel_attributes>&lt;&lt;Clase&gt;&gt;
 ProcessText
 -
-+process_file(file_name : str)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>2404</x><y>1827</y><w>261</w><h>81</h></coordinates><panel_attributes>&lt;&lt;Clase&gt;&gt;
++process_dir(dir_name : str)
++process_train_file(file_name: str)
++process_test_file(file_name: str)</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>800</x><y>760</y><w>232</w><h>72</h></coordinates><panel_attributes>&lt;&lt;Clase&gt;&gt;
 ProcessImage
 --
-+process_file(file_name : str)</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1981</x><y>1611</y><w>234</w><h>234</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>240;10;240;140;10;140;10;240</additional_attributes></element><element><id>Relation</id><coordinates><x>2332</x><y>1611</y><w>225</w><h>234</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;140;230;140;230;240</additional_attributes></element><element><id>UMLClass</id><coordinates><x>964</x><y>1701</y><w>234</w><h>171</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo de texto&gt;&gt;
++process_train_file(file_name: str)
++process_test_file(file_name: str)</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>424</x><y>568</y><w>208</w><h>208</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>240;10;240;140;10;140;10;240</additional_attributes></element><element><id>Relation</id><coordinates><x>736</x><y>568</y><w>200</w><h>208</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;140;230;140;230;240</additional_attributes></element><element><id>UMLClass</id><coordinates><x>776</x><y>1552</y><w>208</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo de texto&gt;&gt;
 RNMNTextModel
 --
-+create_neural_model()
-
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1261</x><y>1701</y><w>234</w><h>171</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo de imagen&gt;&gt;
++train_special(self)
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1040</x><y>1552</y><w>208</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo de imagen&gt;&gt;
 RNMNImageModel
 --
-+create_neural_model()
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1072</x><y>1548</y><w>261</w><h>171</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>270;10;270;70;10;70;10;170</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1558</x><y>1701</y><w>234</w><h>171</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo de audio&gt;&gt;
+
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>872</x><y>1416</y><w>232</w><h>152</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>270;10;270;70;10;70;10;170</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1304</x><y>1552</y><w>208</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo de audio&gt;&gt;
 RNMNAudioModel
 --
-+create_neural_model()
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1369</x><y>1548</y><w>27</w><h>171</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;170</additional_attributes></element><element><id>Relation</id><coordinates><x>1432</x><y>1548</y><w>261</w><h>171</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;70;270;70;270;170</additional_attributes></element><element><id>UMLClass</id><coordinates><x>550</x><y>1701</y><w>351</w><h>171</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo&gt;&gt;
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1136</x><y>1416</y><w>24</w><h>152</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;170</additional_attributes></element><element><id>Relation</id><coordinates><x>1192</x><y>1416</y><w>232</w><h>152</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;70;270;70;270;170</additional_attributes></element><element><id>UMLClass</id><coordinates><x>408</x><y>1552</y><w>312</w><h>248</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo&gt;&gt;
 RNMNModel
 --
--processed_data_and_types : dict &lt;InputType : np.array&gt;
+text_config: dict
+audio_config: dict
+image_config: dict
+x_train : list
+y_train : list
+x_test : list
+y_test : list
+models : set
+
+
 --
-+create_neural_model()
++compile_model(parameters:dict)
 -create_text_model(text_data : tuple) 
 -create_audio_model(audio_data : tuple) 
 -create_image_model(video_data : tuple)
-+predict(np.ndarray) : int
-+train()</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>712</x><y>1503</y><w>513</w><h>216</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
-m1=3</panel_attributes><additional_attributes>550;10;10;10;10;220</additional_attributes></element><element><id>UMLClass</id><coordinates><x>955</x><y>1017</y><w>351</w><h>171</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo&gt;&gt;
-RNMNAbstract
++predict(data: np.ndarray) : np.ndarray
++train(config_train:dict)</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>552</x><y>1376</y><w>456</w><h>192</h></coordinates><panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=3</panel_attributes><additional_attributes>550;10;10;10;10;220</additional_attributes></element><element><id>UMLClass</id><coordinates><x>768</x><y>944</y><w>312</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Clase del modelo&gt;&gt;
+RNMNParent
 --
-+model : keras.models.Sequential
++model : keras.models.Model
 --
-+create_neural_model()
-+predict(np.ndarray) 
-+train()</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1234</x><y>1179</y><w>171</w><h>225</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;130;170;130;170;230</additional_attributes></element><element><id>Relation</id><coordinates><x>640</x><y>1179</y><w>405</w><h>540</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>430;10;430;130;10;130;10;580</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1918</x><y>810</y><w>243</w><h>171</h></coordinates><panel_attributes>&lt;&lt;Clase de la GUI de la app&gt;&gt;
++create_neural_model(compile_neural_model:dict)
++predict(data: list) 
++train()</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1016</x><y>1088</y><w>152</w><h>200</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;130;170;130;170;230</additional_attributes></element><element><id>Relation</id><coordinates><x>488</x><y>1088</y><w>360</w><h>480</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>430;10;430;140;10;130;10;580</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1624</x><y>760</y><w>216</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Clase de la GUI de la app&gt;&gt;
 RNMNGuiApp
 --
-+frames dict &lt;name:str : frame&gt;
++frames: dict
++models: dict
 --
-+show_frame()
-+open_error_window()
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>2089</x><y>972</y><w>36</w><h>243</h></coordinates><panel_attributes>lt=&lt;-
-m1=1</panel_attributes><additional_attributes>10;250;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>2062</x><y>972</y><w>36</w><h>243</h></coordinates><panel_attributes>lt=&lt;-
++show_frame()</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1776</x><y>904</y><w>32</w><h>176</h></coordinates><panel_attributes>lt=&lt;-
+m1=1</panel_attributes><additional_attributes>10;200;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1752</x><y>904</y><w>32</w><h>176</h></coordinates><panel_attributes>lt=&lt;-
 m1=1
-</panel_attributes><additional_attributes>10;10;10;250</additional_attributes></element><element><id>Relation</id><coordinates><x>2566</x><y>1152</y><w>135</w><h>99</h></coordinates><panel_attributes>lt=&lt;..</panel_attributes><additional_attributes>10;10;10;90;130;90</additional_attributes></element><element><id>UMLClass</id><coordinates><x>2683</x><y>1206</y><w>189</w><h>54</h></coordinates><panel_attributes>&lt;&lt;Error al importar&gt;&gt;
-ImportError</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>2593</x><y>1539</y><w>189</w><h>54</h></coordinates><panel_attributes>&lt;&lt;Error al procesar&gt;&gt;
-ProcessError</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>2404</x><y>1557</y><w>207</w><h>27</h></coordinates><panel_attributes>lt=&lt;..</panel_attributes><additional_attributes>10;10;210;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1333</x><y>882</y><w>243</w><h>171</h></coordinates><panel_attributes>&lt;&lt;Subclase de la ventanas de la app&gt;&gt;
+</panel_attributes><additional_attributes>10;10;10;200</additional_attributes></element><element><id>Relation</id><coordinates><x>2200</x><y>1064</y><w>120</w><h>88</h></coordinates><panel_attributes>lt=&lt;..</panel_attributes><additional_attributes>10;10;10;90;130;90</additional_attributes></element><element><id>UMLClass</id><coordinates><x>2304</x><y>1112</y><w>168</w><h>48</h></coordinates><panel_attributes>&lt;&lt;Error al importar&gt;&gt;
+ImportError</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>968</x><y>504</y><w>168</w><h>48</h></coordinates><panel_attributes>&lt;&lt;Error al procesar&gt;&gt;
+ProcessError</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>800</x><y>520</y><w>184</w><h>24</h></coordinates><panel_attributes>lt=&lt;..</panel_attributes><additional_attributes>10;10;210;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1104</x><y>824</y><w>216</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Subclase de la ventanas de la app&gt;&gt;
 AcceptWindow
 --
 -accept()
--cancel()</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1630</x><y>882</y><w>243</w><h>171</h></coordinates><panel_attributes>&lt;&lt;Subclase de la ventanas de la app&gt;&gt;
+-cancel()</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1368</x><y>824</y><w>216</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Subclase de la ventanas de la app&gt;&gt;
 ErrorWindow
 --
--accept()</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1477</x><y>639</y><w>243</w><h>171</h></coordinates><panel_attributes>&lt;&lt;Clase de la ventanas de la app&gt;&gt;
+-accept()</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1232</x><y>608</y><w>216</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Clase de la ventanas de la app&gt;&gt;
 CustomWindow
 --
 -title_font : tuple
 -button_font : tuple
 --
 -accept()
-_block_on_window</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1414</x><y>801</y><w>135</w><h>99</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>130;10;130;40;10;40;10;90</additional_attributes></element><element><id>Relation</id><coordinates><x>1657</x><y>801</y><w>153</w><h>99</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;50;150;50;150;90</additional_attributes></element><element><id>Relation</id><coordinates><x>1711</x><y>729</y><w>252</w><h>99</h></coordinates><panel_attributes>lt=&lt;-
+_block_on_window</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1176</x><y>752</y><w>120</w><h>88</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>130;10;130;40;10;40;10;90</additional_attributes></element><element><id>Relation</id><coordinates><x>1392</x><y>752</y><w>136</w><h>88</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;50;150;50;150;90</additional_attributes></element><element><id>Relation</id><coordinates><x>1440</x><y>688</y><w>224</w><h>88</h></coordinates><panel_attributes>lt=&lt;-
 m1=0..n
-</panel_attributes><additional_attributes>240;90;240;20;10;20</additional_attributes></element><element><id>Relation</id><coordinates><x>1972</x><y>378</y><w>135</w><h>450</h></coordinates><panel_attributes>lt=&lt;-
+</panel_attributes><additional_attributes>240;90;240;20;10;20</additional_attributes></element><element><id>Relation</id><coordinates><x>1672</x><y>376</y><w>120</w><h>400</h></coordinates><panel_attributes>lt=&lt;-
 m1=1..n
-</panel_attributes><additional_attributes>10;480;10;10;130;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>2089</x><y>306</y><w>243</w><h>171</h></coordinates><panel_attributes>&lt;&lt;Clase de los frames de la app&gt;&gt;
+</panel_attributes><additional_attributes>10;480;10;10;130;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1776</x><y>312</y><w>216</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Clase de los frames de la app&gt;&gt;
 CustomFrame
 --
 +logic_app: RNMNApp
@@ -119,44 +141,48 @@ CustomFrame
 -title_font : tuple
 -button_font : tuple
 --
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>2008</x><y>567</y><w>243</w><h>171</h></coordinates><panel_attributes>&lt;&lt;Subclase de los frames de la app&gt;&gt;
++clean()
++update_custom()</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1704</x><y>544</y><w>216</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Subclase de los frames de la app&gt;&gt;
 MainPage
 --
 -create_model()
 -load_model()
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>2260</x><y>603</y><w>243</w><h>171</h></coordinates><panel_attributes>&lt;&lt;Subclase de los frames de la app&gt;&gt;
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1928</x><y>576</y><w>216</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Subclase de los frames de la app&gt;&gt;
 SelectDataPage
 --
 -load_text_data()
 -load_audio_data()
--load_image_data()
--cancel()
--accept()</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>2530</x><y>369</y><w>243</w><h>171</h></coordinates><panel_attributes>&lt;&lt;Subclase de los frames de la app&gt;&gt;
+-load_image_data()</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>2168</x><y>368</y><w>216</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Subclase de los frames de la app&gt;&gt;
 HiperparametersPage
 --
--set_text_model_hyp()
--set_audio_model_hyp()
--set_image_model_hyp()
 -save_parameters()
--load_parameters()
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>2125</x><y>468</y><w>27</w><h>117</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;110</additional_attributes></element><element><id>Relation</id><coordinates><x>2233</x><y>468</y><w>117</w><h>153</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;90;110;90;110;150</additional_attributes></element><element><id>Relation</id><coordinates><x>2323</x><y>441</y><w>225</w><h>27</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;230;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>2323</x><y>0</y><w>243</w><h>171</h></coordinates><panel_attributes>&lt;&lt;Subclase de los frames de la app&gt;&gt;
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1808</x><y>456</y><w>24</w><h>104</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;110</additional_attributes></element><element><id>Relation</id><coordinates><x>1904</x><y>456</y><w>104</w><h>136</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;90;110;90;110;150</additional_attributes></element><element><id>Relation</id><coordinates><x>1984</x><y>432</y><w>200</w><h>24</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;230;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1984</x><y>40</y><w>216</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Subclase de los frames de la app&gt;&gt;
 ResultsPage
 --
--show_results()
--select_moredata()
--train_again()
--test_again()
--save_model()
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>2323</x><y>162</y><w>117</w><h>171</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;170;110;170;110;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>2539</x><y>594</y><w>243</w><h>171</h></coordinates><panel_attributes>&lt;&lt;Subclase de los frames de la app&gt;&gt;
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1984</x><y>184</y><w>104</w><h>152</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;170;110;170;110;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>2176</x><y>568</y><w>216</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Subclase de los frames de la app&gt;&gt;
 CreateModelPage
 --
--save_model()
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>2287</x><y>468</y><w>297</w><h>144</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;60;90;60;90;120;310;120;310;140</additional_attributes></element><element><id>UMLClass</id><coordinates><x>2548</x><y>180</y><w>243</w><h>171</h></coordinates><panel_attributes>&lt;&lt;Subclase de los frames de la app&gt;&gt;
+-load_config()
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1952</x><y>456</y><w>264</w><h>128</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;10;10;60;90;60;90;120;310;120;310;140</additional_attributes></element><element><id>UMLClass</id><coordinates><x>2184</x><y>200</y><w>216</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Subclase de los frames de la app&gt;&gt;
 MenuSelectPage
 --
+-predict()
+-change_parameters()</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1984</x><y>264</y><w>216</w><h>104</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;110;160;110;160;10;250;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>192</x><y>1568</y><w>168</w><h>40</h></coordinates><panel_attributes>&lt;&lt;Fichero con enumeraciones&gt;&gt;
+RNMNParams
 
--select_moredata()
--train()
--test()
--save_model()
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>2323</x><y>252</y><w>243</w><h>117</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;110;160;110;160;10;250;10</additional_attributes></element></diagram>
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>352</x><y>1584</y><w>72</w><h>24</h></coordinates><panel_attributes>lt=&lt;..</panel_attributes><additional_attributes>70;10;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>216</x><y>1440</y><w>168</w><h>40</h></coordinates><panel_attributes>&lt;&lt;Enumeración tipos de métricas&gt;&gt;
+RNMNMetrics
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>288</x><y>1472</y><w>24</w><h>112</h></coordinates><panel_attributes>lt=&lt;..</panel_attributes><additional_attributes>10;120;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>0</x><y>1440</y><w>192</w><h>40</h></coordinates><panel_attributes>&lt;&lt;Enumeración tipos de optimizadores&gt;&gt;
+RNMNOptimizers
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>96</x><y>1472</y><w>112</w><h>128</h></coordinates><panel_attributes>lt=&lt;..</panel_attributes><additional_attributes>120;140;10;140;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>288</x><y>1328</y><w>192</w><h>40</h></coordinates><panel_attributes>&lt;&lt;Enumeración tipos de pérdida&gt;&gt;
+RNMNLosses
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>328</x><y>1360</y><w>80</w><h>224</h></coordinates><panel_attributes>lt=&lt;..</panel_attributes><additional_attributes>10;260;10;190;80;190;80;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>80</x><y>1328</y><w>192</w><h>40</h></coordinates><panel_attributes>&lt;&lt;Enumeración tipos de activación&gt;&gt;
+RNMNActivations
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>192</x><y>1360</y><w>24</w><h>224</h></coordinates><panel_attributes>lt=&lt;..</panel_attributes><additional_attributes>10;260;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1760</x><y>0</y><w>216</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Subclase de los frames de la app&gt;&gt;
+PredictPage
+--
+-predict()</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1840</x><y>144</y><w>24</w><h>184</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;210;10;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1232</x><y>352</y><w>216</w><h>152</h></coordinates><panel_attributes>&lt;&lt;Subclase de la ventanas de la app&gt;&gt;
+PredictWindow
+--
+-accept()
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1328</x><y>496</y><w>24</w><h>128</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>10;140;10;10</additional_attributes></element></diagram>
