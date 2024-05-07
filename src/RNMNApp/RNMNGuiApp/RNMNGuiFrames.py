@@ -1,9 +1,9 @@
-'''This file defines the RNMNAppGui Class'''
+'''This file defines the RNMNAppGuiFrames Class'''
 
 import tkinter
 import customtkinter
 from RNMNApp import RNMNApp
-from .RNMNGuiWindows import AcceptWindow, ErrorWindow
+from .RNMNGuiWindows import AcceptWindow, ErrorWindow, PredictWindow
 from ..InputType import ImportError, InputType
 from .RNMNGuiTabs import CreateNetTabView, ValidationTabError
 from .RNMNGuiLabels import CustomLabel
@@ -13,9 +13,14 @@ import time
 import os
 import numpy as np
 from PIL import Image, ImageDraw
-
-
+import pandas as pd
+import matplotlib as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+from matplotlib.figure import Figure 
+      
 class CustomFrame(customtkinter.CTkFrame):
+    """Custom frame class
+    """
     logic_app: RNMNApp
     parent: customtkinter.CTkFrame
     controller: customtkinter.CTk
@@ -36,6 +41,8 @@ class CustomFrame(customtkinter.CTkFrame):
 
 
 class MainPage(CustomFrame):
+    """This is the main page of the GUI
+    """
 
     def __init__(self, logic_app, parent, controller):
         super().__init__(logic_app, parent, controller)
@@ -76,6 +83,9 @@ class MainPage(CustomFrame):
 
 
 class SelectDataPage(CustomFrame):
+    """Here is where the data for training
+        the model is selected
+    """
 
     _button_text: customtkinter.CTkButton
     _button_audio: customtkinter.CTkButton
@@ -112,12 +122,12 @@ class SelectDataPage(CustomFrame):
 
         button_cancel = customtkinter.CTkButton(
             self, text="Cancelar", command=self._cancel, font=self._button_font, width=150,
-            height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
+            height=50, corner_radius=20, fg_color="brown3", hover_color="brown4", bg_color="gray17")
         button_cancel.place(relx=0.2, rely=0.9, anchor=customtkinter.E)
 
         button_accept = customtkinter.CTkButton(
             self, text="Aceptar", command=self._accept, font=self._button_font, width=150,
-            height=50, corner_radius=20, fg_color="lime green", hover_color="forest green")
+            height=50, corner_radius=20, fg_color="lime green", hover_color="forest green", bg_color="gray17")
         button_accept.place(relx=0.8, rely=0.9, anchor=customtkinter.W)
 
     def add_text_button(self):
@@ -125,11 +135,11 @@ class SelectDataPage(CustomFrame):
             self.label, text="Datos de texto añadidos correctamente", font=self._button_font)
         self._button_text_recover = customtkinter.CTkButton(self.label, text="Eliminar datos de texto",
                                                             command=self._recover_text_button, font=self._button_font, width=150,
-                                                            height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
+                                                            height=50, corner_radius=20, fg_color="brown3", hover_color="brown4", bg_color="gray17")
 
         self._button_text = customtkinter.CTkButton(
             self.label, text="Cargar datos de texto", command=self._load_text_data, font=self._button_font, width=150,
-            height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
+            height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4", bg_color="gray17")
         self._button_text.place(relx=0.5, rely=self.rely['text'],
                                 anchor=customtkinter.CENTER)
 
@@ -138,11 +148,11 @@ class SelectDataPage(CustomFrame):
             self.label, text="Datos de audio añadidos correctamente", font=self._button_font)
         self._button_audio_recover = customtkinter.CTkButton(self.label, text="Eliminar datos de audio",
                                                              command=self._recover_audio_button, font=self._button_font, width=150,
-                                                             height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
+                                                             height=50, corner_radius=20, fg_color="brown3", hover_color="brown4", bg_color="gray17")
 
         self._button_audio = customtkinter.CTkButton(
             self.label, text="Cargar datos de audio", command=self._load_audio_data, font=self._button_font, width=150,
-            height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
+            height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4", bg_color="gray17")
         self._button_audio.place(
             relx=0.5, rely=self.rely['audio'], anchor=customtkinter.CENTER)
 
@@ -151,10 +161,10 @@ class SelectDataPage(CustomFrame):
             self.label, text="Datos de imagen añadidos correctamente", font=self._button_font)
         self._button_image_recover = customtkinter.CTkButton(self.label, text="Eliminar datos de imagen",
                                                              command=self._recover_image_button, font=self._button_font, width=150,
-                                                             height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
+                                                             height=50, corner_radius=20, fg_color="brown3", hover_color="brown4", bg_color="gray17")
         self._button_image = customtkinter.CTkButton(
             self.label, text="Cargar datos de imagen", command=self._load_image_data, font=self._button_font, width=150,
-            height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
+            height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4", bg_color="gray17")
         self._button_image.place(
             relx=0.5, rely=self.rely['image'], anchor=customtkinter.CENTER)
 
@@ -353,6 +363,8 @@ class SelectDataPage(CustomFrame):
 
 
 class CreateModelPage(CustomFrame):
+    """Here the architecture and models of the big model are selected
+    """
 
     def __init__(self, logic_app, parent, controller):
         super().__init__(logic_app, parent, controller)
@@ -494,6 +506,8 @@ class CreateModelPage(CustomFrame):
 
 
 class HiperparametersPage(CustomFrame):
+    """This view is for the compile parameters 
+    """
 
     def __init__(self, logic_app, parent, controller):
         super().__init__(logic_app, parent, controller)
@@ -517,12 +531,12 @@ class HiperparametersPage(CustomFrame):
 
         button_cancel = customtkinter.CTkButton(
             self, text="Cancelar", command=self._cancel, font=self._button_font, width=150,
-            height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
+            height=50, corner_radius=20, fg_color="brown3", hover_color="brown4", bg_color="gray17")
         button_cancel.place(relx=0.2, rely=0.9, anchor=customtkinter.E)
 
         button_create = customtkinter.CTkButton(
             self, text="Confirmar", command=self._confirm, font=self._button_font, width=150,
-            height=50, corner_radius=20, fg_color="lime green", hover_color="forest green")
+            height=50, corner_radius=20, fg_color="lime green", hover_color="forest green", bg_color="gray17")
         button_create.place(relx=0.8, rely=0.9, anchor=customtkinter.W)
 
     def model_frame_create(self):
@@ -532,29 +546,31 @@ class HiperparametersPage(CustomFrame):
         title: str
 
         title = customtkinter.CTkLabel(
-            self.label, text="Ajustar losses", font=self._button_font)
-        title.place(relx=0.2, rely=0.25, anchor=customtkinter.CENTER)
+            self.label, text="Ajustar losses", font=self._button_font, bg_color="gray17")
+        title.place(relx=0.2, rely=0.25,
+                    anchor=customtkinter.CENTER)
         loss_var = customtkinter.StringVar(
             master=self.master, value=self.losses[0], name="loss")
         combobox_loss = customtkinter.CTkComboBox(master=self.label, values=self.losses,
                                                   state="readonly",
-                                                  variable=loss_var, width=153)
+                                                  variable=loss_var, width=153, bg_color="gray17")
         combobox_loss.place(relx=0.35, rely=0.25, anchor=customtkinter.CENTER)
 
         title = customtkinter.CTkLabel(
-            master=self.label, text="Ajustar optimizer", font=self._button_font)
+            master=self.label, text="Ajustar optimizer", font=self._button_font, bg_color="gray17")
         title.place(relx=0.2, rely=0.35, anchor=customtkinter.CENTER)
         optimizer_var = customtkinter.StringVar(
             master=self.master, value=self.optimizers[0], name="optimizer")
         combobox_optimizer = customtkinter.CTkComboBox(master=self.label, values=self.optimizers,
                                                        state="readonly",
-                                                       variable=optimizer_var, width=100)
+                                                       variable=optimizer_var, width=100, bg_color="gray17")
         combobox_optimizer.place(
             relx=0.35, rely=0.35, anchor=customtkinter.CENTER)
 
         title = customtkinter.CTkLabel(
-            master=self.label, text="Seleccionar las métricas deseadas", font=self._button_font)
-        title.place(relx=0.63, rely=0.1, anchor=customtkinter.CENTER)
+            master=self.label, text="Seleccionar las métricas deseadas", font=self._button_font, bg_color="gray17")
+        title.place(relx=0.63, rely=0.1,
+                    anchor=customtkinter.CENTER)
 
         cont = 1
         contx = 0.64
@@ -570,7 +586,7 @@ class HiperparametersPage(CustomFrame):
 
             checbox = customtkinter.CTkCheckBox(master=self.label,
                                                 text=metric,
-                                                variable=check_var, onvalue=True, offvalue=False)
+                                                variable=check_var, onvalue=True, offvalue=False, bg_color="gray17")
 
             checbox.place(
                 relx=contx, rely=0.2+conty, anchor=customtkinter.W)
@@ -616,7 +632,7 @@ class HiperparametersPage(CustomFrame):
 
         self.logic_app.compile_model(params_dict)
 
-        self.controller.show_frame("MenuSelectPage")
+        self.controller.show_frame("TrainingPage")
 
     def _cancel(self):
         AcceptWindow(master=self.master, controller=self.controller,
@@ -630,6 +646,8 @@ class HiperparametersPage(CustomFrame):
 
 
 class MenuSelectPage(CustomFrame):
+    """The page with the model already trained ready to predict
+    """
 
     def __init__(self, logic_app, parent, controller):
         super().__init__(logic_app, parent, controller)
@@ -645,12 +663,6 @@ class MenuSelectPage(CustomFrame):
         self.label.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
 
         button_load_data = customtkinter.CTkButton(
-            self.label, text="Entrenar red", command=self._train, font=self._button_font, width=150,
-            height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
-        button_load_data.place(relx=0.5, rely=0.13,
-                               anchor=customtkinter.CENTER)
-
-        button_load_data = customtkinter.CTkButton(
             self.label, text="Predecir datos", command=self._predict, font=self._button_font, width=150,
             height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
         button_load_data.place(relx=0.5, rely=0.26,
@@ -664,22 +676,18 @@ class MenuSelectPage(CustomFrame):
         button_back_start = customtkinter.CTkButton(
             self, text="Inicio", command=self._cancel, font=self._button_font, width=150,
             height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
+        button_back_start.place(relx=0.2, rely=0.9, anchor=customtkinter.E)
 
         button_save = customtkinter.CTkButton(
             self, text="Guardar modelo", command=self._save_model, font=self._button_font, width=150,
             height=50, corner_radius=20, fg_color="lime green", hover_color="forest green")
-
-        button_save.place(relx=0.8, rely=0.9, anchor=customtkinter.W)
-        button_back_start.place(relx=0.2, rely=0.9, anchor=customtkinter.E)
+        button_save.place(relx=0.75, rely=0.9, anchor=customtkinter.W)
 
     def _config(self):
         self.controller.show_frame("HiperparametersPage")
 
     def _predict(self):
         self.controller.show_frame("PredictPage")
-
-    def _train(self):
-        self.controller.show_frame("TrainingPage")
 
     def _save_model(self):
         directory = customtkinter.filedialog.asksaveasfilename(initialdir="./",
@@ -688,6 +696,7 @@ class MenuSelectPage(CustomFrame):
                                                                            "*.pkl*"),
                                                                           ("all files",
                                                                            "*.*")))
+
         if len(directory) > 0:
             self.logic_app.save_model(directory)
 
@@ -701,6 +710,8 @@ class MenuSelectPage(CustomFrame):
 
 
 class TrainingPage(CustomFrame):
+    """In this page the training ocurrs
+    """
 
     def __init__(self, logic_app, parent, controller):
         super().__init__(logic_app, parent, controller)
@@ -720,11 +731,11 @@ class TrainingPage(CustomFrame):
 
         self.button_cancel = customtkinter.CTkButton(
             self, text="Cancelar", command=self._cancel, font=self._button_font, width=150,
-            height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
+            height=50, corner_radius=20, fg_color="brown3", hover_color="brown4", bg_color="gray17")
 
         self.button_create = customtkinter.CTkButton(
             self, text="Entrenar", command=self._train, font=self._button_font, width=150,
-            height=50, corner_radius=20, fg_color="lime green", hover_color="forest green")
+            height=50, corner_radius=20, fg_color="lime green", hover_color="forest green", bg_color="gray17")
 
         self.training_var = customtkinter.StringVar(
             master=self.master, value="Entrenando", name="training_var")
@@ -733,7 +744,7 @@ class TrainingPage(CustomFrame):
             self.label, text=self.training_var.get(), font=self._button_font)
 
         self.epochs_title = customtkinter.CTkLabel(
-            self.label, text="Ajustar épocas", font=self._button_font)
+            self.label, text="Ajustar épocas", font=self._button_font, bg_color="gray17")
 
         self.slider_epochs = customtkinter.CTkSlider(
             master=self.label, from_=1, to=3000, variable=self.epochs, width=700, command=self._epochs_label)
@@ -809,6 +820,8 @@ class TrainingPage(CustomFrame):
 
 
 class PredictPage(CustomFrame):
+    """Class for making predictions
+    """
 
     prevPoint = [0, 0]
     currentPoint = [0, 0]
@@ -821,8 +834,8 @@ class PredictPage(CustomFrame):
     shapeFill = "black"
     width = 0
     height = 0
-    white = (255, 255, 255)
-    black = (0, 0, 0)
+    white = (255)
+    black = (0)
 
     def __init__(self, logic_app, parent, controller):
         super().__init__(logic_app, parent, controller)
@@ -831,25 +844,30 @@ class PredictPage(CustomFrame):
         self.controller = controller
 
         title = customtkinter.CTkLabel(
-            self, text="Ajuste los parámetros de entrenamiento", font=self._title_font)
+            self, text="Introduzca los valores a predecir", font=self._title_font)
         title.place(relx=0.5, rely=0.1, anchor=customtkinter.CENTER)
 
         self.label = CustomLabel(master=self)
         self.label.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
 
-        self.image1 = Image.new("RGB", (28, 28), self.white)
+        self.image1 = Image.new(mode="L", size=(280, 280), color=(0))
         self.draw = ImageDraw.Draw(self.image1)
 
-        # Making a Canvas
         self.canvas = customtkinter.CTkCanvas(
-            self.label, height=280, width=280, bg="white")
+            self.label, height=280, width=280, bg="black")
         self.canvas.grid(row=0, column=0)
         self.canvas.place(relx=0.5, rely=0.4, anchor=customtkinter.CENTER)
         self.canvas.config(cursor="pencil")
 
+        self.predictstr = customtkinter.StringVar(
+            master=self.master, value="cero", name="preictstr")
+        # input = customtkinter.CTkEntry(
+        # master=self.master, textvariable=self.predictstr, width=100)
+        # input.place(relx=0.2, rely=0.4, anchor=customtkinter.W)
+
         button_delete = customtkinter.CTkButton(
-            self.label, text="Borrar", command=self.clearScreen, font=self._button_font, width=150,
-            height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
+            self.label, text="Borrar", text_color="gray25", command=self.clearScreen, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="gray65", hover_color="gray45")
         button_delete.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
 
         button_create = customtkinter.CTkButton(
@@ -857,7 +875,11 @@ class PredictPage(CustomFrame):
             height=50, corner_radius=20, fg_color="lime green", hover_color="forest green")
         button_create.place(relx=0.8, rely=0.9, anchor=customtkinter.W)
 
-        # Event Binding
+        button_back = customtkinter.CTkButton(
+            self, text="Atrás", command=self._back, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
+        button_back.place(relx=0.2, rely=0.9, anchor=customtkinter.E)
+
         self.canvas.bind("<B1-Motion>", self.paint)
         self.canvas.bind("<ButtonRelease-1>", self.paint)
         self.canvas.bind("<Button-1>", self.paint)
@@ -865,37 +887,40 @@ class PredictPage(CustomFrame):
     def _confirm(self):
         params = list()
 
-        numpydata = np.array(self.image1)
-        np.set_printoptions(threshold = np.inf)
-        print(numpydata)
-        self.image1=self.image1.convert("1")
+        if self.controller.models['image']:
 
-        filename = "my_drawing.jpg"
-        numpydata = np.array(self.image1)
-        numpydata = np.where(numpydata>128, 255, 0)
+            self.image1 = self.image1.resize((28, 28))
 
+            numpydata = np.asarray(self.image1)
+            numpydata = [numpydata]
+            numpydata = np.asarray(numpydata)
 
-        numpydata = np.reshape(
-            numpydata, np.append(numpydata.shape, (1)))
+            numpydata = np.reshape(
+                numpydata, np.append(numpydata.shape, (1)))
 
-        numpydata = np.reshape(
-            numpydata, np.append((1), numpydata.shape))
+            numpydata = numpydata.astype('float32')
+            numpydata = numpydata / 255
+            params.append(numpydata)
 
-        numpydata = numpydata.astype('float32')
-        numpydata = numpydata / 255
-        params.append(numpydata)
+        if self.controller.models['text']:
+            params.append("cero")
 
-        print(self.logic_app.model.model.predict(params ))
-        #self.logic_app.predict_data(list())
+        predicted = self.logic_app.predict_data(params)
 
-        self.image1.save(filename)
+        PredictWindow(master=self.master, controller=self.controller,
+                      message="Número: " + str(predicted))
+
+        del self.image1
+        del self.draw
+        self.image1 = Image.new(mode="L", size=(280, 280), color=(0))
+        self.draw = ImageDraw.Draw(self.image1)
 
         # Clear Screen
     def clearScreen(self):
         self.canvas.delete("all")
         del self.image1
         del self.draw
-        self.image1 = Image.new("RGB", (28, 28), self.white)
+        self.image1 = Image.new(mode="L", size=(280, 280), color=(0))
         self.draw = ImageDraw.Draw(self.image1)
 
     def paint(self, event):
@@ -906,26 +931,31 @@ class PredictPage(CustomFrame):
         self.currentPoint = [x, y]
 
         if self.prevPoint != [0, 0]:
-            self.canvas.create_polygon(
+            self.canvas.create_line(
                 self.prevPoint[0],
                 self.prevPoint[1],
                 self.currentPoint[0],
                 self.currentPoint[1],
-                fill="black",
-                width=10,
+                width=20,
+                fill="white"
             )
-            self.draw.line([int(self.prevPoint[0]/10),
-                            int(self.prevPoint[1]/10),
-                            int(self.currentPoint[0]/10),
-                            int(self.currentPoint[1]/10)], self.black)
+            self.draw.line([int(self.prevPoint[0]/1),
+                            int(self.prevPoint[1]/1),
+                            int(self.currentPoint[0]/1),
+                            int(self.currentPoint[1]/1)], width=20, fill="white")
 
         self.prevPoint = self.currentPoint
 
         if event.type == "5":
             self.prevPoint = [0, 0]
 
+    def _back(self):
+        self.controller.show_frame("MenuSelectPage")
+
 
 class ResultsPage(CustomFrame):
+    """Frame class for the results of training
+    """
 
     def __init__(self, logic_app, parent, controller):
         super().__init__(logic_app, parent, controller)
@@ -942,8 +972,34 @@ class ResultsPage(CustomFrame):
 
         button_cancel = customtkinter.CTkButton(
             self, text="Volver al menu", command=self._back, font=self._button_font, width=150,
-            height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
+            height=50, corner_radius=20, fg_color="brown3", hover_color="brown4", bg_color="gray17")
         button_cancel.place(relx=0.2, rely=0.9, anchor=customtkinter.E)
+
+        self.info = customtkinter.StringVar(self.label, value="")
+        self.label = customtkinter.CTkLabel(
+            self, text=self.info.get(), font=self._button_font, bg_color="gray17")
+        self.label.place(relx=0.5, rely=0.5, anchor=customtkinter.E)
 
     def _back(self):
         self.controller.show_frame("MenuSelectPage")
+
+    def update_custom(self):
+
+        fig = Figure(figsize = (5, 5), 
+                 dpi = 80) 
+        plot = fig.add_subplot(111)
+        plot.plot(self.logic_app.model.history.history['loss'])
+        plot.plot(self.logic_app.model.history.history['val_loss'])
+        plot.plot(self.logic_app.model.history.history['accuracy'])
+        plot.plot(self.logic_app.model.history.history['val_accuracy'])
+        plot.legend(['Training Loss', 'Validation Loss', 'Training Accuracy', 'Validation Accuracy'], loc='center right') 
+
+        canvas = FigureCanvasTkAgg(fig, 
+                               master = self.label)   
+        
+        canvas.draw() 
+  
+        # placing the canvas on the Tkinter window 
+        canvas.get_tk_widget().grid(column=4)
+    
+    

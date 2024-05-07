@@ -428,9 +428,8 @@ def noise_lexic_data_numeric_files(directory, ascii_perm_size):
 
     nums_and_classes = zip(nums, classes_nums)
 
-    abecedary = list(string.printable)
+    abecedary = [" " for i in range(24)]
 
-    abecedary.remove('\n')
 
     # create dictionary
 
@@ -439,7 +438,6 @@ def noise_lexic_data_numeric_files(directory, ascii_perm_size):
     for inum, iclass in nums_and_classes:
         cont = 0
 
-        class_string = ""
 
         size = len(inum)
 
@@ -472,14 +470,14 @@ def noise_lexic_data_numeric_files(directory, ascii_perm_size):
 
 
                 f = open(os.path.join(os.path.join(directory+str(iclass)),str(iclass)+ str(cont)+".txt"), "w")
-                f.write(number)
+                f.write(inum)
                 cont+=1
 
                 number = inum
                 number += text_perm
 
                 f = open(os.path.join(os.path.join(directory+str(iclass)),str(iclass)+ str(cont)+".txt"), "w")
-                f.write(number)
+                f.write(inum)
                 cont+=1
                 # ASCII characters at the end of the number
   
@@ -494,7 +492,7 @@ def noise_lexic_data_numeric_files(directory, ascii_perm_size):
                     number += text_perm[mid_slash:]
 
                     f = open(os.path.join(os.path.join(directory+str(iclass)),str(iclass)+ str(cont)+".txt"), "w")
-                    f.write(number)
+                    f.write(inum)
                     cont+=1
             
             

@@ -8,6 +8,7 @@ from ProcessData import ProcessAudio, ProcessError
 from ProcessData import ProcessText, ProcessImage
 from RNMNParent import RNMNModel, RNMNParams
 import json
+import numpy as np
 
 
 class RNMNApp():
@@ -40,6 +41,8 @@ class RNMNApp():
         self.default_params = self.load_config(cofn_file)
 
     def start_app(self):
+        """Starts the app
+        """
         if self._no_gui == False:
             self.app_gui_start()
         else:
@@ -99,7 +102,10 @@ class RNMNApp():
 
 
     def save_model(self, directory: str):
-        with open(directory, 'wb') as output:
+        extension=".pkl"
+        if ".plk" in directory:
+            extension =""
+        with open(directory+extension, 'wb') as output:
             pickle.dump(self.model, output, pickle.HIGHEST_PROTOCOL)
 
     def load_model(self, directory: str):
@@ -161,10 +167,7 @@ class RNMNApp():
 
     def predict_data(self, data):
         array = self.model.predict(data)
-
-
-
-        print(array[0])
+        return np.argmax(array)
 
     def app_no_gui_start(self):
         print("\nPorfavor seleccione una opción:\n\n\t1-Crear modelo\n\t2-Cargar modelo")

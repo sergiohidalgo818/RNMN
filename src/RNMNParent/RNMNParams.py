@@ -98,7 +98,7 @@ class RNMNLosses(Enum):
     MSE = "mse"
 
 class RNMNActivations(Enum):
-    '''This enum is for the type of losses'''
+    '''This enum is for the type of activations'''
 
     RELU = "relu"
 

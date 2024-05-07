@@ -1,5 +1,0 @@
-diagrama: 
-- Cambiar Gui en el diagrama
-- Cambiar RNMN en diagrama
-- Añadir GUITabs
-- cambiar RNMN

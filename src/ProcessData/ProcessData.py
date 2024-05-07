@@ -132,7 +132,7 @@ class ProcessData():
 
         Returns:
             The numpy array
-            """
+        """
         num_list = [int(char) for char in x]
 
         tam = len(num_list)
@@ -151,7 +151,7 @@ class ProcessData():
 
             Returns:
                 The numpy array
-                """
+        """
         np_array = np.zeros((10,), dtype=int)
         np_array[x] = 1
         return np_array

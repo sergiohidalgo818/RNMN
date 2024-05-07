@@ -20,21 +20,19 @@ class RNMNImageModel(RNMNSmall):
 
         self.model = Model()
 
-
         (self.x_train, self.y_train), (self.x_test, self.y_test) = data
 
-
         inlayer = Input(shape=self.x_train.shape[
-                1:])
-        aux_layer = Conv2D(filters=6, kernel_size=(
-                5, 5), activation='relu', padding='same', input_shape=self.x_train.shape[
-                1:])(inlayer)
-        
-        aux_layer = MaxPooling2D()(inlayer) 
-        
-        aux_layer = Conv2D(filters=16, kernel_size=(5, 5), activation='relu')(aux_layer)
-        aux_layer= MaxPooling2D()(aux_layer)
-        
+            1:])
+        aux_layer = Conv2D(filters=32, kernel_size=5, activation='relu', padding='same', input_shape=self.x_train.shape[
+            1:])(inlayer)
+
+        aux_layer = MaxPooling2D()(inlayer)
+
+        aux_layer = Conv2D(filters=64, kernel_size=5,
+                           activation='relu')(aux_layer)
+        aux_layer = MaxPooling2D()(aux_layer)
+
         aux_layer = Flatten()(aux_layer)
 
         dict_keys = [str(key) for key in self.layers_dict.keys()]
@@ -42,8 +40,7 @@ class RNMNImageModel(RNMNSmall):
         dict_keys.sort()
 
         for key in dict_keys:
-                    aux_layer = Dense(int(
-                        self.layers_dict[key]['num_neurons']), self.layers_dict[key]["activation"])(aux_layer)
+            aux_layer = Dense(int(
+                self.layers_dict[key]['num_neurons']), self.layers_dict[key]["activation"])(aux_layer)
 
         self.model = Model(inputs=inlayer, outputs=aux_layer)
-

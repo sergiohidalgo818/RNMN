@@ -4,7 +4,7 @@
         "auto_in": "True",
         "layers_dict": {
             "layer_1": {
-                "num_neurons": 124,
+                "num_neurons": 128,
                 "activation": "relu"
             },
             "layer_2": {

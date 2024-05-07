@@ -1,10 +1,7 @@
 '''This file defines the ProcessImage Class'''
 
 from ProcessData import ProcessData
-from .ProcessData import ProcessError
-import binascii
 import numpy as np
-import os
 import idx2numpy
 from keras.api.utils import to_categorical
 
@@ -83,7 +80,14 @@ class ProcessImage(ProcessData):
 
 
     def reshape_data(self, num_outputs):
+        """Reshapes the data and adapts it to keras
 
+        Args:
+        num_outputs (int): number of outputs
+
+        Returns:
+            None
+        """
         self.x_train = np.reshape(
             self.x_train, np.append(self.x_train.shape, (1)))
         self.x_test = np.reshape(
@@ -99,3 +103,4 @@ class ProcessImage(ProcessData):
 
         self.data_processed = (
             (self.x_train, self.y_train), (self.x_test, self.y_test))
+        

@@ -92,3 +92,26 @@ class AcceptWindow(CustomWindow):
     def _accept(self):
         self.master.setvar(name="window_accept", value=True)
         self.destroy()
+
+
+class PredictWindow(CustomWindow):
+
+    _title_font = ("Times", 25, 'bold')
+
+    def __init__(self,  master, controller: customtkinter.CTk, message, *args, **kwargs):
+        super().__init__(master, controller, message, *args, **kwargs)
+
+        self.geometry(CustomWindow.center_window(
+            self, 720, 250, self._get_window_scaling()))
+        self.title("Predicción")
+
+        label = customtkinter.CTkLabel(
+            self, text=message, font=self._title_font)
+        label.place(relx=0.5, rely=0.25, anchor=customtkinter.CENTER)
+
+        button = customtkinter.CTkButton(
+            self, text="Aceptar", command=self._accept, width=150,
+            height=50, corner_radius=20, fg_color="lime green", hover_color="forest green")
+        button.place(relx=0.5, rely=0.6, anchor=customtkinter.CENTER)
+
+        self._block_on_window()

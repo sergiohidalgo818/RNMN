@@ -5,9 +5,7 @@ from .ProcessData import ProcessError
 import pyarrow.parquet as pq
 import pandas as pd
 import numpy as np
-import os
 from keras.api.utils import text_dataset_from_directory
-
 
 class ProcessText(ProcessData):
 
@@ -42,16 +40,11 @@ class ProcessText(ProcessData):
         array_y: np.ndarray
         batch_size = 32
 
-        array_x, array_y = (self.x_test, self.y_test)
 
         self.raw_test_ds = text_dataset_from_directory(
-                        directory=file_name,
+                        directory=file_name,label_mode="categorical",
                         batch_size=batch_size,  labels='inferred')
 
-
-
-
-        (self.x_test, self.y_test) = (array_x, array_y)
 
     def process_train_file(self, file_name):
         """Process the data from a train file
@@ -68,17 +61,12 @@ class ProcessText(ProcessData):
 
         array_x, array_y = self.x_train, self.y_train
         self.raw_train_ds = text_dataset_from_directory(
-                        directory=file_name,
+                        directory=file_name,label_mode="categorical",
                         batch_size=batch_size,
                         validation_split=0.2,
                         subset="training", seed=1337, labels='inferred')
-        self.raw_val_ds = text_dataset_from_directory(
-                        directory=file_name,
-                        batch_size=batch_size,
-                        validation_split=0.2,
-                        subset="validation", seed=1337,  labels='inferred')
 
-    
+
 
 
     def transform_txt_deprecated(self, file_name):
@@ -162,11 +150,10 @@ class ProcessText(ProcessData):
 
         else:
             raise ProcessError("Error on file format")
-
+        
 
     def reshape_data(self, num_outputs):
-        for text_batch, label_batch in self.raw_train_ds.take(1):
-            for i in range(5):
-                print(text_batch.numpy()[i])
-                print(label_batch.numpy()[i])
 
+        text_ds = self.raw_train_ds.map(lambda x, y: x)
+
+        self.data_processed = (self.raw_train_ds, self.raw_test_ds, text_ds)
