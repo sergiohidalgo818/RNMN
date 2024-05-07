@@ -910,11 +910,7 @@ class PredictPage(CustomFrame):
         PredictWindow(master=self.master, controller=self.controller,
                       message="Número: " + str(predicted))
 
-        del self.image1
-        del self.draw
-        self.image1 = Image.new(mode="L", size=(280, 280), color=(0))
-        self.draw = ImageDraw.Draw(self.image1)
-
+       
         # Clear Screen
     def clearScreen(self):
         self.canvas.delete("all")
