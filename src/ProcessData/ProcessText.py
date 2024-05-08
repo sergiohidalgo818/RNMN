@@ -3,7 +3,6 @@
 from ProcessData import ProcessData
 from .ProcessData import ProcessError
 import pyarrow.parquet as pq
-import pandas as pd
 import numpy as np
 from keras.api.utils import text_dataset_from_directory
 
@@ -24,8 +23,9 @@ class ProcessText(ProcessData):
         """
         if "train" in dir_name[-6:]:
             self.process_train_file(dir_name)
-        if "test" in dir_name[-6:]:
+        elif "test" in dir_name[-6:]:
             self.process_test_file(dir_name)
+
 
     def process_test_file(self, file_name):
         """Process the data from a test file
@@ -36,14 +36,15 @@ class ProcessText(ProcessData):
         Returns:
             None
         """
-        array_x: np.ndarray
-        array_y: np.ndarray
+
         batch_size = 32
 
-
-        self.raw_test_ds = text_dataset_from_directory(
-                        directory=file_name,label_mode="categorical",
-                        batch_size=batch_size,  labels='inferred')
+        try:
+            self.raw_test_ds = text_dataset_from_directory(
+                            directory=file_name,label_mode="categorical",
+                            batch_size=batch_size,  labels='inferred')
+        except ValueError:
+            raise ProcessError("Error on directory")
 
 
     def process_train_file(self, file_name):
@@ -55,17 +56,18 @@ class ProcessText(ProcessData):
         Returns:
             None
         """
-        array_x: np.ndarray
-        array_y: np.ndarray
+ 
         batch_size = 32
 
-        array_x, array_y = self.x_train, self.y_train
-        self.raw_train_ds = text_dataset_from_directory(
-                        directory=file_name,label_mode="categorical",
-                        batch_size=batch_size,
-                        validation_split=0.2,
-                        subset="training", seed=1337, labels='inferred')
+        try:
+            self.raw_train_ds = text_dataset_from_directory(
+                            directory=file_name,label_mode="categorical",
+                            batch_size=batch_size,
+                            validation_split=0.2,
+                            subset="training", seed=1337, labels='inferred')
 
+        except ValueError:
+            raise ProcessError("Error on directory")
 
 
 

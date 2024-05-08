@@ -3,6 +3,8 @@
 from .RNMNSmall import RNMNSmall 
 
 class RNMNAudioModel(RNMNSmall):
+    """Class of the audio model
+    """
 
     def __init__(self,  data,  config) -> None:
-        super().__init__(config=config)
+        super().__init__()

@@ -1,9 +1,8 @@
 '''This file defines the RNMNAppGuiFrames Class'''
 
-import tkinter
 import customtkinter
 from RNMNApp import RNMNApp
-from .RNMNGuiWindows import AcceptWindow, ErrorWindow, PredictWindow
+from .RNMNGuiWindows import AcceptWindow, ErrorWindow, PredictWindow, GraphWindow
 from ..InputType import ImportError, InputType
 from .RNMNGuiTabs import CreateNetTabView, ValidationTabError
 from .RNMNGuiLabels import CustomLabel
@@ -14,10 +13,10 @@ import os
 import numpy as np
 from PIL import Image, ImageDraw
 import pandas as pd
-import matplotlib as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
-from matplotlib.figure import Figure 
-      
+
+import tensorflow
+
+
 class CustomFrame(customtkinter.CTkFrame):
     """Custom frame class
     """
@@ -61,8 +60,40 @@ class MainPage(CustomFrame):
             height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
         button_create.place(relx=0.55, rely=0.5, anchor=customtkinter.W)
 
+        self.button_load = customtkinter.CTkButton(
+            self, text="Cargar configuración", command=self._load, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
+        self.button_load.place(relx=0.5, rely=0.65,
+                               anchor=customtkinter.CENTER)
+
     def _create_model(self):
+        if self.logic_app._has_model:
+            del self.logic_app.model
         self.controller.show_frame("CreateModelPage")
+
+    def _load(self):
+        file_config = customtkinter.filedialog.askopenfile(initialdir=self.logic_app.config_path,
+                                                           title="Seleciona un archivo de configuración",
+                                                           filetypes=(("JSON files",
+                                                                       "*.json*"),
+                                                                      ("all files",
+                                                                       "*.*")))
+        if file_config != None:
+            try:
+                params_dict = self.logic_app.json_transform(file_config.read())
+            except ImportError as ex:
+                ErrorWindow(self.master, self.controller,
+                            message="Porfavor, introduzca un fichero json")
+            else:
+                if "text_config" in params_dict.keys():
+                    self.controller.models['text'] = True
+                if "audio_config" in params_dict.keys():
+                    self.controller.models['audio'] = True
+                if "image_config" in params_dict.keys():
+                    self.controller.models['image'] = True
+
+                self.logic_app.model_params = params_dict
+                self.controller.show_frame("SelectDataPage")
 
     def _load_model(self):
         directory = customtkinter.filedialog.askopenfilename(initialdir="./",
@@ -326,16 +357,19 @@ class SelectDataPage(CustomFrame):
         if self.controller.models['text']:
             rel_sum += rel
             self.rely['text'] = rel_sum
+            self.controller.rely['text'] = rel_sum
             self.add_text_button()
 
         if self.controller.models['audio']:
             rel_sum += rel
             self.rely['audio'] = rel_sum
+            self.controller.rely['audio'] = rel_sum
             self.add_audio_button()
 
         if self.controller.models['image']:
             rel_sum += rel
             self.rely['image'] = rel_sum
+            self.controller.rely['image'] = rel_sum
             self.add_image_button()
 
     def clean(self):
@@ -374,11 +408,6 @@ class CreateModelPage(CustomFrame):
         title = customtkinter.CTkLabel(
             master=self, text="Creación de la red", font=self._title_font)
         title.place(relx=0.5, rely=0.1, anchor=customtkinter.CENTER)
-
-        self.button_load = customtkinter.CTkButton(
-            self, text="Cargar configuración", command=self._load, font=self._button_font, width=150,
-            height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
-        self.button_load.place(relx=0.7, rely=0.1, anchor=customtkinter.W)
 
         self.tab_view = CreateNetTabView(master=self, width=1080, height=720)
         self.tab_view.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
@@ -464,30 +493,6 @@ class CreateModelPage(CustomFrame):
         boolvar = customtkinter.BooleanVar(self.master, name="window_accept")
         if boolvar.get():
             self.controller.show_frame("MainPage")
-
-    def _load(self):
-        file_config = customtkinter.filedialog.askopenfile(initialdir=self.logic_app.config_path,
-                                                           title="Seleciona un archivo de configuración",
-                                                           filetypes=(("JSON files",
-                                                                       "*.json*"),
-                                                                      ("all files",
-                                                                       "*.*")))
-        if file_config != None:
-            try:
-                params_dict = self.logic_app.json_transform(file_config.read())
-            except ImportError as ex:
-                ErrorWindow(self.master, self.controller,
-                            message="Porfavor, introduzca un fichero json")
-            else:
-                if "text_config" in params_dict.keys():
-                    self.controller.models['text'] = True
-                if "audio_config" in params_dict.keys():
-                    self.controller.models['audio'] = True
-                if "image_config" in params_dict.keys():
-                    self.controller.models['image'] = True
-
-                self.logic_app.model_params = params_dict
-                self.controller.show_frame("SelectDataPage")
 
     def clean(self):
         self.tab_view.destroy()
@@ -741,7 +746,7 @@ class TrainingPage(CustomFrame):
             master=self.master, value="Entrenando", name="training_var")
 
         self.training = customtkinter.CTkLabel(
-            self.label, text=self.training_var.get(), font=self._button_font)
+            self.label, text=self.training_var.get(), font=self._button_font, bg_color="gray17")
 
         self.epochs_title = customtkinter.CTkLabel(
             self.label, text="Ajustar épocas", font=self._button_font, bg_color="gray17")
@@ -850,42 +855,44 @@ class PredictPage(CustomFrame):
         self.label = CustomLabel(master=self)
         self.label.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
 
-        self.image1 = Image.new(mode="L", size=(280, 280), color=(0))
-        self.draw = ImageDraw.Draw(self.image1)
-
-        self.canvas = customtkinter.CTkCanvas(
-            self.label, height=280, width=280, bg="black")
-        self.canvas.grid(row=0, column=0)
-        self.canvas.place(relx=0.5, rely=0.4, anchor=customtkinter.CENTER)
-        self.canvas.config(cursor="pencil")
-
         self.predictstr = customtkinter.StringVar(
             master=self.master, value="cero", name="preictstr")
-        # input = customtkinter.CTkEntry(
-        # master=self.master, textvariable=self.predictstr, width=100)
-        # input.place(relx=0.2, rely=0.4, anchor=customtkinter.W)
+        self.text_title = customtkinter.CTkLabel(
+            self.label, text="Introducir número\n(Numeral)", font=self._button_font, bg_color="gray17")
+        self.input = customtkinter.CTkEntry(
+            master=self.label, textvariable=self.predictstr, width=200, font=self._button_font, justify='center')
 
-        button_delete = customtkinter.CTkButton(
+        self.image1 = Image.new(mode="L", size=(280, 280), color=(0))
+        self.draw = ImageDraw.Draw(self.image1)
+        self.image_title = customtkinter.CTkLabel(
+            self.label, text="Dibujar número", font=self._button_font, bg_color="gray17")
+        self.canvas = customtkinter.CTkCanvas(
+            self.label, height=280, width=280, bg="black")
+
+        self.button_delete = customtkinter.CTkButton(
             self.label, text="Borrar", text_color="gray25", command=self.clearScreen, font=self._button_font, width=150,
-            height=50, corner_radius=20, fg_color="gray65", hover_color="gray45")
-        button_delete.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
-
-        button_create = customtkinter.CTkButton(
-            self, text="Introducir", command=self._confirm, font=self._button_font, width=150,
-            height=50, corner_radius=20, fg_color="lime green", hover_color="forest green")
-        button_create.place(relx=0.8, rely=0.9, anchor=customtkinter.W)
-
-        button_back = customtkinter.CTkButton(
-            self, text="Atrás", command=self._back, font=self._button_font, width=150,
-            height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
-        button_back.place(relx=0.2, rely=0.9, anchor=customtkinter.E)
+            height=50, corner_radius=20, fg_color="gray65", hover_color="gray45", bg_color="gray17")
 
         self.canvas.bind("<B1-Motion>", self.paint)
         self.canvas.bind("<ButtonRelease-1>", self.paint)
         self.canvas.bind("<Button-1>", self.paint)
 
+        button_create = customtkinter.CTkButton(
+            self, text="Introducir", command=self._confirm, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="lime green", hover_color="forest green", bg_color="gray17")
+        button_create.place(relx=0.8, rely=0.9, anchor=customtkinter.W)
+
+        button_back = customtkinter.CTkButton(
+            self, text="Atrás", command=self._back, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="brown3", hover_color="brown4", bg_color="gray17")
+        button_back.place(relx=0.2, rely=0.9, anchor=customtkinter.E)
+
     def _confirm(self):
         params = list()
+
+        if InputType.TEXT in self.logic_app.model.models:
+            params.append(tensorflow.convert_to_tensor(
+                [self.predictstr.get()], dtype="string"))
 
         if InputType.IMAGE in self.logic_app.model.models:
 
@@ -902,16 +909,13 @@ class PredictPage(CustomFrame):
             numpydata = numpydata / 255
             params.append(numpydata)
 
-        if InputType.TEXT in self.logic_app.model.models:
-            params.append("cero")
-
         predicted = self.logic_app.predict_data(params)
 
         PredictWindow(master=self.master, controller=self.controller,
                       message="Número: " + str(predicted))
 
-       
         # Clear Screen
+
     def clearScreen(self):
         self.canvas.delete("all")
         del self.image1
@@ -948,6 +952,24 @@ class PredictPage(CustomFrame):
     def _back(self):
         self.controller.show_frame("MenuSelectPage")
 
+    def update_custom(self):
+        plus = 0.5
+
+        if InputType.IMAGE in self.logic_app.model.models:
+            self.canvas.place(relx=plus, rely=0.4, anchor=customtkinter.CENTER)
+            self.image_title.place(relx=plus, rely=0.17,
+                                   anchor=customtkinter.CENTER)
+            self.canvas.config(cursor="pencil")
+            self.button_delete.place(
+                relx=plus, rely=0.65, anchor=customtkinter.CENTER)
+            plus -= 0.3
+
+        if InputType.TEXT in self.logic_app.model.models:
+            self.text_title.place(relx=plus, rely=0.3,
+                                  anchor=customtkinter.CENTER)
+            self.input.place(relx=plus, rely=0.38, anchor=customtkinter.CENTER)
+            plus += 0.4
+
 
 class ResultsPage(CustomFrame):
     """Frame class for the results of training
@@ -966,36 +988,31 @@ class ResultsPage(CustomFrame):
         self.label = CustomLabel(master=self)
         self.label.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
 
-        button_cancel = customtkinter.CTkButton(
-            self, text="Volver al menu", command=self._back, font=self._button_font, width=150,
+        button_return = customtkinter.CTkButton(
+            self.label, text="Volver al menu", command=self._back, font=self._button_font, width=150,
             height=50, corner_radius=20, fg_color="brown3", hover_color="brown4", bg_color="gray17")
-        button_cancel.place(relx=0.2, rely=0.9, anchor=customtkinter.E)
-
-        self.info = customtkinter.StringVar(self.label, value="")
-        self.label = customtkinter.CTkLabel(
-            self, text=self.info.get(), font=self._button_font, bg_color="gray17")
-        self.label.place(relx=0.5, rely=0.5, anchor=customtkinter.E)
+        button_return.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
 
     def _back(self):
         self.controller.show_frame("MenuSelectPage")
 
+    def _show_graph(self, hist, message):
+        GraphWindow(master=self.master, controller=self.controller,
+                    message=message, hist=hist)
+
     def update_custom(self):
-
-        fig = Figure(figsize = (5, 5), 
-                 dpi = 80) 
-        plot = fig.add_subplot(111)
-        plot.plot(self.logic_app.model.history.history['loss'])
-        plot.plot(self.logic_app.model.history.history['val_loss'])
-        plot.plot(self.logic_app.model.history.history['accuracy'])
-        plot.plot(self.logic_app.model.history.history['val_accuracy'])
-        plot.legend(['Training Loss', 'Validation Loss', 'Training Accuracy', 'Validation Accuracy'], loc='center right') 
-
-        canvas = FigureCanvasTkAgg(fig, 
-                               master = self.label)   
-        
-        canvas.draw() 
-  
-        # placing the canvas on the Tkinter window 
-        canvas.get_tk_widget().grid(column=4)
-    
-    
+        models = list()
+        if InputType.TEXT in self.logic_app.model.models:
+            models.append("texto")
+        if InputType.IMAGE in self.logic_app.model.models:
+            models.append("imagen")
+        if InputType.AUDIO in self.logic_app.model.models:
+            models.append("audio")
+        sumx = 0.2
+        hists_and_models = zip(self.logic_app.model.history, models)
+        for hist, model in hists_and_models:
+            button = customtkinter.CTkButton(
+                self.label, text="Cargar modelo de "+str(model), command=lambda: self._show_graph(hist, model), font=self._button_font, width=150,
+                height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
+            button.place(relx=sumx, rely=0.35, anchor=customtkinter.CENTER)
+            sumx += 0.3

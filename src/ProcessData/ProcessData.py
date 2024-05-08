@@ -93,8 +93,9 @@ class ProcessData():
 
                 if "train" in dir_name[-6:]:
                     self.process_train_file(file_name)
-                if "test" in dir_name[-6:]:
+                elif "test" in dir_name[-6:]:
                     self.process_test_file(file_name)
+
             except ProcessError:
                 raise ProcessError("File not compatible")
             else:

@@ -1,6 +1,7 @@
 '''This file defines the ProcessImage Class'''
 
 from ProcessData import ProcessData
+from .ProcessData import ProcessError
 import numpy as np
 import idx2numpy
 from keras.api.utils import to_categorical
@@ -25,25 +26,27 @@ class ProcessImage(ProcessData):
         array_y: np.ndarray
 
         array_x, array_y = (self.x_test, self.y_test)
-
-        readed_array = idx2numpy.convert_from_file(file_name)
-
-        if "label" in file_name:
-
-            if array_y.size == 0:
-                array_y = np.array(readed_array)
-
-            else:
-                array_y = np.append(array_y, np.array(readed_array), axis=0)
-
+        try:
+            readed_array = idx2numpy.convert_from_file(file_name)
+        except PermissionError:
+            raise ProcessError("Error on train directory")
         else:
-            if array_x.size == 0:
-                array_x = np.array(readed_array)
+            if "label" in file_name:
+
+                if array_y.size == 0:
+                    array_y = np.array(readed_array)
+
+                else:
+                    array_y = np.append(array_y, np.array(readed_array), axis=0)
 
             else:
-                array_x = np.append(array_x, np.array(readed_array), axis=0)
+                if array_x.size == 0:
+                    array_x = np.array(readed_array)
 
-        (self.x_test, self.y_test) = (array_x, array_y)
+                else:
+                    array_x = np.append(array_x, np.array(readed_array), axis=0)
+
+            (self.x_test, self.y_test) = (array_x, array_y)
 
     def process_train_file(self, file_name):
         """Process the data from a train file
@@ -58,25 +61,28 @@ class ProcessImage(ProcessData):
         array_y: np.ndarray
 
         array_x, array_y = self.x_train, self.y_train
-
-        readed_array = idx2numpy.convert_from_file(file_name)
-
-        if "label" in file_name:
-
-            if array_y.size == 0:
-                array_y = np.array(readed_array)
-
-            else:
-                array_y = np.append(array_y, np.array(readed_array), axis=0)
-
+        try:
+            readed_array = idx2numpy.convert_from_file(file_name)
+        except PermissionError:
+            raise ProcessError("Error on train directory")
         else:
-            if array_x.size == 0:
-                array_x = np.array(readed_array)
+
+            if "label" in file_name:
+
+                if array_y.size == 0:
+                    array_y = np.array(readed_array)
+
+                else:
+                    array_y = np.append(array_y, np.array(readed_array), axis=0)
 
             else:
-                array_x = np.append(array_x, np.array(readed_array), axis=0)
+                if array_x.size == 0:
+                    array_x = np.array(readed_array)
 
-        (self.x_train, self.y_train) = (array_x, array_y)
+                else:
+                    array_x = np.append(array_x, np.array(readed_array), axis=0)
+
+            (self.x_train, self.y_train) = (array_x, array_y)
 
 
     def reshape_data(self, num_outputs):

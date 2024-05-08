@@ -1,50 +1,52 @@
-<diagram program="umletino" version="15.1"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>920</x><y>156</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
+<diagram program="umletino" version="15.1"><zoom_level>10</zoom_level><element><id>UMLClass</id><coordinates><x>630</x><y>160</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
 Main Page
 
 
-Elección de carga o creación</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1360</x><y>176</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
+Elección de carga o creación</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>1070</x><y>180</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
 CreateModelPage
 
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1120</x><y>266</y><w>260</w><h>50</h></coordinates><panel_attributes>lt=&lt;-
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>830</x><y>270</y><w>260</w><h>50</h></coordinates><panel_attributes>lt=&lt;-
 
-m1=Crear modelo</panel_attributes><additional_attributes>240;20;10;20</additional_attributes></element><element><id>Relation</id><coordinates><x>1090</x><y>336</y><w>160</w><h>150</h></coordinates><panel_attributes>lt=&lt;-
-m1=Cancelar</panel_attributes><additional_attributes>10;10;10;130;140;130</additional_attributes></element><element><id>UMLClass</id><coordinates><x>970</x><y>586</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
+m1=Crear modelo</panel_attributes><additional_attributes>240;20;10;20</additional_attributes></element><element><id>Relation</id><coordinates><x>800</x><y>340</y><w>160</w><h>150</h></coordinates><panel_attributes>lt=&lt;-
+m1=Cancelar</panel_attributes><additional_attributes>10;10;10;130;140;130</additional_attributes></element><element><id>UMLClass</id><coordinates><x>680</x><y>590</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
 HiperparametersPage
 
 
-Parámetros de compilación</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>1120</x><y>326</y><w>260</w><h>40</h></coordinates><panel_attributes>lt=&lt;-
-m1=Cancelar</panel_attributes><additional_attributes>10;10;240;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1430</x><y>356</y><w>110</w><h>200</h></coordinates><panel_attributes>lt=&lt;-
-m1=Crear</panel_attributes><additional_attributes>10;170;90;170;90;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>560</x><y>586</y><w>270</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
+Parámetros de compilación</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>830</x><y>210</y><w>260</w><h>40</h></coordinates><panel_attributes>lt=&lt;-
+m1=Cancelar</panel_attributes><additional_attributes>10;10;240;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1140</x><y>360</y><w>110</w><h>200</h></coordinates><panel_attributes>lt=&lt;-
+m1=Crear</panel_attributes><additional_attributes>10;170;90;170;90;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>270</x><y>590</y><w>270</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
 MenuSelectPage
 
 
-Selección de predicción o reentrenamiento</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>990</x><y>766</y><w>70</w><h>150</h></coordinates><panel_attributes>lt=&lt;-
-m1=Aceptar</panel_attributes><additional_attributes>10;130;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>730</x><y>766</y><w>540</w><h>110</h></coordinates><panel_attributes>lt=&lt;-
-m1=Configurar Hiperparámetros</panel_attributes><additional_attributes>360;10;360;90;10;90;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>680</x><y>436</y><w>80</w><h>170</h></coordinates><panel_attributes>lt=&lt;-
-m1=Predecir</panel_attributes><additional_attributes>10;10;10;150</additional_attributes></element><element><id>Relation</id><coordinates><x>940</x><y>336</y><w>80</w><h>580</h></coordinates><panel_attributes>lt=&lt;-
-m1=Cancelar</panel_attributes><additional_attributes>10;10;10;560</additional_attributes></element><element><id>Relation</id><coordinates><x>1020</x><y>336</y><w>80</w><h>270</h></coordinates><panel_attributes>lt=&lt;-
-m1=Cancelar</panel_attributes><additional_attributes>10;10;10;250</additional_attributes></element><element><id>UMLClass</id><coordinates><x>1230</x><y>446</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
+Selección de predicción o reentrenamiento</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>700</x><y>770</y><w>70</w><h>150</h></coordinates><panel_attributes>lt=&lt;-
+m1=Aceptar</panel_attributes><additional_attributes>10;130;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>440</x><y>770</y><w>540</w><h>110</h></coordinates><panel_attributes>lt=&lt;-
+m1=Configurar Hiperparámetros</panel_attributes><additional_attributes>360;10;360;90;10;90;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>390</x><y>440</y><w>80</w><h>170</h></coordinates><panel_attributes>lt=&lt;-
+m1=Predecir</panel_attributes><additional_attributes>10;10;10;150</additional_attributes></element><element><id>Relation</id><coordinates><x>650</x><y>340</y><w>80</w><h>580</h></coordinates><panel_attributes>lt=&lt;-
+m1=Cancelar</panel_attributes><additional_attributes>10;10;10;560</additional_attributes></element><element><id>Relation</id><coordinates><x>730</x><y>340</y><w>80</w><h>270</h></coordinates><panel_attributes>lt=&lt;-
+m1=Cancelar</panel_attributes><additional_attributes>10;10;10;250</additional_attributes></element><element><id>UMLClass</id><coordinates><x>940</x><y>450</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
 SelectDataPage
 
 
 	Seleccionar los datos de 
 entrenamiento y testeo
-</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>780</x><y>206</y><w>160</w><h>400</h></coordinates><panel_attributes>lt=&lt;-
-m1=Cargar modelo</panel_attributes><additional_attributes>10;380;10;10;140;10</additional_attributes></element><element><id>Relation</id><coordinates><x>1120</x><y>496</y><w>130</w><h>110</h></coordinates><panel_attributes>lt=&lt;-
-m1=Aceptar</panel_attributes><additional_attributes>10;90;10;10;110;10</additional_attributes></element><element><id>Relation</id><coordinates><x>820</x><y>686</y><w>170</w><h>40</h></coordinates><panel_attributes>lt=&lt;-
-m1=Cancelar</panel_attributes><additional_attributes>10;10;150;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>820</x><y>896</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>490</x><y>210</y><w>160</w><h>400</h></coordinates><panel_attributes>lt=&lt;-
+m1=Cargar modelo</panel_attributes><additional_attributes>10;380;10;10;140;10</additional_attributes></element><element><id>Relation</id><coordinates><x>830</x><y>500</y><w>130</w><h>110</h></coordinates><panel_attributes>lt=&lt;-
+m1=Aceptar</panel_attributes><additional_attributes>10;90;10;10;110;10</additional_attributes></element><element><id>Relation</id><coordinates><x>530</x><y>690</y><w>170</w><h>40</h></coordinates><panel_attributes>lt=&lt;-
+m1=Cancelar</panel_attributes><additional_attributes>10;10;150;10</additional_attributes></element><element><id>UMLClass</id><coordinates><x>530</x><y>900</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
 TrainPage
 
 
-Entrenamiento</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>530</x><y>896</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
+Entrenamiento</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>240</x><y>900</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
 ResultsPage
 
-Resultados</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>540</x><y>256</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
+Resultados</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>250</x><y>260</y><w>210</w><h>190</h></coordinates><panel_attributes>&lt;&lt;Vista GUI&gt;&gt;
 PredictPage
 
 
-Predicción de los números</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>630</x><y>436</y><w>60</w><h>170</h></coordinates><panel_attributes>lt=&lt;-
-m1=Atrás</panel_attributes><additional_attributes>10;150;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>640</x><y>766</y><w>60</w><h>150</h></coordinates><panel_attributes>lt=&lt;-
-m1=Menú</panel_attributes><additional_attributes>10;10;10;130</additional_attributes></element><element><id>Relation</id><coordinates><x>730</x><y>966</y><w>110</w><h>40</h></coordinates><panel_attributes>lt=&lt;-
-m1=Entrenar</panel_attributes><additional_attributes>10;10;90;10</additional_attributes></element><element><id>Relation</id><coordinates><x>810</x><y>296</y><w>130</w><h>310</h></coordinates><panel_attributes>lt=&lt;-
-m1=Inicio</panel_attributes><additional_attributes>110;10;10;10;10;290</additional_attributes></element></diagram>
+Predicción de los números</panel_attributes><additional_attributes></additional_attributes></element><element><id>Relation</id><coordinates><x>340</x><y>440</y><w>60</w><h>170</h></coordinates><panel_attributes>lt=&lt;-
+m1=Atrás</panel_attributes><additional_attributes>10;150;10;10</additional_attributes></element><element><id>Relation</id><coordinates><x>350</x><y>770</y><w>60</w><h>150</h></coordinates><panel_attributes>lt=&lt;-
+m1=Menú</panel_attributes><additional_attributes>10;10;10;130</additional_attributes></element><element><id>Relation</id><coordinates><x>440</x><y>970</y><w>110</w><h>40</h></coordinates><panel_attributes>lt=&lt;-
+m1=Entrenar</panel_attributes><additional_attributes>10;10;90;10</additional_attributes></element><element><id>Relation</id><coordinates><x>520</x><y>300</y><w>130</w><h>310</h></coordinates><panel_attributes>lt=&lt;-
+m1=Inicio</panel_attributes><additional_attributes>110;10;10;10;10;290</additional_attributes></element><element><id>Relation</id><coordinates><x>830</x><y>310</y><w>290</w><h>160</h></coordinates><panel_attributes>lt=&lt;-
+
+m1=Cargar parámetros</panel_attributes><additional_attributes>160;140;160;20;10;20</additional_attributes></element></diagram>

@@ -1,11 +1,11 @@
 '''This file defines the RNMNAppGui Class'''
 
-import tkinter
 import customtkinter
 from RNMNApp import RNMNApp
 from .RNMNGuiWindows import CustomWindow
 from .RNMNGuiFrames import MainPage, SelectDataPage, CreateModelPage, PredictPage
 from .RNMNGuiFrames import HiperparametersPage, MenuSelectPage, ResultsPage, TrainingPage
+
 
 class RNMNAppGui(customtkinter.CTk):
     '''This class start creates the GUI for the app'''
@@ -15,16 +15,15 @@ class RNMNAppGui(customtkinter.CTk):
 
     models: dict
 
-
     def __init__(self, logic_app, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
+        self.rely = dict()
 
         self.frames = dict()
         self.logic_app = logic_app
         self.resizable(width=False, height=False)
 
-        self.models = {"text":False, "audio": False, "image":False}
+        self.models = {"text": False, "audio": False, "image": False}
 
         customtkinter.set_appearance_mode("dark")
 
@@ -39,9 +38,9 @@ class RNMNAppGui(customtkinter.CTk):
             self, 1080, 720, self._get_window_scaling()))
         self.grid_columnconfigure((0), weight=1)
         self.title("Red Neuronal Multimodal Numérica")
-        
+
         for F in (MainPage, SelectDataPage, CreateModelPage,
-                   HiperparametersPage, MenuSelectPage, ResultsPage, TrainingPage, PredictPage):
+                  HiperparametersPage, MenuSelectPage, ResultsPage, TrainingPage, PredictPage):
             page_name = F.__name__
             frame = F(logic_app=logic_app, parent=container, controller=self)
             self.frames[page_name] = frame

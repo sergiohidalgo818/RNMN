@@ -1,10 +1,7 @@
 '''This file defines the RNMNAppGui Class'''
 
-import tkinter
-import tkinter.font
 import customtkinter
 from RNMNParent import RNMNParams
-import json
 
 
 class ValidationTabError(Exception):
@@ -15,7 +12,7 @@ class ValidationTabError(Exception):
         self.message = message
 
 
-class CreateNetTabView(customtkinter.CTkTabview):
+class CustomTabView(customtkinter.CTkTabview):
 
     _title_font = ("Times", 25, 'bold')
     _button_font = ("Times", 20, )
@@ -44,6 +41,12 @@ class CreateNetTabView(customtkinter.CTkTabview):
         self.model_tab_create("Modelo de audio", master)
 
         self.model_tab_create("Modelo de imagen", master)
+
+
+class CreateNetTabView(CustomTabView):
+
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
 
     def _neurons_update(self, alias, number):
         self.widget_dict[alias]['layers']["label_neurons_" +
@@ -259,7 +262,7 @@ class CreateNetTabView(customtkinter.CTkTabview):
         input.place(relx=0.802, rely=0.1, anchor=customtkinter.W)
 
         self.params_dict[alias]['layers_dict']['layer_out']['activation'] = customtkinter.StringVar(
-            master=master, value=self.activations[1], name="activation_out_" + alias)
+            master=master, value=self.activations[2], name="activation_out_" + alias)
 
         combobox_act = customtkinter.CTkComboBox(master=self.tab(tab_name), values=self.activations,
                                                  state="readonly",

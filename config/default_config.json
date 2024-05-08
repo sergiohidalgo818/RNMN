@@ -4,18 +4,90 @@
         "auto_in": "True",
         "layers_dict": {
             "layer_1": {
-                "num_neurons": 128,
-                "activation": "relu"
+                "type": "Conv2D",
+                "filters": 32,
+                "kernel_size": 5,
+                "activation": "relu",
+                "padding": "same"
             },
             "layer_2": {
-                "num_neurons": 84,
+                "type": "MaxPooling2D"
+            },
+            "layer_3": {
+                "type": "Conv2D",
+                "filters": 64,
+                "kernel_size": 5,
+                "activation": "relu"
+            },
+            "layer_4": {
+                "type": "MaxPooling2D"
+            },
+            "layer_5": {
+                "type": "Flatten"
+            },
+            "layer_6": {
+                "type": "Dense",
+                "units": 128,
+                "activation": "relu"
+            },
+            "layer_7": {
+                "type": "Dense",
+                "units": 84,
                 "activation": "relu"
             },
             "layer_out": {
-                "num_neurons": 10,
+                "type": "Dense",
+                "units": 10,
+                "activation": "softmax"
+            }
+        }
+    },
+    "text_config": {
+        "num_inputs": 64,
+        "auto_in": "True",
+        "layers_dict": {
+            "layer_1": {
+                "type": "Embedding",
+                "input_dim": 20000,
+                "output_dim": 128
+            },
+            "layer_2": {
+                "type": "Dropout",
+                "rate": 0.5
+            },
+            "layer_3": {
+                "type": "Conv1D",
+                "filters": 128,
+                "kernel_size": 7,
+                "padding":"valid",
+                "activation": "relu",
+                "strides":3
+            },
+            "layer_4": {
+                "type": "Conv1D",
+                "filters": 128,
+                "kernel_size": 7,
+                "padding":"valid",
+                "activation": "relu",
+                "strides":3
+            },
+            "layer_5": {
+                "type": "GlobalMaxPooling1D"
+            },
+            "layer_6": {
+                "type": "Dense",
+                "units": 128,
+                "activation": "relu"
+            },
+            "layer_7": {
+                "type": "Dropout",
+                "rate": 0.5
+            },
+            "layer_out": {
+                "type": "Dense",
+                "units": 10,
                 "activation": "softmax"
             }
         }
     }
-
 }

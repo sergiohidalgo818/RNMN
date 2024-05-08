@@ -6,9 +6,12 @@ from .RNMNGuiApp import RNMNAppGui
 from .InputType import InputType, ImportError
 from ProcessData import ProcessAudio, ProcessError
 from ProcessData import ProcessText, ProcessImage
-from RNMNParent import RNMNModel, RNMNParams
+from RNMNParent import RNMNModel
+from RNMNParent.RNMNParams import RNMNActivations
+from RNMNParent.RNMNSmall import RNMNTextModel
 import json
 import numpy as np
+import keras
 
 
 class RNMNApp():
@@ -21,16 +24,18 @@ class RNMNApp():
     model: RNMNModel
     app_gui: RNMNAppGui
     _no_gui: bool
-    model_params:dict
-    default_params:dict
+    model_params: dict
+    default_params: dict
+    optional_layers: dict
 
     _has_model: bool
 
     def __init__(self, **kwargs) -> None:
         self.preprocessed_data_and_types = dict()
+        self.processed_data_and_types = dict()
         self._no_gui = kwargs['gui']
         self._has_model = False
-        
+
         self.workdir = os.path.abspath(os.getcwd())
         if "RNMN" in os.listdir(self.workdir):
             self.workdir = os.path.join(self.workdir, "RNMN")
@@ -39,6 +44,8 @@ class RNMNApp():
         cofn_file = os.path.join(self.config_path, "default_config.json")
 
         self.default_params = self.load_config(cofn_file)
+
+        pass
 
     def start_app(self):
         """Starts the app
@@ -90,28 +97,36 @@ class RNMNApp():
 
     def create_model(self):
         for k in self.processed_data_and_types.keys():
-            self.preprocessed_data_and_types[k].reshape_data(int(self.model_params[k.value+"_config"]['layers_dict']['layer_out']['num_neurons']))
+            self.preprocessed_data_and_types[k].reshape_data(int(
+                self.model_params[k.value+"_config"]['layers_dict']['layer_out']['units']))
             self.processed_data_and_types[k] = self.preprocessed_data_and_types[k].data_processed
-                        
 
-        self.model = RNMNModel(params_dict=self.model_params, data_and_types=self.processed_data_and_types)
-
-
-    def compile_model(self, parameters):
-        self.model = RNMNModel(params_dict=self.model_params, data_and_types=self.processed_data_and_types)
-
+        self.model = RNMNModel(params_dict=self.model_params,
+                               data_and_types=self.processed_data_and_types)
 
     def save_model(self, directory: str):
-        extension=".pkl"
+        extension = ".pkl"
+        model_name = directory
         if ".plk" in directory:
-            extension =""
+            extension = ""
+            model_name = directory[:-4]
+
         with open(directory+extension, 'wb') as output:
-            pickle.dump(self.model, output, pickle.HIGHEST_PROTOCOL)
+            model = RNMNModel()
+            self.model.model.save(os.path.join(
+                os.path.dirname(directory), model_name+".keras"))
+            model.models = self.model.models
+            pickle.dump(model, output, pickle.HIGHEST_PROTOCOL)
 
     def load_model(self, directory: str):
         with open(directory, 'rb') as input:
             try:
+                model_name = directory[:-4]
+                model = keras.models.load_model(os.path.join(os.path.dirname(directory), model_name + ".keras"), custom_objects={
+                    "TextVectorization": RNMNTextModel.vectorize_layer,
+                })
                 self.model = pickle.load(input)
+                self.model.model = model
             except pickle.UnpicklingError as ex:
                 raise ImportError("Error while importing model")
             else:
@@ -132,9 +147,8 @@ class RNMNApp():
             return json.loads(file)
         except FileExistsError as ex:
             raise ImportError("Error on file json")
-                
+
     def preprocess_typedata_data(self, list_types):
-        self.processed_data_and_types = dict()
 
         for k in list_types:
             try:
@@ -168,7 +182,17 @@ class RNMNApp():
 
     def predict_data(self, data):
         array = self.model.predict(data)
-        return np.argmax(array)
+
+        results = list()
+        all_results = list()
+        for i in range(array.shape[0]):
+            all_results.append(np.array_split(array[i], array[i].size/10))
+
+        for out in all_results:
+            for block in out:
+                results.append(np.argmax(block))
+
+        return results
 
     def app_no_gui_start(self):
         print("\nPorfavor seleccione una opción:\n\n\t1-Crear modelo\n\t2-Cargar modelo")
@@ -200,15 +224,15 @@ class RNMNApp():
 
         def _layer_ask(params_dict, layer_name):
             params_dict['layer_'+layer_name] = dict()
-            params_dict['layer_'+layer_name]['num_neurons'] = input(
+            params_dict['layer_'+layer_name]['units'] = input(
                 "\n\nIntroduzca el número de neuronas de la capa " + layer_name+": ")
-            while (params_dict['layer_'+layer_name]['num_neurons'].isnumeric() and int(params_dict['layer_'+layer_name]['num_neurons']) <= 0) or not params_dict['layer_'+layer_name]['num_neurons'].isnumeric():
+            while (params_dict['layer_'+layer_name]['units'].isnumeric() and int(params_dict['layer_'+layer_name]['units']) <= 0) or not params_dict['layer_'+layer_name]['units'].isnumeric():
                 params_dict['num_inputs'] = input(
                     "Opción no válida, introduzca un número positivo mayor que 0: ")
             cont = 1
             print("\n\n")
 
-            activations = [act.value for act in RNMNParams.RNMNActivations]
+            activations = [act.value for act in RNMNActivations]
             for act in activations:
                 print(str(cont) + "- " + act)
                 cont += 1

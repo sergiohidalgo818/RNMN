@@ -9,9 +9,9 @@
 <font color="#000000" face="helvetica, arial"><strong>RNMNParent.RNMNSmall.RNMNSmall</strong> = <a name="RNMNParent.RNMNSmall.RNMNSmall">class RNMNSmall</a>(<a href="RNMNParent.RNMNParent.html#RNMNParent">RNMNParent.RNMNParent.RNMNParent</a>)</font></td></tr>
     
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt>RNMNParent.RNMNSmall.RNMNSmall(data,&nbsp;**kwargs)&nbsp;-&amp;gt;&nbsp;None<br>
+<td colspan=2><tt>RNMNParent.RNMNSmall.RNMNSmall()&nbsp;-&amp;gt;&nbsp;None<br>
 &nbsp;<br>
-<br>&nbsp;</tt></td></tr>
+Parent&nbsp;class&nbsp;of&nbsp;all&nbsp;the&nbsp;models<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%"><dl><dt>Method resolution order:</dt>
 <dd><a href="RNMNParent.RNMNSmall.RNMNSmall.html#RNMNSmall">RNMNSmall</a></dd>
@@ -21,15 +21,18 @@
 </dl>
 <hr>
 Methods defined here:<br>
-<dl><dt><a name="RNMNSmall-__init__"><strong>__init__</strong></a>(self, data, **kwargs) -&gt; None</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+<dl><dt><a name="RNMNSmall-__init__"><strong>__init__</strong></a>(self) -&gt; None</dt><dd><tt>Initializes&nbsp;the&nbsp;model&nbsp;layers,&nbsp;expects&nbsp;that&nbsp;the<br>
+input&nbsp;layer&nbsp;is&nbsp;already&nbsp;created</tt></dd></dl>
 
 <dl><dt><a name="RNMNSmall-add_data_to_model"><strong>add_data_to_model</strong></a>(self, data: tuple)</dt></dl>
+
+<dl><dt><a name="RNMNSmall-create_layers_dict"><strong>create_layers_dict</strong></a>(self, layers_dict)</dt></dl>
 
 <hr>
 Data and other attributes defined here:<br>
 <dl><dt><strong>__abstractmethods__</strong> = frozenset()</dl>
 
-<dl><dt><strong>__annotations__</strong> = {'layers_dict': &lt;class 'dict'&gt;, 'num_inputs': &lt;class 'tuple'&gt;, 'x_test': &lt;class 'numpy.ndarray'&gt;, 'x_train': &lt;class 'numpy.ndarray'&gt;, 'y_test': &lt;class 'numpy.ndarray'&gt;, 'y_train': &lt;class 'numpy.ndarray'&gt;}</dl>
+<dl><dt><strong>__annotations__</strong> = {'in_layer': &lt;class 'keras.src.backend.common.keras_tensor.KerasTensor'&gt;, 'layers_dict': &lt;class 'dict'&gt;, 'num_inputs': &lt;class 'tuple'&gt;, 'x_test': &lt;class 'numpy.ndarray'&gt;, 'x_train': &lt;class 'numpy.ndarray'&gt;, 'y_test': &lt;class 'numpy.ndarray'&gt;, 'y_train': &lt;class 'numpy.ndarray'&gt;}</dl>
 
 <hr>
 Methods inherited from <a href="RNMNParent.RNMNParent.html#RNMNParent">RNMNParent.RNMNParent.RNMNParent</a>:<br>
