@@ -2,6 +2,9 @@
 
 import customtkinter
 from RNMNParent import RNMNParams
+from .RNMNGuiWindows import DenseLayerEditWindow, EmbeddingLayerEditWindow, DropoutLayerEditWindow
+from .RNMNGuiWindows import Conv1DLayerEditWindow, GlobalMaxPooling1DLayerEditWindow, Conv2DLayerEditWindow
+from .RNMNGuiWindows import MaxPooling2DLayerEditWindow, FlattenLayerEditWindow
 
 
 class ValidationTabError(Exception):
@@ -25,27 +28,43 @@ class CustomTabView(customtkinter.CTkTabview):
 
     models_list = list()
 
-    def __init__(self, master, **kwargs):
+    def __init__(self, master, controller,  **kwargs):
         super().__init__(master, **kwargs)
+        self.controller = controller
         self.master = master
         self._segmented_button.configure(font=self._button_font)
         self.add("Modelo de texto")
-        self.add("Modelo de audio")
         self.add("Modelo de imagen")
-
-        self.activations = [
-            activation.value for activation in RNMNParams.RNMNActivations]
+        self.add("Modelo de audio")
 
         self.model_tab_create("Modelo de texto", master)
 
+        self.model_tab_create("Modelo de imagen", master)
+
         self.model_tab_create("Modelo de audio", master)
 
-        self.model_tab_create("Modelo de imagen", master)
+    def model_tab_create(self, tab_name, master):
+        pass
 
 
 class CreateNetTabView(CustomTabView):
 
     def __init__(self, master, **kwargs):
+        self.activations = [
+            activation.value for activation in RNMNParams.RNMNActivations]
+
+        self.layers = [
+            layer.value for layer in RNMNParams.RNMNLayers]
+        self.windows_layers = dict()
+        self.windows_layers['Dense'] = DenseLayerEditWindow
+        self.windows_layers['Embedding'] = EmbeddingLayerEditWindow
+        self.windows_layers['Dropout'] = DropoutLayerEditWindow
+        self.windows_layers['Conv1D'] = Conv1DLayerEditWindow
+        self.windows_layers['GlobalMaxPooling1D'] = GlobalMaxPooling1DLayerEditWindow
+        self.windows_layers['Conv2D'] = Conv2DLayerEditWindow
+        self.windows_layers['MaxPooling2D'] = MaxPooling2DLayerEditWindow
+        self.windows_layers['Flatten'] = FlattenLayerEditWindow
+
         super().__init__(master, **kwargs)
 
     def _neurons_update(self, alias, number):
@@ -69,11 +88,9 @@ class CreateNetTabView(CustomTabView):
 
                 self.params_dict[alias]['layers_dict']['layer_' +
                                                        str(self.params_dict[alias]['num_layers'].get())] = dict()
-                self.params_dict[alias]['layers_dict']['layer_'+str(self.params_dict[alias]['num_layers'].get())]["num_neurons"] = customtkinter.IntVar(
-                    master=self.master, value=1, name="num_neurons_layer_" + str(self.params_dict[alias]['num_layers'].get()) + "_"+alias)
 
-                self.params_dict[alias]['layers_dict']['layer_'+str(self.params_dict[alias]['num_layers'].get())]["activation"] = customtkinter.StringVar(
-                    master=self.master, value=self.activations[0], name="activation__layer_" + str(self.params_dict[alias]['num_layers'].get()) + "_"+alias)
+                self.params_dict[alias]['layers_dict']['layer_'+str(self.params_dict[alias]['num_layers'].get())]["type"] = customtkinter.StringVar(
+                    master=self.master, value=self.layers[0], name="type__layer_" + str(self.params_dict[alias]['num_layers'].get()) + "_"+alias)
                 self.update_tab(alias)
 
     def _del_layer(self, alias):
@@ -82,22 +99,15 @@ class CreateNetTabView(CustomTabView):
                 self.params_dict[alias]['num_layers'].get()-1)
             self.update_tab_forget(alias)
 
-    def _add_neurons(self, alias, value, number):
-        self.widget_dict[alias]['layers']["label_neurons_" + str(number)]['widget'].configure(
-            text="neuronas "+str(self.params_dict[alias]['layers_dict']['layer_'+str(number)]["num_neurons"].get()))
-
     def update_tab_forget(self, alias):
 
         self.widget_dict[alias]['layers']["label_layer_" +
                                           str(self.params_dict[alias]['num_layers'].get()+1)]['widget'].place_forget()
 
-        self.widget_dict[alias]['layers']["slide_neurons_" +
+        self.widget_dict[alias]['layers']["edit_layer" +
                                           str(self.params_dict[alias]['num_layers'].get()+1)]['widget'].place_forget()
 
-        self.widget_dict[alias]['layers']["label_neurons_" +
-                                          str(self.params_dict[alias]['num_layers'].get()+1)]['widget'].place_forget()
-
-        self.widget_dict[alias]['layers']["activation_" +
+        self.widget_dict[alias]['layers']["type_" +
                                           str(self.params_dict[alias]['num_layers'].get()+1)]['widget'].place_forget()
 
     def _recover_neuron_counter(self, alias, number):
@@ -107,9 +117,9 @@ class CreateNetTabView(CustomTabView):
         self.widget_dict[alias]['layers']["label_layer_" +
                                           str(number)]['widget'].place(x=x, y=y, anchor=customtkinter.CENTER)
 
-        x, y = self.widget_dict[alias]['layers']["slide_neurons_" +
+        x, y = self.widget_dict[alias]['layers']["edit_layer" +
                                                  str(number)]['position']
-        self.widget_dict[alias]['layers']["slide_neurons_" +
+        self.widget_dict[alias]['layers']["edit_layer" +
                                           str(number)]['widget'].place(x=x, y=y, anchor=customtkinter.CENTER)
 
         x, y = self.widget_dict[alias]['layers']["label_neurons_" +
@@ -117,15 +127,22 @@ class CreateNetTabView(CustomTabView):
         self.widget_dict[alias]['layers']["label_neurons_" +
                                           str(number)]['widget'].place(x=x, y=y, anchor=customtkinter.CENTER)
 
-        x, y = self.widget_dict[alias]['layers']["activation_" +
+        x, y = self.widget_dict[alias]['layers']["type_" +
                                                  str(number)]['postition']
-        self.widget_dict[alias]['layers']["activation_" +
+        self.widget_dict[alias]['layers']["type_" +
                                           str(number)]['widget'].place(x=x, y=y, anchor=customtkinter.CENTER)
+
+    def _edit_layer(self, tab_name, button, number, alias, value):
+        button.configure(command=lambda: self.windows_layers[value](master=self.tab(tab_name), controller=self.controller,
+                                                                    dictionary=self.params_dict[alias]['layers_dict']['layer_'+str(
+                                                                        number)], number=number,
+                                                                    message=value, alias=alias))
 
     def _create_neuron_counter(self, tab_name, number, alias, x, y):
 
         self.widget_dict[alias]['layers']["label_layer_" +
                                           str(number)] = dict()
+
         self.widget_dict[alias]['layers']["label_layer_" + str(number)]['widget'] = customtkinter.CTkLabel(master=self.tab(
             tab_name), text="Capa " + str(number) + " ", font=self._button_font)
         self.widget_dict[alias]['layers']["label_layer_" + str(number)]['widget'].place(
@@ -133,37 +150,33 @@ class CreateNetTabView(CustomTabView):
         self.widget_dict[alias]['layers']["label_layer_" +
                                           str(number)]['position'] = (x+40, y-65)
 
-        self.widget_dict[alias]['layers']["activation_" + str(number)] = dict()
-        self.widget_dict[alias]['layers']["activation_" + str(number)]['widget'] = customtkinter.CTkComboBox(master=self.tab(tab_name),
-                                                                                                             values=self.activations, state="readonly",
-                                                                                                             variable=self.params_dict[alias]['layers_dict']['layer_'+str(
-                                                                                                                 self.params_dict[alias]['num_layers'].get())]["activation"],
-                                                                                                             font=self._combo_box_font, width=100)
-        self.widget_dict[alias]['layers']["activation_" +
-                                          str(number)]['widget'].place(x=x+140, y=y-30, anchor=customtkinter.CENTER)
-        self.widget_dict[alias]['layers']["activation_" +
-                                          str(number)]['postition'] = (x+140, y-30)
+        self.widget_dict[alias]['layers']["type_" + str(number)] = dict()
 
-        self.widget_dict[alias]['layers']['slide_neurons_' +
+        self.widget_dict[alias]['layers']['edit_layer' +
                                           str(number)] = dict()
-        self.widget_dict[alias]['layers']['slide_neurons_'+str(number)]['widget'] = customtkinter.CTkSlider(master=self.tab(
-            tab_name), from_=1, to=255, command=lambda value, alias=alias: self._add_neurons(alias, value, number),
-            variable=self.params_dict[alias]['layers_dict']['layer_'+str(self.params_dict[alias]['num_layers'].get())]["num_neurons"])
+        type_of_layer = self.params_dict[alias]['layers_dict']['layer_'+str(
+            self.params_dict[alias]['num_layers'].get())]["type"].get()
+        self.widget_dict[alias]['layers']['edit_layer'+str(number)]['widget'] = customtkinter.CTkButton(self.tab(
+            tab_name), text="Edit layer", font=self._button_font, width=30, command=lambda: self.windows_layers[type_of_layer](master=self.tab(tab_name), controller=self.controller,
+                                                                                                                               dictionary=self.params_dict[alias]['layers_dict']['layer_'+str(
+                                                                                                                                   number)], number=number,
+                                                                                                                               message=type_of_layer, alias=alias), height=10, corner_radius=40, fg_color="lime green", hover_color="forest green")
 
-        self.widget_dict[alias]['layers']['slide_neurons_' +
+        self.widget_dict[alias]['layers']['edit_layer' +
                                           str(number)]['widget'].place(x=x-30, y=y-30, anchor=customtkinter.CENTER)
-        self.widget_dict[alias]['layers']["slide_neurons_" +
+        self.widget_dict[alias]['layers']["edit_layer" +
                                           str(number)]['position'] = (x-30, y-30)
-
-        self.widget_dict[alias]['layers']["label_neurons_" +
-                                          str(number)] = dict()
-
-        self.widget_dict[alias]['layers']["label_neurons_" + str(number)]['widget'] = customtkinter.CTkLabel(master=self.tab(
-            tab_name), text="neuronas "+str(self.params_dict[alias]['layers_dict']['layer_'+str(self.params_dict[alias]['num_layers'].get())]["num_neurons"].get()))
-        self.widget_dict[alias]['layers']["label_neurons_" + str(number)]['widget'].place(
-            x=x-30, y=y-10, anchor=customtkinter.CENTER)
-        self.widget_dict[alias]['layers']["label_neurons_" +
-                                          str(number)]['position'] = (x-30, y-10)
+        self.widget_dict[alias]['layers']["type_" + str(number)]['widget'] = customtkinter.CTkComboBox(master=self.tab(tab_name),
+                                                                                                       command=lambda value: self._edit_layer(
+                                                                                                           tab_name, self.widget_dict[alias]['layers']['edit_layer'+str(number)]['widget'], number, alias, value),
+                                                                                                       values=self.layers, state="readonly",
+                                                                                                       variable=self.params_dict[alias]['layers_dict']['layer_'+str(
+                                                                                                           self.params_dict[alias]['num_layers'].get())]["type"],
+                                                                                                       font=self._combo_box_font, width=100)
+        self.widget_dict[alias]['layers']["type_" +
+                                          str(number)]['widget'].place(x=x+140, y=y-30, anchor=customtkinter.CENTER)
+        self.widget_dict[alias]['layers']["type_" +
+                                          str(number)]['postition'] = (x+140, y-30)
 
     def update_tab(self, alias):
         self._create_neuron_counter(
@@ -254,15 +267,15 @@ class CreateNetTabView(CustomTabView):
         title_out.place(relx=0.6502, rely=0.1, anchor=customtkinter.W)
 
         self.params_dict[alias]['layers_dict']['layer_out'] = dict()
-        self.params_dict[alias]['layers_dict']['layer_out']["num_neurons"] = customtkinter.StringVar(
+        self.params_dict[alias]['layers_dict']['layer_out']["units"] = customtkinter.StringVar(
             master=master, value="10", name="num_outputs_" + alias)
 
         input = customtkinter.CTkEntry(master=self.tab(
-            tab_name), textvariable=self.params_dict[alias]['layers_dict']['layer_out']['num_neurons'], width=100)
+            tab_name), textvariable=self.params_dict[alias]['layers_dict']['layer_out']['units'], width=100)
         input.place(relx=0.802, rely=0.1, anchor=customtkinter.W)
 
         self.params_dict[alias]['layers_dict']['layer_out']['activation'] = customtkinter.StringVar(
-            master=master, value=self.activations[2], name="activation_out_" + alias)
+            master=master, value=self.activations[2], name="activation_" + alias)
 
         combobox_act = customtkinter.CTkComboBox(master=self.tab(tab_name), values=self.activations,
                                                  state="readonly",
@@ -280,9 +293,9 @@ class CreateNetTabView(CustomTabView):
 
     def validate(self):
         for alias in self._alias:
-            if not self.params_dict[alias]['num_inputs'].get().isnumeric() or not self.params_dict[alias]['layers_dict']['layer_out']['num_neurons'].get().isnumeric():
+            if not self.params_dict[alias]['num_inputs'].get().isnumeric() or not self.params_dict[alias]['layers_dict']['layer_out']['units'].get().isnumeric():
                 raise ValidationTabError(
                     "Error on parameters")
-            elif int(self.params_dict[alias]['num_inputs'].get()) <= 0 or int(self.params_dict[alias]['layers_dict']['layer_out']['num_neurons'].get()) <= 0:
+            elif int(self.params_dict[alias]['num_inputs'].get()) <= 0 or int(self.params_dict[alias]['layers_dict']['layer_out']['units'].get()) <= 0:
                 raise ValidationTabError(
                     "Error on parameters")

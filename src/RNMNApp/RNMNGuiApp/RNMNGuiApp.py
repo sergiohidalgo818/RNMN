@@ -23,7 +23,7 @@ class RNMNAppGui(customtkinter.CTk):
         self.logic_app = logic_app
         self.resizable(width=False, height=False)
 
-        self.models = {"text": False, "audio": False, "image": False}
+        self.models = {"text": False, "image": False, "audio": False,}
 
         customtkinter.set_appearance_mode("dark")
 

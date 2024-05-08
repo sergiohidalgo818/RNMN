@@ -1,7 +1,7 @@
 import customtkinter
-import matplotlib as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
+from RNMNParent import RNMNParams
 
 
 class CustomWindow(customtkinter.CTkToplevel):
@@ -30,6 +30,7 @@ class CustomWindow(customtkinter.CTkToplevel):
         return f"{width}x{height}+{x}+{y}"
 
     def _accept(self):
+        self.master.setvar(name="window_accept", value=True)
         self.destroy()
 
     def _block_on_window(self):
@@ -90,10 +91,6 @@ class AcceptWindow(CustomWindow):
         self.master.setvar(name="window_accept", value=False)
         self.destroy()
 
-    def _accept(self):
-        self.master.setvar(name="window_accept", value=True)
-        self.destroy()
-
 
 class PredictWindow(CustomWindow):
 
@@ -115,10 +112,6 @@ class PredictWindow(CustomWindow):
             height=50, corner_radius=20, fg_color="lime green", hover_color="forest green")
         button.place(relx=0.5, rely=0.6, anchor=customtkinter.CENTER)
         self._block_on_window()
-
-    def _accept(self):
-        self.master.setvar(name="window_accept", value=True)
-        self.destroy()
 
 
 class GraphWindow(CustomWindow):
@@ -164,16 +157,11 @@ class GraphWindow(CustomWindow):
 
         self._block_on_window()
 
-    def _accept(self):
-        self.master.setvar(name="window_accept", value=True)
-        self.destroy()
-
     def _save(self):
 
         directory = customtkinter.filedialog.asksaveasfilename(initialdir="./",
                                                                title="Seleccione donde guardar la gráfica",
                                                                filetypes=[('Images', '*.jpg *.jpeg *.png')])
-
         if len(directory) > 0:
             extension = ".png"
             if ".png" in directory:
@@ -183,10 +171,14 @@ class GraphWindow(CustomWindow):
 
 
 class LayerEditWindow(CustomWindow):
+    _combo_box_font = ("Times", 16)
 
-    def __init__(self, master, dictionary, controller: customtkinter.CTk, message, *args, **kwargs):
+    def __init__(self, master, dictionary, number, controller: customtkinter.CTk, message, alias, *args, **kwargs):
         super().__init__(master, controller, message, *args, **kwargs)
 
+        self.activations = [
+            activation.value for activation in RNMNParams.RNMNActivations]
+        self.params = dict()
         self.geometry(CustomWindow.center_window(
             self, 720, 400, self._get_window_scaling()))
         self.title("Edición de la capa")
@@ -194,14 +186,149 @@ class LayerEditWindow(CustomWindow):
         label = customtkinter.CTkLabel(
             self, text=message, font=self._title_font)
         label.place(relx=0.5, rely=0.2, anchor=customtkinter.CENTER)
+        self.alias = alias
+        self.number = number
+        self.dictionary = dictionary
+        if "params" not in self.dictionary.keys():
+            self._init_vars()
+        else:
+            for k in self.dictionary['params'].keys():
+                self.params[k] = self.dictionary['params'][k]
+        self.set_widgets()
 
         button_accept = customtkinter.CTkButton(
-            self, text="Aceptar", command=self._accept, font=self._button_font, width=150,
-            height=50, corner_radius=20, fg_color="lime green", hover_color="forest green")
-        button_accept.place(relx=0.55, rely=0.6, anchor=customtkinter.W)
+            self, text="Guardar", command=self._accept, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
+        button_accept.place(relx=0.7, rely=0.9, anchor=customtkinter.CENTER)
+
+        button_accept = customtkinter.CTkButton(
+            self, text="Cancelar", command=self._cancel, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
+        button_accept.place(relx=0.3, rely=0.9, anchor=customtkinter.CENTER)
 
         self._block_on_window()
 
-    def _accept(self):
-        self.master.setvar(name="window_accept", value=True)
+    def _cancel(self):
+        self.master.setvar(name="window_accept", value=False)
         self.destroy()
+
+    def validate(self):
+        return True
+
+
+    def _accept(self):
+        if not self.validate():
+            ErrorWindow(master=self.master, controller=self.controller,
+                            message="Porfavor introduzca un valor numérico")
+        else:
+            self.dictionary['params'] = self.params
+            return super()._accept()
+
+    def set_widgets(self):
+        pass
+
+    def _init_vars(self):
+        pass
+
+
+class DenseLayerEditWindow(LayerEditWindow):
+
+    def _add_neurons(self, value):
+        self.label_units.configure(
+            text="neuronas "+str(self.params["units"].get()))
+
+    def _init_vars(self):
+        self.params['units'] = customtkinter.IntVar(
+            master=self.master, value=128, name="units_layer_" + str(self.number) + "_"+self.alias)
+
+        self.params['activation'] = customtkinter.StringVar(
+            master=self.master, value=self.activations[0], name="activation_layer_" + str(self.number) + "_"+self.alias)
+
+    def set_widgets(self):
+        self.label_main = customtkinter.CTkLabel(
+            master=self, text="Activation", font=self._button_font)
+        self.label_main.place(relx=0.7, rely=0.4, anchor=customtkinter.CENTER)
+
+        self.activation = customtkinter.CTkComboBox(
+            master=self, values=self.activations, state="readonly", variable=self.params['activation'], font=self._combo_box_font, width=100)
+
+        self.activation.place(relx=0.7, rely=0.5, anchor=customtkinter.CENTER)
+
+        slide = customtkinter.CTkSlider(master=self, from_=1, to=255, command=lambda value: self._add_neurons(value),
+                                        variable=self.params["units"])
+
+        slide.place(relx=0.2, rely=0.5, anchor=customtkinter.CENTER)
+
+        self.label_units = customtkinter.CTkLabel(
+            master=self, text="neuronas "+str(self.params["units"].get()), font=self._button_font)
+        self.label_units.place(
+            relx=0.2, rely=0.4, anchor=customtkinter.CENTER)
+
+
+class EmbeddingLayerEditWindow(LayerEditWindow):
+
+    def _init_vars(self):
+        self.params['input_dim'] = customtkinter.StringVar(
+            master=self.master, value="20000", name="input_dim_layer_" + str(self.number) + "_"+self.alias)
+
+        self.params['output_dim'] = customtkinter.StringVar(
+            master=self.master, value="128", name="output_dim_layer_" + str(self.number) + "_"+self.alias)
+        
+    def set_widgets(self):
+        self.label_main = customtkinter.CTkLabel(
+            master=self, text="Entradas", font=self._button_font)
+        self.label_main.place(relx=0.7, rely=0.4, anchor=customtkinter.CENTER)
+
+        self.in_dim = customtkinter.CTkEntry(master=self, textvariable=self.params['input_dim'],
+            width=100)
+        
+        self.in_dim.place(relx=0.7, rely=0.5, anchor=customtkinter.CENTER)
+
+        self.out_dim = customtkinter.CTkEntry(master=self, textvariable=self.params['input_dim'],
+            width=100)
+        
+
+        self.out_dim.place(relx=0.2, rely=0.5, anchor=customtkinter.CENTER)
+
+        self.label_units = customtkinter.CTkLabel(
+            master=self, text="Salidas", font=self._button_font)
+        self.label_units.place(
+            relx=0.2, rely=0.4, anchor=customtkinter.CENTER)
+
+    def validate(self):
+        return (self.params['input_dim'].get().isnumeric() and self.params['output_dim'].get().isnumeric())
+
+class DropoutLayerEditWindow(LayerEditWindow):
+
+    def set_widgets(self):
+        pass
+
+
+class Conv1DLayerEditWindow(LayerEditWindow):
+
+    def set_widgets(self):
+        pass
+
+
+class GlobalMaxPooling1DLayerEditWindow(LayerEditWindow):
+
+    def set_widgets(self):
+        pass
+
+
+class Conv2DLayerEditWindow(LayerEditWindow):
+
+    def set_widgets(self):
+        pass
+
+
+class MaxPooling2DLayerEditWindow(LayerEditWindow):
+
+    def set_widgets(self):
+        pass
+
+
+class FlattenLayerEditWindow(LayerEditWindow):
+
+    def set_widgets(self):
+        pass

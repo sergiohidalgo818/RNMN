@@ -87,10 +87,10 @@ class MainPage(CustomFrame):
             else:
                 if "text_config" in params_dict.keys():
                     self.controller.models['text'] = True
-                if "audio_config" in params_dict.keys():
-                    self.controller.models['audio'] = True
                 if "image_config" in params_dict.keys():
                     self.controller.models['image'] = True
+                if "audio_config" in params_dict.keys():
+                    self.controller.models['audio'] = True
 
                 self.logic_app.model_params = params_dict
                 self.controller.show_frame("SelectDataPage")
@@ -119,27 +119,25 @@ class SelectDataPage(CustomFrame):
     """
 
     _button_text: customtkinter.CTkButton
-    _button_audio: customtkinter.CTkButton
     _button_image: customtkinter.CTkButton
+    _button_audio: customtkinter.CTkButton
 
     _button_text_recover: customtkinter.CTkButton
-    _button_audio_recover: customtkinter.CTkButton
     _button_image_recover: customtkinter.CTkButton
+    _button_audio_recover: customtkinter.CTkButton
 
     _text_data: customtkinter.CTkLabel
-    _audio_data: customtkinter.CTkLabel
     _image_data: customtkinter.CTkLabel
+    _audio_data: customtkinter.CTkLabel
 
     _data_counter: int
 
-    _data_to_clear: set
 
     def __init__(self, logic_app, parent, controller):
 
         super().__init__(logic_app, parent, controller)
 
         self._data_counter = 0
-        self._data_to_clear = set()
         self.rely = dict()
 
         title = customtkinter.CTkLabel(
@@ -149,7 +147,7 @@ class SelectDataPage(CustomFrame):
         self.label = CustomLabel(master=self)
         self.label.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
 
-        self.rely = {"text": 0, "audio": 0, "image": 0}
+        self.rely = {"text": 0, "image": 0, "audio": 0, }
 
         button_cancel = customtkinter.CTkButton(
             self, text="Cancelar", command=self._cancel, font=self._button_font, width=150,
@@ -174,6 +172,18 @@ class SelectDataPage(CustomFrame):
         self._button_text.place(relx=0.5, rely=self.rely['text'],
                                 anchor=customtkinter.CENTER)
 
+    def add_image_button(self):
+        self._image_data = customtkinter.CTkLabel(
+            self.label, text="Datos de imagen añadidos correctamente", font=self._button_font)
+        self._button_image_recover = customtkinter.CTkButton(self.label, text="Eliminar datos de imagen",
+                                                             command=self._recover_image_button, font=self._button_font, width=150,
+                                                             height=50, corner_radius=20, fg_color="brown3", hover_color="brown4", bg_color="gray17")
+        self._button_image = customtkinter.CTkButton(
+            self.label, text="Cargar datos de imagen", command=self._load_image_data, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4", bg_color="gray17")
+        self._button_image.place(
+            relx=0.5, rely=self.rely['image'], anchor=customtkinter.CENTER)
+
     def add_audio_button(self):
         self._audio_data = customtkinter.CTkLabel(
             self.label, text="Datos de audio añadidos correctamente", font=self._button_font)
@@ -187,33 +197,12 @@ class SelectDataPage(CustomFrame):
         self._button_audio.place(
             relx=0.5, rely=self.rely['audio'], anchor=customtkinter.CENTER)
 
-    def add_image_button(self):
-        self._image_data = customtkinter.CTkLabel(
-            self.label, text="Datos de imagen añadidos correctamente", font=self._button_font)
-        self._button_image_recover = customtkinter.CTkButton(self.label, text="Eliminar datos de imagen",
-                                                             command=self._recover_image_button, font=self._button_font, width=150,
-                                                             height=50, corner_radius=20, fg_color="brown3", hover_color="brown4", bg_color="gray17")
-        self._button_image = customtkinter.CTkButton(
-            self.label, text="Cargar datos de imagen", command=self._load_image_data, font=self._button_font, width=150,
-            height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4", bg_color="gray17")
-        self._button_image.place(
-            relx=0.5, rely=self.rely['image'], anchor=customtkinter.CENTER)
-
     def _recover_text_button(self):
         self._text_data.place_forget()
         self._button_text_recover.place_forget()
         self._button_text.place(relx=0.5, rely=self.rely['text'],
                                 anchor=customtkinter.CENTER)
         self._data_counter -= 1
-        self._data_to_clear.remove(self._recover_text_button)
-
-    def _recover_audio_button(self):
-        self._audio_data.place_forget()
-        self._button_audio_recover.place_forget()
-        self._button_audio.place(relx=0.5, rely=self.rely['audio'],
-                                 anchor=customtkinter.CENTER)
-        self._data_counter -= 1
-        self._data_to_clear.remove(self._recover_audio_button)
 
     def _recover_image_button(self):
         self._image_data.place_forget()
@@ -221,7 +210,13 @@ class SelectDataPage(CustomFrame):
         self._button_image.place(
             relx=0.5, rely=self.rely['image'], anchor=customtkinter.CENTER)
         self._data_counter -= 1
-        self._data_to_clear.remove(self._recover_image_button)
+
+    def _recover_audio_button(self):
+        self._audio_data.place_forget()
+        self._button_audio_recover.place_forget()
+        self._button_audio.place(relx=0.5, rely=self.rely['audio'],
+                                 anchor=customtkinter.CENTER)
+        self._data_counter -= 1
 
     def _load_text_data(self):
 
@@ -246,32 +241,6 @@ class SelectDataPage(CustomFrame):
                     self._button_text_recover.place(
                         relx=0.55, rely=self.rely['text'], anchor=customtkinter.W)
                     self._data_counter += 1
-                    self._data_to_clear.add(self._recover_text_button)
-
-    def _load_audio_data(self):
-        directory = customtkinter.filedialog.askdirectory(initialdir=os.path.join(self.logic_app.workdir, "data"),
-                                                          title="Seleccione un directorio de datos de audio")
-
-        if len(directory) > 0:
-            try:
-                self.logic_app.get_audio_data(directory)
-            except ImportError as ex:
-                ErrorWindow(self.master, self.controller,
-                            message="Porfavor, introduzca un directorio con archivos de audio")
-            else:
-                try:
-                    self.logic_app.preprocess_typedata_data([InputType.AUDIO])
-                except ImportError:
-                    ErrorWindow(self.master, self.controller,
-                                message="Error al importar archivos, compruebe su extension y directorio")
-                else:
-                    self._button_audio.place_forget()
-                    self._audio_data.place(
-                        relx=0.5, rely=self.rely['audio'], anchor=customtkinter.E)
-                    self._button_audio_recover.place(
-                        relx=0.55, rely=self.rely['audio'], anchor=customtkinter.W)
-                    self._data_counter += 1
-                    self._data_to_clear.add(self._recover_audio_button)
 
     def _load_image_data(self):
         directory = customtkinter.filedialog.askdirectory(initialdir=os.path.join(self.logic_app.workdir, "data"),
@@ -296,18 +265,38 @@ class SelectDataPage(CustomFrame):
                     self._button_image_recover.place(
                         relx=0.55, rely=self.rely['image'], anchor=customtkinter.W)
                     self._data_counter += 1
-                    self._data_to_clear.add(self._recover_image_button)
+
+    def _load_audio_data(self):
+        directory = customtkinter.filedialog.askdirectory(initialdir=os.path.join(self.logic_app.workdir, "data"),
+                                                          title="Seleccione un directorio de datos de audio")
+
+        if len(directory) > 0:
+            try:
+                self.logic_app.get_audio_data(directory)
+            except ImportError as ex:
+                ErrorWindow(self.master, self.controller,
+                            message="Porfavor, introduzca un directorio con archivos de audio")
+            else:
+                try:
+                    self.logic_app.preprocess_typedata_data([InputType.AUDIO])
+                except ImportError:
+                    ErrorWindow(self.master, self.controller,
+                                message="Error al importar archivos, compruebe su extension y directorio")
+                else:
+                    self._button_audio.place_forget()
+                    self._audio_data.place(
+                        relx=0.5, rely=self.rely['audio'], anchor=customtkinter.E)
+                    self._button_audio_recover.place(
+                        relx=0.55, rely=self.rely['audio'], anchor=customtkinter.W)
+                    self._data_counter += 1
 
     def _cancel(self):
         AcceptWindow(master=self.master, controller=self.controller,
                      message="¿Seguro que desea cancelar la carga de datos?")
         boolvar = customtkinter.BooleanVar(self.master, name="window_accept")
         if boolvar.get():
-            if self._data_counter != self.model_cont:
-                for fun in self._data_to_clear.copy():
-                    fun()
 
-                self.controller.show_frame("MainPage")
+            self.controller.show_frame("MainPage")
 
     def _accept(self):
 
@@ -332,8 +321,8 @@ class SelectDataPage(CustomFrame):
     def update_custom(self):
 
         self.rely['text'] = 0
-        self.rely['audio'] = 0
         self.rely['image'] = 0
+        self.rely['audio'] = 0
 
         rel = 0
 
@@ -360,17 +349,17 @@ class SelectDataPage(CustomFrame):
             self.controller.rely['text'] = rel_sum
             self.add_text_button()
 
-        if self.controller.models['audio']:
-            rel_sum += rel
-            self.rely['audio'] = rel_sum
-            self.controller.rely['audio'] = rel_sum
-            self.add_audio_button()
-
         if self.controller.models['image']:
             rel_sum += rel
             self.rely['image'] = rel_sum
             self.controller.rely['image'] = rel_sum
             self.add_image_button()
+
+        if self.controller.models['audio']:
+            rel_sum += rel
+            self.rely['audio'] = rel_sum
+            self.controller.rely['audio'] = rel_sum
+            self.add_audio_button()
 
     def clean(self):
 
@@ -381,12 +370,6 @@ class SelectDataPage(CustomFrame):
             else:
                 self._button_text.place_forget()
 
-        if self.controller.models['audio']:
-            if InputType.AUDIO in self.logic_app.preprocessed_data_and_types.keys():
-                self._recover_audio_button()
-                self._button_audio.place_forget()
-            else:
-                self._button_audio.place_forget()
 
         if self.controller.models['image']:
             if InputType.IMAGE in self.logic_app.preprocessed_data_and_types.keys():
@@ -395,6 +378,12 @@ class SelectDataPage(CustomFrame):
             else:
                 self._button_image.place_forget()
 
+        if self.controller.models['audio']:
+            if InputType.AUDIO in self.logic_app.preprocessed_data_and_types.keys():
+                self._recover_audio_button()
+                self._button_audio.place_forget()
+            else:
+                self._button_audio.place_forget()
 
 class CreateModelPage(CustomFrame):
     """Here the architecture and models of the big model are selected
@@ -409,7 +398,7 @@ class CreateModelPage(CustomFrame):
             master=self, text="Creación de la red", font=self._title_font)
         title.place(relx=0.5, rely=0.1, anchor=customtkinter.CENTER)
 
-        self.tab_view = CreateNetTabView(master=self, width=1080, height=720)
+        self.tab_view = CreateNetTabView(master=self, controller=self.controller, width=1080, height=720)
         self.tab_view.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
 
         self.button_cancel = customtkinter.CTkButton(
@@ -457,9 +446,9 @@ class CreateModelPage(CustomFrame):
 
         self.controller.models['text'] = self.tab_view.params_dict['texto']['add_model'].get(
         )
-        self.controller.models['audio'] = self.tab_view.params_dict['audio']['add_model'].get(
-        )
         self.controller.models['image'] = self.tab_view.params_dict['imagen']['add_model'].get(
+        )
+        self.controller.models['audio'] = self.tab_view.params_dict['audio']['add_model'].get(
         )
 
         try:
@@ -467,13 +456,13 @@ class CreateModelPage(CustomFrame):
                 number_of_models += 1
                 params_dict['text_config'] = self._get_params("texto")
 
-            if var_audio.get():
-                number_of_models += 1
-                params_dict['audio_config'] = self._get_params("audio")
-
             if var_image.get():
                 number_of_models += 1
                 params_dict['image_config'] = self._get_params("imagen")
+
+            if var_audio.get():
+                number_of_models += 1
+                params_dict['audio_config'] = self._get_params("audio")
 
         except ValidationTabError:
             ErrorWindow(master=self.master, controller=self.controller,
@@ -496,7 +485,7 @@ class CreateModelPage(CustomFrame):
 
     def clean(self):
         self.tab_view.destroy()
-        self.tab_view = CreateNetTabView(master=self, width=1080, height=720)
+        self.tab_view = CreateNetTabView(master=self, controller=self.controller, width=1080, height=720)
         self.tab_view.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
 
         self.button_cancel = customtkinter.CTkButton(

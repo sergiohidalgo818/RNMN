@@ -138,6 +138,13 @@ class RNMNModel(RNMNParent):
             self.models_in.append(text_model.input)
             self.models_out.append(text_model.output)
 
+        if InputType.IMAGE in self.models:
+            hist = self.image_model.model.fit(self.image_model.x_train, self.image_model.y_train, batch_size=16,
+                                              epochs=config_train['epochs'], validation_data=(self.image_model.x_test, self.image_model.y_test), shuffle=True)
+            self.models_in.append(self.image_model.model.input)
+            self.models_out.append(self.image_model.model.output)
+            self.history.append(hist)
+            
         if InputType.AUDIO in self.models:
             hist = self.audio_model.model.fit(
                 self.text_model.train_ds, validation_data=self.text_model.test_ds, epochs=3)
@@ -145,12 +152,6 @@ class RNMNModel(RNMNParent):
             self.models_out.append(self.audio_model.model.output)
             self.history.append(hist)
 
-        if InputType.IMAGE in self.models:
-            hist = self.image_model.model.fit(self.image_model.x_train, self.image_model.y_train, batch_size=16,
-                                              epochs=config_train['epochs'], validation_data=(self.image_model.x_test, self.image_model.y_test), shuffle=True)
-            self.models_in.append(self.image_model.model.input)
-            self.models_out.append(self.image_model.model.output)
-            self.history.append(hist)
 
         outputs = keras.layers.concatenate(
             self.models_out, name="concatenated_layer")
