@@ -15,6 +15,9 @@ class RNMNAppGui(customtkinter.CTk):
 
     models: dict
 
+    train_queue: list
+    compile_queue: list
+
     def __init__(self, logic_app, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rely = dict()
@@ -23,8 +26,9 @@ class RNMNAppGui(customtkinter.CTk):
         self.logic_app = logic_app
         self.resizable(width=False, height=False)
 
-        self.models = {"text": False, "image": False, "audio": False,}
-
+        self.models = {"text": False, "image": False, "audio": False, }
+        self.train_queue = list()
+        self.compile_queue = list()
         customtkinter.set_appearance_mode("dark")
 
         container = customtkinter.CTkFrame(self)

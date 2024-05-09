@@ -87,10 +87,16 @@ class MainPage(CustomFrame):
             else:
                 if "text_config" in params_dict.keys():
                     self.controller.models['text'] = True
+                    self.controller.train_queue.append("texto")
+                    self.controller.compile_queue.append("texto")
                 if "image_config" in params_dict.keys():
                     self.controller.models['image'] = True
+                    self.controller.train_queue.append("imagen")
+                    self.controller.compile_queue.append("imagen")
                 if "audio_config" in params_dict.keys():
                     self.controller.models['audio'] = True
+                    self.controller.train_queue.append("audio")
+                    self.controller.compile_queue.append("audio")
 
                 self.logic_app.model_params = params_dict
                 self.controller.show_frame("SelectDataPage")
@@ -112,6 +118,12 @@ class MainPage(CustomFrame):
             else:
                 self.controller.show_frame("MenuSelectPage")
 
+    def update_custom(self):
+        self.controller.train_queue = list()
+        self.controller.compile_queue = list()
+        for key in self.controller.models:
+            self.controller.models[key] = False
+
 
 class SelectDataPage(CustomFrame):
     """Here is where the data for training
@@ -131,7 +143,6 @@ class SelectDataPage(CustomFrame):
     _audio_data: customtkinter.CTkLabel
 
     _data_counter: int
-
 
     def __init__(self, logic_app, parent, controller):
 
@@ -295,7 +306,8 @@ class SelectDataPage(CustomFrame):
                      message="¿Seguro que desea cancelar la carga de datos?")
         boolvar = customtkinter.BooleanVar(self.master, name="window_accept")
         if boolvar.get():
-
+            self.controller.train_queue = list()
+            self.controller.compile_queue = list()
             self.controller.show_frame("MainPage")
 
     def _accept(self):
@@ -370,7 +382,6 @@ class SelectDataPage(CustomFrame):
             else:
                 self._button_text.place_forget()
 
-
         if self.controller.models['image']:
             if InputType.IMAGE in self.logic_app.preprocessed_data_and_types.keys():
                 self._recover_image_button()
@@ -385,6 +396,7 @@ class SelectDataPage(CustomFrame):
             else:
                 self._button_audio.place_forget()
 
+
 class CreateModelPage(CustomFrame):
     """Here the architecture and models of the big model are selected
     """
@@ -398,7 +410,8 @@ class CreateModelPage(CustomFrame):
             master=self, text="Creación de la red", font=self._title_font)
         title.place(relx=0.5, rely=0.1, anchor=customtkinter.CENTER)
 
-        self.tab_view = CreateNetTabView(master=self, controller=self.controller, width=1080, height=720)
+        self.tab_view = CreateNetTabView(
+            master=self, controller=self.controller, width=1080, height=720)
         self.tab_view.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
 
         self.button_cancel = customtkinter.CTkButton(
@@ -410,6 +423,23 @@ class CreateModelPage(CustomFrame):
             self, text="Crear", command=self._create, font=self._button_font, width=150,
             height=50, corner_radius=20, fg_color="lime green", hover_color="forest green")
         self.button_create.place(relx=0.8, rely=0.9, anchor=customtkinter.W)
+
+    def _process_value(self, value):
+        try:
+            if not value.is_integer():
+                return float(value)
+
+        except AttributeError:
+            try:
+                if value.isnumeric():
+                    return int(value)
+                else:
+                    try:
+                        return float(value)
+                    except ValueError:
+                        return str(value)
+            except AttributeError:
+                return int(value)
 
     def _get_params(self, model_name: InputType) -> dict:
         try:
@@ -423,9 +453,11 @@ class CreateModelPage(CustomFrame):
 
             for layer in self.tab_view.params_dict[model_name]['layers_dict']:
                 params_dict['layers_dict'][layer] = dict()
-                for key in self.tab_view.params_dict[model_name]['layers_dict'][layer]:
-                    params_dict['layers_dict'][layer][key] = self.tab_view.params_dict[model_name]['layers_dict'][layer][key].get(
-                    )
+                params_dict['layers_dict'][layer]['params'] = dict()
+                for key in self.tab_view.params_dict[model_name]['layers_dict'][layer]['params']:
+                    params_dict['layers_dict'][layer]['params'][key] = self._process_value(
+                        self.tab_view.params_dict[model_name]['layers_dict'][layer]['params'][key].get())
+                params_dict['layers_dict'][layer]['type'] = self.tab_view.params_dict[model_name]['layers_dict'][layer]['type'].get()
 
             return params_dict
 
@@ -455,14 +487,20 @@ class CreateModelPage(CustomFrame):
             if var_text.get():
                 number_of_models += 1
                 params_dict['text_config'] = self._get_params("texto")
+                self.controller.train_queue.append("texto")
+                self.controller.compile_queue.append("texto")
 
             if var_image.get():
                 number_of_models += 1
                 params_dict['image_config'] = self._get_params("imagen")
+                self.controller.train_queue.append("imagen")
+                self.controller.compile_queue.append("imagen")
 
             if var_audio.get():
                 number_of_models += 1
                 params_dict['audio_config'] = self._get_params("audio")
+                self.controller.train_queue.append("audio")
+                self.controller.compile_queue.append("imagen")
 
         except ValidationTabError:
             ErrorWindow(master=self.master, controller=self.controller,
@@ -481,11 +519,15 @@ class CreateModelPage(CustomFrame):
                      message="¿Seguro que desea cancelar la creación del modelo?")
         boolvar = customtkinter.BooleanVar(self.master, name="window_accept")
         if boolvar.get():
+            self.params_dict = dict()
+            self.controller.train_queue = list()
+            self.controller.compile_queue = list()
             self.controller.show_frame("MainPage")
 
     def clean(self):
         self.tab_view.destroy()
-        self.tab_view = CreateNetTabView(master=self, controller=self.controller, width=1080, height=720)
+        self.tab_view = CreateNetTabView(
+            master=self, controller=self.controller, width=1080, height=720)
         self.tab_view.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
 
         self.button_cancel = customtkinter.CTkButton(
@@ -500,7 +542,7 @@ class CreateModelPage(CustomFrame):
 
 
 class HiperparametersPage(CustomFrame):
-    """This view is for the compile parameters 
+    """This view is for the compile parameters
     """
 
     def __init__(self, logic_app, parent, controller):
@@ -508,10 +550,11 @@ class HiperparametersPage(CustomFrame):
 
         self.logic_app = logic_app
         self.controller = controller
+        self.actual_compile = ""
 
-        title = customtkinter.CTkLabel(
-            self, text="Configruración de parámetros", font=self._title_font)
-        title.place(relx=0.5, rely=0.1, anchor=customtkinter.CENTER)
+        self.title = customtkinter.CTkLabel(
+            self, text="Configruración de parámetros\ndel modelo de "+self.actual_compile, font=self._title_font)
+        self.title.place(relx=0.5, rely=0.1, anchor=customtkinter.CENTER)
 
         self.label = CustomLabel(master=self)
         self.label.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
@@ -547,7 +590,7 @@ class HiperparametersPage(CustomFrame):
             master=self.master, value=self.losses[0], name="loss")
         combobox_loss = customtkinter.CTkComboBox(master=self.label, values=self.losses,
                                                   state="readonly",
-                                                  variable=loss_var, width=153, bg_color="gray17")
+                                                  variable=loss_var, width=180, bg_color="gray17")
         combobox_loss.place(relx=0.35, rely=0.25, anchor=customtkinter.CENTER)
 
         title = customtkinter.CTkLabel(
@@ -624,19 +667,31 @@ class HiperparametersPage(CustomFrame):
 
         params_dict = self._get_params()
 
-        self.logic_app.compile_model(params_dict)
+        self.logic_app.compile_model(params_dict, self.actual_compile)
+        self.controller.compile_queue.remove(self.actual_compile)
 
-        self.controller.show_frame("TrainingPage")
+        if len(self.controller.compile_queue) > 0:
+            self.controller.show_frame("HiperparametersPage")
+        else:
+            self.controller.show_frame("TrainingPage")
 
     def _cancel(self):
         AcceptWindow(master=self.master, controller=self.controller,
                      message="¿Seguro que desea cancelar la configuración del modelo?")
         boolvar = customtkinter.BooleanVar(self.master, name="window_accept")
         if boolvar.get():
+            self.controller.train_queue = list()
+            self.controller.compile_queue = list()
+
             if self.logic_app._has_model:
                 self.controller.show_frame("MenuSelectPage")
             else:
                 self.controller.show_frame("MainPage")
+
+    def update_custom(self):
+        self.actual_compile = self.controller.compile_queue[0]
+        self.title.configure(
+            text="Configruración de parámetros\ndel modelo de "+self.actual_compile)
 
 
 class MenuSelectPage(CustomFrame):
@@ -667,6 +722,12 @@ class MenuSelectPage(CustomFrame):
             height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
         button_config.place(relx=0.5, rely=0.39, anchor=customtkinter.CENTER)
 
+        button_results = customtkinter.CTkButton(
+            self.label, text="Mostrar resultados", command=self._results, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
+        button_results.place(relx=0.5, rely=0.52,
+                             anchor=customtkinter.CENTER)
+
         button_back_start = customtkinter.CTkButton(
             self, text="Inicio", command=self._cancel, font=self._button_font, width=150,
             height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
@@ -678,10 +739,24 @@ class MenuSelectPage(CustomFrame):
         button_save.place(relx=0.75, rely=0.9, anchor=customtkinter.W)
 
     def _config(self):
+        self.controller.train_queue = list()
+        self.controller.compile_queue = list()
+        if InputType.TEXT in self.logic_app.model.models:
+            self.controller.train_queue.append("texto")
+            self.controller.compile_queue.append("texto")
+        if InputType.IMAGE in self.logic_app.model.models:
+            self.controller.train_queue.append("imagen")
+            self.controller.compile_queue.append("imagen")
+        if InputType.AUDIO in self.logic_app.model.models:
+            self.controller.train_queue.append("audio")
+            self.controller.compile_queue.append("audio")
         self.controller.show_frame("HiperparametersPage")
 
     def _predict(self):
         self.controller.show_frame("PredictPage")
+
+    def _results(self):
+        self.controller.show_frame("ResultsPage")
 
     def _save_model(self):
         directory = customtkinter.filedialog.asksaveasfilename(initialdir="./",
@@ -700,9 +775,23 @@ class MenuSelectPage(CustomFrame):
         self.logic_app._has_model = False
         boolvar = customtkinter.BooleanVar(self.master, name="window_accept")
         if boolvar.get():
+            self.controller.train_queue = list()
+            self.controller.compile_queue = list()
+            if InputType.TEXT in self.logic_app.model.models:
+                self.controller.train_queue.append("texto")
+                self.controller.compile_queue.append("texto")
+            if InputType.IMAGE in self.logic_app.model.models:
+                self.controller.train_queue.append("imagen")
+                self.controller.compile_queue.append("imagen")
+            if InputType.AUDIO in self.logic_app.model.models:
+                self.controller.train_queue.append("audio")
+                self.controller.compile_queue.append("audio")
+            self.logic_app._has_model = False
             self.controller.show_frame("MainPage")
 
-
+    def update_custom(self):
+        self.controller.train_queue = list()
+        self.controller.compile_queue = list()
 class TrainingPage(CustomFrame):
     """In this page the training ocurrs
     """
@@ -712,10 +801,11 @@ class TrainingPage(CustomFrame):
 
         self.logic_app = logic_app
         self.controller = controller
+        self.model_to_train = ""
 
-        title = customtkinter.CTkLabel(
-            self, text="Ajuste los parámetros de entrenamiento", font=self._title_font)
-        title.place(relx=0.5, rely=0.1, anchor=customtkinter.CENTER)
+        self.title = customtkinter.CTkLabel(
+            self, text="Ajuste los parámetros de entrenamiento del modelo de " + self.model_to_train, font=self._title_font)
+        self.title.place(relx=0.5, rely=0.1, anchor=customtkinter.CENTER)
 
         self.label = CustomLabel(master=self)
         self.label.place(relx=0.5, rely=0.7, anchor=customtkinter.CENTER)
@@ -732,7 +822,7 @@ class TrainingPage(CustomFrame):
             height=50, corner_radius=20, fg_color="lime green", hover_color="forest green", bg_color="gray17")
 
         self.training_var = customtkinter.StringVar(
-            master=self.master, value="Entrenando", name="training_var")
+            master=self.master, value="Entrenando modelo de " + self.model_to_train, name="training_var")
 
         self.training = customtkinter.CTkLabel(
             self.label, text=self.training_var.get(), font=self._button_font, bg_color="gray17")
@@ -741,12 +831,13 @@ class TrainingPage(CustomFrame):
             self.label, text="Ajustar épocas", font=self._button_font, bg_color="gray17")
 
         self.slider_epochs = customtkinter.CTkSlider(
-            master=self.label, from_=1, to=3000, variable=self.epochs, width=700, command=self._epochs_label)
+            master=self.label, from_=1, to=5000, variable=self.epochs, width=700, command=self._epochs_label)
 
         self.epochs_tag = customtkinter.CTkLabel(
             master=self.label, text=str(self.epochs.get()), font=self._button_font)
 
     def _epochs_label(self, value):
+        self.epochs.set(int(value))
         self.epochs_tag.configure(text=str(int(value)))
 
     def _cancel(self):
@@ -754,27 +845,42 @@ class TrainingPage(CustomFrame):
         AcceptWindow(master=self.master, controller=self.controller,
                      message="¿Seguro que desea cancelar el entrenamiento?")
         boolvar = customtkinter.BooleanVar(self.master, name="window_accept")
-        self.logic_app.model.model.summary()
 
         if boolvar.get():
-            self.controller.show_frame("MenuSelectPage")
+            self.logic_app.model.models_in = list()
+            self.logic_app.model.models_out = list()
+            self.controller.train_queue = list()
+            self.controller.compile_queue = list()
+
+            if self.logic_app._has_model:
+
+                self.controller.show_frame("MenuSelectPage")
+            else:
+                self.controller.show_frame("MainPage")
 
     def _do_train(self, config_train):
 
-        self.logic_app.train(config_train=config_train)
+        self.logic_app.train(config_train=config_train,
+                             model=self.model_to_train)
 
     def _wait_train(self, train_th):
 
         while train_th.is_alive():
             time.sleep(1)
-            if self.training_var.get() == "Entrenando...":
-                self.training_var.set("Entrenando")
+            if self.training_var.get() == "Entrenando modelo de " + self.model_to_train+"...":
+                self.training_var.set(
+                    "Entrenando modelo de " + self.model_to_train)
             else:
                 self.training_var.set(self.training_var.get()+".")
 
             self.training.configure(text=self.training_var.get())
+        if len(self.controller.train_queue) > 0:
+            self.controller.show_frame("TrainingPage")
+        else:
+            self.logic_app.model.fuse_model()
+            self.logic_app._has_model = True
 
-        self.controller.show_frame("ResultsPage")
+            self.controller.show_frame("ResultsPage")
 
     def _train(self):
 
@@ -788,8 +894,10 @@ class TrainingPage(CustomFrame):
         self.training.place(relx=0.5, rely=0.3,
                             anchor=customtkinter.CENTER)
 
+        self.controller.train_queue.remove(self.model_to_train)
+
         self.train_th = threading.Thread(
-            target=self._do_train, args=(config_train, ), daemon=True)
+            target=self._do_train, args=(config_train,), daemon=True)
 
         self.wait_th = threading.Thread(
             target=self._wait_train, args=(self.train_th, ), daemon=True)
@@ -798,6 +906,13 @@ class TrainingPage(CustomFrame):
         self.wait_th.start()
 
     def update_custom(self):
+        self.model_to_train = self.controller.train_queue[0]
+        self.title.configure(
+            text="Ajuste los parámetros de entrenamiento\ndel modelo de " + self.model_to_train)
+        self.training_var.set("Entrenando modelo de " + self.model_to_train)
+
+        self.training.configure(text=self.training_var.get())
+
         self.training.place_forget()
 
         self.epochs_title.place(relx=0.5, rely=0.25,
@@ -903,8 +1018,6 @@ class PredictPage(CustomFrame):
         PredictWindow(master=self.master, controller=self.controller,
                       message="Número: " + str(predicted))
 
-        # Clear Screen
-
     def clearScreen(self):
         self.canvas.delete("all")
         del self.image1
@@ -928,10 +1041,10 @@ class PredictPage(CustomFrame):
                 width=20,
                 fill="white"
             )
-            self.draw.line([int(self.prevPoint[0]/1),
-                            int(self.prevPoint[1]/1),
-                            int(self.currentPoint[0]/1),
-                            int(self.currentPoint[1]/1)], width=20, fill="white")
+            self.draw.line([int(self.prevPoint[0]),
+                            int(self.prevPoint[1]),
+                            int(self.currentPoint[0]),
+                            int(self.currentPoint[1])], width=20, fill="white")
 
         self.prevPoint = self.currentPoint
 
@@ -942,6 +1055,7 @@ class PredictPage(CustomFrame):
         self.controller.show_frame("MenuSelectPage")
 
     def update_custom(self):
+
         plus = 0.5
 
         if InputType.IMAGE in self.logic_app.model.models:
@@ -957,7 +1071,7 @@ class PredictPage(CustomFrame):
             self.text_title.place(relx=plus, rely=0.3,
                                   anchor=customtkinter.CENTER)
             self.input.place(relx=plus, rely=0.38, anchor=customtkinter.CENTER)
-            plus += 0.4
+            self.input.place(relx=plus, rely=0.38, anchor=customtkinter.CENTER)
 
 
 class ResultsPage(CustomFrame):
@@ -997,11 +1111,35 @@ class ResultsPage(CustomFrame):
             models.append("imagen")
         if InputType.AUDIO in self.logic_app.model.models:
             models.append("audio")
-        sumx = 0.2
+
+            self.rely['text'] = 0
+            self.rely['image'] = 0
+            self.rely['audio'] = 0
+
+
+        rel = 0
+        model_cont = 0
+
+        for key in self.controller.models:
+            if self.controller.models[key]:
+                model_cont += 1
+
+        if model_cont == 1:
+            rel = 0.3
+
+        if model_cont == 2:
+            rel = 0.19
+
+        if model_cont == 3:
+            rel = 0.15
+
         hists_and_models = zip(self.logic_app.model.history, models)
+
+        rel_sum = 0
         for hist, model in hists_and_models:
+
+            rel_sum += rel
             button = customtkinter.CTkButton(
-                self.label, text="Cargar modelo de "+str(model), command=lambda: self._show_graph(hist, model), font=self._button_font, width=150,
+                self.label, text="Gráfica del modelo de "+str(model), command=lambda: self._show_graph(hist, model), font=self._button_font, width=150,
                 height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
-            button.place(relx=sumx, rely=0.35, anchor=customtkinter.CENTER)
-            sumx += 0.3
+            button.place(relx=0.5, rely=rel_sum, anchor=customtkinter.CENTER)

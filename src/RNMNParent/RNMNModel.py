@@ -63,7 +63,7 @@ class RNMNModel(RNMNParent):
                     kwargs["data_and_types"][InputType.IMAGE])
                 self.models.append(InputType.IMAGE)
 
-    def compile_model(self, parameters):
+    def compile_model(self, parameters, model):
         """Compiles the models 
 
             Args:
@@ -77,16 +77,16 @@ class RNMNModel(RNMNParent):
         loss = parameters['loss']
         metrics = parameters['metrics']
 
-        if InputType.TEXT in self.models:
+        if "texto" in model:
             self.text_model.model.compile(
                 optimizer=optimizer, loss=loss, metrics=metrics)
 
-        if InputType.AUDIO in self.models:
-            self.audio_model.model.compile(
+        if "imagen" in model:
+            self.image_model.model.compile(
                 optimizer=optimizer, loss=loss, metrics=metrics)
 
-        if InputType.IMAGE in self.models:
-            self.image_model.model.compile(
+        if "audio" in model:
+            self.audio_model.model.compile(
                 optimizer=optimizer, loss=loss, metrics=metrics)
 
     def _create_text_model(self, data):
@@ -110,7 +110,7 @@ class RNMNModel(RNMNParent):
     def predict(self, data):
         return self.model.predict(data, verbose=0)
 
-    def train(self, config_train: dict):
+    def train(self, config_train: dict, model):
         """Trains the models and fuse them
 
             Args:
@@ -120,9 +120,9 @@ class RNMNModel(RNMNParent):
                 None
         """
 
-        if InputType.TEXT in self.models:
+        if "texto" == model:
             hist = self.text_model.model.fit(
-                self.text_model.train_ds, validation_data=self.text_model.test_ds, epochs=3)
+                self.text_model.train_ds, validation_data=self.text_model.test_ds, epochs=config_train['epochs'])
             self.history.append(hist)
 
             in_layer = layers.Input(shape=(1,), dtype="string")
@@ -138,21 +138,21 @@ class RNMNModel(RNMNParent):
             self.models_in.append(text_model.input)
             self.models_out.append(text_model.output)
 
-        if InputType.IMAGE in self.models:
+        if "imagen" == model:
             hist = self.image_model.model.fit(self.image_model.x_train, self.image_model.y_train, batch_size=16,
                                               epochs=config_train['epochs'], validation_data=(self.image_model.x_test, self.image_model.y_test), shuffle=True)
             self.models_in.append(self.image_model.model.input)
             self.models_out.append(self.image_model.model.output)
             self.history.append(hist)
-            
-        if InputType.AUDIO in self.models:
+
+        if "audio" == model:
             hist = self.audio_model.model.fit(
-                self.text_model.train_ds, validation_data=self.text_model.test_ds, epochs=3)
+                self.text_model.train_ds, validation_data=self.text_model.test_ds, epochs=config_train['epochs'])
             self.models_in.append(self.audio_model.model.input)
             self.models_out.append(self.audio_model.model.output)
             self.history.append(hist)
 
-
+    def fuse_model(self):
         outputs = keras.layers.concatenate(
             self.models_out, name="concatenated_layer")
 
@@ -160,3 +160,6 @@ class RNMNModel(RNMNParent):
 
         self.model.compile(loss="binary_crossentropy",
                            optimizer="adam", metrics=["accuracy"])
+
+        self.models_in = list()
+        self.models_out = list()

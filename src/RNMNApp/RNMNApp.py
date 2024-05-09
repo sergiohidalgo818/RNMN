@@ -98,7 +98,7 @@ class RNMNApp():
     def create_model(self):
         for k in self.processed_data_and_types.keys():
             self.preprocessed_data_and_types[k].reshape_data(int(
-                self.model_params[k.value+"_config"]['layers_dict']['layer_out']['units']))
+                self.model_params[k.value+"_config"]['layers_dict']['layer_out']['params']['units']))
             self.processed_data_and_types[k] = self.preprocessed_data_and_types[k].data_processed
 
         self.model = RNMNModel(params_dict=self.model_params,
@@ -173,12 +173,11 @@ class RNMNApp():
                 self.model.add_data_image_model(
                     self.processed_data_and_types[k])
 
-    def compile_model(self, parameters):
-        self.model.compile_model(parameters)
-        self._has_model = True
+    def compile_model(self, parameters, model):
+        self.model.compile_model(parameters, model)
 
-    def train(self, config_train):
-        self.model.train(config_train=config_train)
+    def train(self, config_train, model):
+        self.model.train(config_train=config_train, model=model)
 
     def predict_data(self, data):
         array = self.model.predict(data)

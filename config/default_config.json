@@ -5,40 +5,64 @@
         "layers_dict": {
             "layer_1": {
                 "type": "Conv2D",
-                "filters": 32,
-                "kernel_size": 5,
-                "activation": "relu",
-                "padding": "same"
+                "params":
+                    {
+                        "filters": 32,
+                        "kernel_size": 5,
+                        "activation": "relu",
+                        "padding": "same"
+                    }
             },
             "layer_2": {
-                "type": "MaxPooling2D"
+                "type": "MaxPooling2D",
+                "params":
+                    {
+                    }
             },
             "layer_3": {
                 "type": "Conv2D",
-                "filters": 64,
-                "kernel_size": 5,
-                "activation": "relu"
+                "params":
+                    {
+                        "filters": 64,
+                        "kernel_size": 5,
+                        "activation": "relu"
+                    }
             },
             "layer_4": {
-                "type": "MaxPooling2D"
+                "type": "MaxPooling2D",
+                "params":
+                    {
+                    }
             },
             "layer_5": {
-                "type": "Flatten"
+                "type": "Flatten",
+                "params":
+                    {
+                    }
             },
             "layer_6": {
                 "type": "Dense",
-                "units": 128,
-                "activation": "relu"
+                "params":
+                    {
+                        "units": 128,
+                        "activation": "relu"
+                    }
             },
             "layer_7": {
                 "type": "Dense",
-                "units": 84,
-                "activation": "relu"
+                "params":
+                    {
+                        "units": 84,
+                        "activation": "relu"
+                    }
             },
             "layer_out": {
                 "type": "Dense",
-                "units": 10,
-                "activation": "softmax"
+                "params":
+                    {
+                        "units": 10,
+                        "activation": "softmax"
+                    }
             }
         }
     },
@@ -48,45 +72,60 @@
         "layers_dict": {
             "layer_1": {
                 "type": "Embedding",
-                "input_dim": 20000,
-                "output_dim": 128
+                "params": {
+                    "input_dim": 20000,
+                    "output_dim": 128
+                }
             },
             "layer_2": {
                 "type": "Dropout",
-                "rate": 0.5
+                "params": {
+                    "rate": 0.5
+                }
             },
             "layer_3": {
                 "type": "Conv1D",
-                "filters": 128,
-                "kernel_size": 7,
-                "padding":"valid",
-                "activation": "relu",
-                "strides":3
+                "params": {
+                    "filters": 128,
+                    "kernel_size": 7,
+                    "padding": "valid",
+                    "activation": "relu",
+                    "strides": 3
+                }
             },
             "layer_4": {
                 "type": "Conv1D",
-                "filters": 128,
-                "kernel_size": 7,
-                "padding":"valid",
-                "activation": "relu",
-                "strides":3
+                "params": {
+                    "filters": 128,
+                    "kernel_size": 7,
+                    "padding": "valid",
+                    "activation": "relu",
+                    "strides": 3
+                }
             },
             "layer_5": {
-                "type": "GlobalMaxPooling1D"
+                "type": "GlobalMaxPooling1D",
+                "params": {}
             },
             "layer_6": {
                 "type": "Dense",
-                "units": 128,
-                "activation": "relu"
+                "params": {
+                    "units": 128,
+                    "activation": "relu"
+                }
             },
             "layer_7": {
                 "type": "Dropout",
-                "rate": 0.5
+                "params": {
+                    "rate": 0.5
+                }
             },
             "layer_out": {
                 "type": "Dense",
-                "units": 10,
-                "activation": "softmax"
+                "params": {
+                    "units": 10,
+                    "activation": "softmax"
+                }
             }
         }
     }

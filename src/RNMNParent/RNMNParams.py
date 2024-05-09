@@ -81,6 +81,12 @@ class RNMNActivations(Enum):
 
     SOFTPLUS = "softplus"
 
+class RNMNPaddings(Enum):
+    '''This enum is for the type of activations'''
+
+    VALID = "valid"
+    SAME = "same"
+
 
 class RNMNLayers(Enum):
     '''This enum is for the type of layers'''

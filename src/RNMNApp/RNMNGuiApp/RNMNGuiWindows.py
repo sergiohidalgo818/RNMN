@@ -16,6 +16,7 @@ class CustomWindow(customtkinter.CTkToplevel):
         self.message = message
         self.focus_set()
         self.resizable(width=False, height=False)
+        self.protocol('WM_DELETE_WINDOW', self._cancel)
 
     @staticmethod
     def center_window(window, width: int, height: int, scale_factor: float = 1.0):
@@ -31,6 +32,10 @@ class CustomWindow(customtkinter.CTkToplevel):
 
     def _accept(self):
         self.master.setvar(name="window_accept", value=True)
+        self.destroy()
+
+    def _cancel(self):
+        self.master.setvar(name="window_accept", value=False)
         self.destroy()
 
     def _block_on_window(self):
@@ -87,10 +92,6 @@ class AcceptWindow(CustomWindow):
 
         self._block_on_window()
 
-    def _cancel(self):
-        self.master.setvar(name="window_accept", value=False)
-        self.destroy()
-
 
 class PredictWindow(CustomWindow):
 
@@ -128,12 +129,10 @@ class GraphWindow(CustomWindow):
                           dpi=70)
 
         plot = self.fig.add_subplot(111)
-        plot.plot(hist.history['loss'])
-        plot.plot(hist.history['val_loss'])
-        plot.plot(hist.history['accuracy'])
-        plot.plot(hist.history['val_accuracy'])
-        plot.legend(['Training Loss', 'Validation Loss',
-                    'Training Accuracy', 'Validation Accuracy'], loc='center right')
+        for key in hist.history.keys():
+            plot.plot(hist.history[key])
+
+        plot.legend(hist.history.keys(), loc='center right')
 
         canvas = FigureCanvasTkAgg(self.fig,
                                    master=self)
@@ -170,22 +169,56 @@ class GraphWindow(CustomWindow):
         self.master.setvar(name="window_accept", value=False)
 
 
+class AskLayerTypeWindow(CustomWindow):
+    _combo_box_font = ("Times", 20)
+    _title_font = ("Times", 25, 'bold')
+
+    def __init__(self, master, type_layer, number, controller: customtkinter.CTk, message, alias, *args, **kwargs):
+        super().__init__(master, controller, message, *args, **kwargs)
+        self.layers = [
+            layer.value for layer in RNMNParams.RNMNLayers]
+        self.geometry(CustomWindow.center_window(
+            self, 400, 300, self._get_window_scaling()))
+        self.title("Tipo de capa")
+
+        label = customtkinter.CTkLabel(
+            self, text=message, font=self._title_font)
+        label.place(relx=0.5, rely=0.1, anchor=customtkinter.CENTER)
+
+        button_accept = customtkinter.CTkButton(
+            self, text="Aceptar", command=self._accept, font=self._button_font, width=150,
+            height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
+        button_accept.place(relx=0.5, rely=0.9, anchor=customtkinter.CENTER)
+
+        type_layer = customtkinter.StringVar(
+            master=self.master, value=self.layers[0], name="type__layer_" + str(number) + "_"+alias)
+
+        self.activation = customtkinter.CTkComboBox(
+            master=self, values=self.layers, state="readonly", variable=type_layer, font=self._combo_box_font, width=220)
+
+        self.activation.place(relx=0.5, rely=0.5, anchor=customtkinter.CENTER)
+        self._block_on_window()
+
+
 class LayerEditWindow(CustomWindow):
     _combo_box_font = ("Times", 16)
+    _title_font = ("Times", 25, 'bold')
 
     def __init__(self, master, dictionary, number, controller: customtkinter.CTk, message, alias, *args, **kwargs):
         super().__init__(master, controller, message, *args, **kwargs)
 
         self.activations = [
             activation.value for activation in RNMNParams.RNMNActivations]
+        self.paddings = [
+            padding.value for padding in RNMNParams.RNMNPaddings]
         self.params = dict()
         self.geometry(CustomWindow.center_window(
-            self, 720, 400, self._get_window_scaling()))
+            self, 580, 400, self._get_window_scaling()))
         self.title("Edición de la capa")
 
         label = customtkinter.CTkLabel(
             self, text=message, font=self._title_font)
-        label.place(relx=0.5, rely=0.2, anchor=customtkinter.CENTER)
+        label.place(relx=0.5, rely=0.1, anchor=customtkinter.CENTER)
         self.alias = alias
         self.number = number
         self.dictionary = dictionary
@@ -194,32 +227,28 @@ class LayerEditWindow(CustomWindow):
         else:
             for k in self.dictionary['params'].keys():
                 self.params[k] = self.dictionary['params'][k]
+
         self.set_widgets()
 
         button_accept = customtkinter.CTkButton(
             self, text="Guardar", command=self._accept, font=self._button_font, width=150,
             height=50, corner_radius=20, fg_color="RoyalBlue3", hover_color="RoyalBlue4")
-        button_accept.place(relx=0.7, rely=0.9, anchor=customtkinter.CENTER)
+        button_accept.place(relx=0.8, rely=0.9, anchor=customtkinter.CENTER)
 
         button_accept = customtkinter.CTkButton(
             self, text="Cancelar", command=self._cancel, font=self._button_font, width=150,
             height=50, corner_radius=20, fg_color="brown3", hover_color="brown4")
-        button_accept.place(relx=0.3, rely=0.9, anchor=customtkinter.CENTER)
+        button_accept.place(relx=0.2, rely=0.9, anchor=customtkinter.CENTER)
 
         self._block_on_window()
-
-    def _cancel(self):
-        self.master.setvar(name="window_accept", value=False)
-        self.destroy()
 
     def validate(self):
         return True
 
-
     def _accept(self):
         if not self.validate():
             ErrorWindow(master=self.master, controller=self.controller,
-                            message="Porfavor introduzca un valor numérico")
+                        message="Porfavor introduzca un valor numérico")
         else:
             self.dictionary['params'] = self.params
             return super()._accept()
@@ -235,7 +264,7 @@ class DenseLayerEditWindow(LayerEditWindow):
 
     def _add_neurons(self, value):
         self.label_units.configure(
-            text="neuronas "+str(self.params["units"].get()))
+            text="Neuronas "+str(self.params["units"].get()))
 
     def _init_vars(self):
         self.params['units'] = customtkinter.IntVar(
@@ -246,7 +275,7 @@ class DenseLayerEditWindow(LayerEditWindow):
 
     def set_widgets(self):
         self.label_main = customtkinter.CTkLabel(
-            master=self, text="Activation", font=self._button_font)
+            master=self, text="Activación", font=self._button_font)
         self.label_main.place(relx=0.7, rely=0.4, anchor=customtkinter.CENTER)
 
         self.activation = customtkinter.CTkComboBox(
@@ -257,12 +286,12 @@ class DenseLayerEditWindow(LayerEditWindow):
         slide = customtkinter.CTkSlider(master=self, from_=1, to=255, command=lambda value: self._add_neurons(value),
                                         variable=self.params["units"])
 
-        slide.place(relx=0.2, rely=0.5, anchor=customtkinter.CENTER)
+        slide.place(relx=0.3, rely=0.5, anchor=customtkinter.CENTER)
 
         self.label_units = customtkinter.CTkLabel(
-            master=self, text="neuronas "+str(self.params["units"].get()), font=self._button_font)
+            master=self, text="Neuronas "+str(self.params["units"].get()), font=self._button_font)
         self.label_units.place(
-            relx=0.2, rely=0.4, anchor=customtkinter.CENTER)
+            relx=0.3, rely=0.4, anchor=customtkinter.CENTER)
 
 
 class EmbeddingLayerEditWindow(LayerEditWindow):
@@ -273,62 +302,208 @@ class EmbeddingLayerEditWindow(LayerEditWindow):
 
         self.params['output_dim'] = customtkinter.StringVar(
             master=self.master, value="128", name="output_dim_layer_" + str(self.number) + "_"+self.alias)
-        
+
     def set_widgets(self):
         self.label_main = customtkinter.CTkLabel(
             master=self, text="Entradas", font=self._button_font)
-        self.label_main.place(relx=0.7, rely=0.4, anchor=customtkinter.CENTER)
+        self.label_main.place(relx=0.3, rely=0.4, anchor=customtkinter.CENTER)
 
         self.in_dim = customtkinter.CTkEntry(master=self, textvariable=self.params['input_dim'],
-            width=100)
-        
-        self.in_dim.place(relx=0.7, rely=0.5, anchor=customtkinter.CENTER)
+                                             width=100)
 
-        self.out_dim = customtkinter.CTkEntry(master=self, textvariable=self.params['input_dim'],
-            width=100)
-        
+        self.in_dim.place(relx=0.3, rely=0.5, anchor=customtkinter.CENTER)
 
-        self.out_dim.place(relx=0.2, rely=0.5, anchor=customtkinter.CENTER)
+        self.out_dim = customtkinter.CTkEntry(master=self, textvariable=self.params['output_dim'],
+                                              width=100)
+
+        self.out_dim.place(relx=0.7, rely=0.5, anchor=customtkinter.CENTER)
 
         self.label_units = customtkinter.CTkLabel(
             master=self, text="Salidas", font=self._button_font)
         self.label_units.place(
-            relx=0.2, rely=0.4, anchor=customtkinter.CENTER)
+            relx=0.7, rely=0.4, anchor=customtkinter.CENTER)
 
     def validate(self):
         return (self.params['input_dim'].get().isnumeric() and self.params['output_dim'].get().isnumeric())
 
+
 class DropoutLayerEditWindow(LayerEditWindow):
 
+    def _init_vars(self):
+        self.params['rate'] = customtkinter.StringVar(
+            master=self.master, value="0.5", name="rate_layer_" + str(self.number) + "_"+self.alias)
+
     def set_widgets(self):
-        pass
+        self.label_main = customtkinter.CTkLabel(
+            master=self, text="Ratio", font=self._button_font)
+        self.label_main.place(relx=0.5, rely=0.4, anchor=customtkinter.CENTER)
+
+        self.in_dim = customtkinter.CTkEntry(master=self, textvariable=self.params['rate'],
+                                             width=100)
+
+        self.in_dim.place(relx=0.5, rely=0.5, anchor=customtkinter.CENTER)
+
+    def validate(self):
+        try:
+            float(self.params['rate'].get())
+        except ValueError:
+            return False
+        else:
+            return (float(self.params['rate'].get()) <= 1) and (float(self.params['rate'].get()) > 0)
 
 
 class Conv1DLayerEditWindow(LayerEditWindow):
 
+    def _init_vars(self):
+        self.params['filters'] = customtkinter.StringVar(
+            master=self.master, value="128", name="filters_layer_" + str(self.number) + "_"+self.alias)
+
+        self.params['kernel_size'] = customtkinter.StringVar(
+            master=self.master, value="7", name="kernel_size_dim_layer_" + str(self.number) + "_"+self.alias)
+
+        self.params['strides'] = customtkinter.StringVar(
+            master=self.master, value="3", name="strides_dim_layer_" + str(self.number) + "_"+self.alias)
+
+        self.params['padding'] = customtkinter.StringVar(
+            master=self.master, value=self.paddings[0], name="padding_dim_layer_" + str(self.number) + "_"+self.alias)
+
+        self.params['activation'] = customtkinter.StringVar(
+            master=self.master, value=self.activations[0], name="activation_dim_layer_" + str(self.number) + "_"+self.alias)
+
     def set_widgets(self):
-        pass
+        label = customtkinter.CTkLabel(
+            master=self, text="Filtros", font=self._button_font)
+        label.place(relx=0.3, rely=0.2, anchor=customtkinter.CENTER)
+
+        entry = customtkinter.CTkEntry(master=self, textvariable=self.params['filters'],
+                                       width=100)
+        entry.place(relx=0.3, rely=0.3, anchor=customtkinter.CENTER)
+
+        label = customtkinter.CTkLabel(
+            master=self, text="Strides", font=self._button_font)
+        label.place(
+            relx=0.3, rely=0.6, anchor=customtkinter.CENTER)
+
+        entry = customtkinter.CTkEntry(master=self, textvariable=self.params['strides'],
+                                       width=100)
+        entry.place(relx=0.3, rely=0.7, anchor=customtkinter.CENTER)
+
+        label = customtkinter.CTkLabel(
+            master=self, text="Tamaño del kernel", font=self._button_font)
+        label.place(relx=0.5, rely=0.45, anchor=customtkinter.CENTER)
+
+        entry = customtkinter.CTkEntry(master=self, textvariable=self.params['kernel_size'],
+                                       width=100)
+        entry.place(relx=0.5, rely=0.55, anchor=customtkinter.CENTER)
+
+        label = customtkinter.CTkLabel(
+            master=self, text="Activación", font=self._button_font)
+        label.place(relx=0.7, rely=0.2, anchor=customtkinter.CENTER)
+
+        entry = customtkinter.CTkComboBox(
+            master=self, values=self.activations, state="readonly", variable=self.params['activation'], font=self._combo_box_font, width=100)
+
+        entry.place(relx=0.7, rely=0.3, anchor=customtkinter.CENTER)
+
+        label = customtkinter.CTkLabel(
+            master=self, text="Padding", font=self._button_font)
+        label.place(relx=0.7, rely=0.6, anchor=customtkinter.CENTER)
+
+        entry = customtkinter.CTkComboBox(
+            master=self, values=self.paddings, state="readonly", variable=self.params['padding'], font=self._combo_box_font, width=100)
+
+        entry.place(relx=0.7, rely=0.7, anchor=customtkinter.CENTER)
+
+    def validate(self):
+        return (self.params['filters'].get().isnumeric() and self.params['strides'].get().isnumeric() and self.params['kernel_size'].get().isnumeric())
 
 
 class GlobalMaxPooling1DLayerEditWindow(LayerEditWindow):
+    def _init_vars(self):
+        self.params['keepdims'] = customtkinter.BooleanVar(
+            master=self.master, value=False, name="keepdims_layer_" + str(self.number) + "_"+self.alias)
 
     def set_widgets(self):
-        pass
+
+        entry = customtkinter.CTkCheckBox(master=self, variable=self.params['keepdims'],
+                                          width=100, text="Mantener dimensión")
+        entry.place(relx=0.5, rely=0.5, anchor=customtkinter.CENTER)
 
 
 class Conv2DLayerEditWindow(LayerEditWindow):
+    def _init_vars(self):
+        self.params['filters'] = customtkinter.StringVar(
+            master=self.master, value="32", name="filters_layer_" + str(self.number) + "_"+self.alias)
+
+        self.params['kernel_size'] = customtkinter.StringVar(
+            master=self.master, value="5", name="kernel_size_dim_layer_" + str(self.number) + "_"+self.alias)
+
+        self.params['padding'] = customtkinter.StringVar(
+            master=self.master, value=self.paddings[1], name="padding_dim_layer_" + str(self.number) + "_"+self.alias)
+
+        self.params['activation'] = customtkinter.StringVar(
+            master=self.master, value=self.activations[0], name="activation_dim_layer_" + str(self.number) + "_"+self.alias)
 
     def set_widgets(self):
-        pass
+        label = customtkinter.CTkLabel(
+            master=self, text="Filtros", font=self._button_font)
+        label.place(relx=0.3, rely=0.2, anchor=customtkinter.CENTER)
+
+        entry = customtkinter.CTkEntry(master=self, textvariable=self.params['filters'],
+                                       width=100)
+        entry.place(relx=0.3, rely=0.3, anchor=customtkinter.CENTER)
+
+        label = customtkinter.CTkLabel(
+            master=self, text="Tamaño del kernel", font=self._button_font)
+        label.place(
+            relx=0.3, rely=0.6, anchor=customtkinter.CENTER)
+
+        entry = customtkinter.CTkEntry(master=self, textvariable=self.params['kernel_size'],
+                                       width=100)
+        entry.place(relx=0.3, rely=0.7, anchor=customtkinter.CENTER)
+
+        label = customtkinter.CTkLabel(
+            master=self, text="Activación", font=self._button_font)
+        label.place(relx=0.7, rely=0.2, anchor=customtkinter.CENTER)
+
+        entry = customtkinter.CTkComboBox(
+            master=self, values=self.activations, state="readonly", variable=self.params['activation'], font=self._combo_box_font, width=100)
+
+        entry.place(relx=0.7, rely=0.3, anchor=customtkinter.CENTER)
+
+        label = customtkinter.CTkLabel(
+            master=self, text="Padding", font=self._button_font)
+        label.place(relx=0.7, rely=0.6, anchor=customtkinter.CENTER)
+
+        entry = customtkinter.CTkComboBox(
+            master=self, values=self.paddings, state="readonly", variable=self.params['padding'], font=self._combo_box_font, width=100)
+
+        entry.place(relx=0.7, rely=0.7, anchor=customtkinter.CENTER)
+
+    def validate(self):
+        return (self.params['filters'].get().isnumeric() and self.params['kernel_size'].get().isnumeric())
 
 
 class MaxPooling2DLayerEditWindow(LayerEditWindow):
+    def _init_vars(self):
+
+        self.params['padding'] = customtkinter.StringVar(
+            master=self.master, value=self.paddings[1], name="padding_dim_layer_" + str(self.number) + "_"+self.alias)
 
     def set_widgets(self):
-        pass
+        label = customtkinter.CTkLabel(
+            master=self, text="Padding", font=self._button_font)
+        label.place(relx=0.5, rely=0.45, anchor=customtkinter.CENTER)
+
+        entry = customtkinter.CTkComboBox(
+            master=self, values=self.paddings, state="readonly", variable=self.params['padding'], font=self._combo_box_font, width=100)
+
+        entry.place(relx=0.5, rely=0.55, anchor=customtkinter.CENTER)
 
 
 class FlattenLayerEditWindow(LayerEditWindow):
 
     def set_widgets(self):
-        pass
+        label = customtkinter.CTkLabel(
+            master=self, text="Flatten", font=self._button_font)
+        label.place(relx=0.5, rely=0.5, anchor=customtkinter.CENTER)
